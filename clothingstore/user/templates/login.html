@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head %}
+  <title>Clauch Partner Login - Wholesale & B2B Dashboard</title>
+  <meta name="description" content="Login to Clauch Partner Portal to manage B2B clothing orders, wholesale collections, and business dashboards. Secure OTP-based login for verified partners.">
+  <meta name="keywords" content="Clauch partner login, B2B clothing, wholesale clothing portal, business login, fashion B2B, Clauch dashboard">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  <!-- Open Graph for social sharing -->
+  <meta property="og:title" content="Clauch Partner Login - B2B Dashboard">
+  <meta property="og:description" content="Access your Clauch B2B wholesale dashboard. Secure login via OTP to manage your clothing business effortlessly.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="Clauch">
+  <meta property="og:image" content="{% static 'images/og-partner-login.jpg' %}">  {# replace with a real image path #}
+{% endblock %}
+
 {% block content %}
 <div class="min-h-screen bg-white text-gray-900 font-montserrat flex items-center justify-center px-4">
   <div class="w-full max-w-md">
