@@ -1,6 +1,24 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Home{% endblock %}
+{% block title %}Clauch | Trending Streetwear & Oversized Fashion for Gen Z{% endblock %}
+
+{% block head %}
+  <title>Clauch | Trending Streetwear & Oversized Fashion for Gen Z</title>
+  <meta name="description" content="Shop Clauch for the latest oversized fashion, streetwear styles, baggy fits, and Gen Z clothing trends. Explore new arrivals, bestsellers, and exclusive drops.">
+  <meta name="keywords" content="Clauch, streetwear, oversized clothing, baggy jeans, cargos, gen z fashion, trending outfits, unisex fashion, tshirts, shirts, jeans, fashion ecommerce">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  <!-- Open Graph for social sharing -->
+  <meta property="og:title" content="Clauch | Trending Streetwear & Oversized Fashion for Gen Z">
+  <meta property="og:description" content="Discover the latest in oversized fashion and streetwear. Shop Clauch for must-have Gen Z outfits, new arrivals, and top categories.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="Clauch">
+  <meta property="og:image" content="{% static 'images/og-homepage.jpg' %}"> {# Replace with a real hero image #}
+{% endblock %}
+
+
 
 {% block content %}
 
