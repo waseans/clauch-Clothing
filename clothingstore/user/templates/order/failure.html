@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Order Failed{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto text-center mt-20 p-4">
+  <h1 class="text-3xl font-bold text-red-600 mb-4">❌ Payment Failed</h1>
+  <p class="text-lg">Something went wrong while processing your payment.</p>
+  <p class="mt-2">Please try again or choose another payment method.</p>
+  <a href="{% url 'checkout' %}" class="inline-block mt-6 bg-black text-white px-6 py-3 rounded hover:bg-gray-800">Back to Checkout</a>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}My Orders{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="bg-[#f9f9f9] min-h-screen py-16 px-6 font-[Montserrat]">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">My Orders</h1>
+
+    {% if orders %}
+      <div class="space-y-8">
+        {% for order in orders %}
+          <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+            <!-- Order Summary -->
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+              <div>
+                <h2 class="text-lg font-semibold">Order #{{ order.id }}</h2>
+                <p class="text-sm text-gray-500">Placed on {{ order.created_at|date:"F j, Y" }}</p>
+              </div>
+              <div class="text-sm mt-2 md:mt-0">
+                <p class="text-gray-600">Status: 
+                  <span class="font-medium">{{ order.get_status_display }}</span>
+                </p>
+                <p>Total: ₹{{ order.total_amount }}</p>
+              </div>
+            </div>
+
+            <!-- Items List -->
+            <div class="divide-y border-t pt-4">
+              {% for item in order.items.all %}
+                <div class="flex items-start gap-4 py-4">
+                  <img src="{{ item.product_image.url }}" alt="{{ item.product_name }}"
+                       class="w-20 h-24 object-cover rounded border">
+                  <div class="text-sm">
+                    <h3 class="font-medium">{{ item.product_name }}</h3>
+                    <p class="text-gray-500">Size: {{ item.size }} | Color: {{ item.color.name }}</p>
+                    <p class="text-gray-500">Qty: {{ item.quantity }}</p>
+                    <p class="mt-1 text-gray-900">
+                      ₹{{ item.discount_price|default:item.actual_price }}
+                      {% if item.discount_price %}
+                        <span class="line-through text-gray-400 ml-2">₹{{ item.actual_price }}</span>
+                      {% endif %}
+                    </p>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- View Details Button -->
+            <div class="text-right mt-6">
+              <a href="{% url 'order_detail' order.id %}"
+                 class="inline-block px-4 py-2 text-sm font-medium text-white bg-black rounded hover:bg-gray-800 transition">
+                View Details
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-gray-500">You haven't placed any orders yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Clothing Store{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- ✅ Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ✅ Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  .font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  .font-raleway {
+    font-family: 'Raleway', sans-serif;
+  }
+</style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+
+<body class="bg-[#FFFFFFFF] text-[#111] font-sans">
+
+<!-- 🔔 Slim Alert Bar -->
+<!-- 🔔 Ultra-Thin Alert Bar -->
+<!-- 🔔 Fixed Alert Marquee Bar (Top) -->
+<div class="fixed top-0 left-0 w-full bg-black text-white h-5 z-50">
+  <div class="whitespace-nowrap animate-marquee text-[10px] font-raleway font-medium tracking-wider leading-[1.2rem] px-4">
+    Free shipping on orders above ₹999! &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; 🛍 New arrivals just dropped! &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; ⚡ Use code WELCOME10 for 10% off!
+  </div>
+</div>
+
+<!-- 📱 Fixed Mobile Top Navigation -->
+<div class="fixed top-5 left-0 w-full bg-white border-b z-40 md:hidden flex items-center justify-between px-4 py-2">
+  <!-- Left - Logo/Text -->
+  <div class="text-[16px] font-semibold text-black font-montserrat">
+    Clauch
+  </div>
+
+  <!-- Right - Text Links Only -->
+  <div class="flex space-x-4">
+    <a href="{% url 'new' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+      B2B Collection
+    </a>
+    <a href="{% url 'showroom' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+      Showroom
+    </a>
+  </div>
+</div>
+
+
+
+
+<!-- 🛠 Responsive Marquee Speed -->
+<style>
+  @keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .animate-marquee {
+    animation: marquee 15s linear infinite;
+  }
+
+  @media (min-width: 768px) {
+    .animate-marquee {
+      animation-duration: 25s !important;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .animate-marquee {
+      animation-duration: 35s !important;
+    }
+  }
+</style>
+
+
+
+
+<!-- 💻 Sleek Desktop Navbar with Montserrat and Subtle Styling -->
+<!-- 💻 Sleek Desktop Navbar with Montserrat and Subtle Styling -->
+<header class="hidden md:flex justify-between items-center px-8 py-4 bg-white shadow-sm border-b border-gray-200 font-[Montserrat] mt-5">
+
+  <!-- Logo -->
+  <div class="text-2xl font-medium tracking-tight text-gray-900">
+    <a href="{% url 'home' %}" class="hover:text-black transition">Clauch</a>
+  </div>
+
+  <!-- Navigation Links -->
+  <nav class="space-x-2">
+    <a href="{% url 'home' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+      Home
+    </a>
+    <a href="{% url 'search' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+      Search
+    </a>
+    <a href="{% url 'new' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+      B2B Collection
+    </a>
+    <a href="{% url 'showroom' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+  Clauch Showroom
+</a>
+
+    <a href="{% url 'view_cart' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+      Cart
+    </a>
+    <a href="{% url 'account' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+      Account
+    </a>
+  </nav>
+</header>
+
+
+  <!-- 🧩 MAIN CONTENT -->
+<main class="min-h-screen pb-20 pt-[76px] md:pt-0">
+
+    {% block content %}{% endblock %}
+  </main>
+
+ <!-- 📱 Mobile App-Style Bottom Nav -->
+
+<!-- 📱 Mobile App-Style Bottom Nav (Functional) -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t flex justify-around items-center py-3 px-2 shadow-md md:hidden font-montserrat tracking-wider text-[11px]">
+
+  <!-- Home -->
+  <a href="{% url 'home' %}" class="flex flex-col items-center text-gray-700 hover:text-black transition-all">
+    <img src="{% static 'icons/home.svg' %}" alt="Home" class="w-4 h-4 mb-0.5" />
+    Home
+  </a>
+
+  <!-- Search -->
+  <a href="{% url 'search' %}" class="flex flex-col items-center text-gray-700 hover:text-black transition-all">
+    <img src="{% static 'icons/search.svg' %}" alt="Search" class="w-4 h-4 mb-0.5" />
+    Search
+  </a>
+
+  <!-- New (Text-only tab) -->
+  <a href="{% url 'new' %}" class="flex flex-col items-center text-black font-semibold transition-all">
+    <span class="text-[13px] font-bold tracking-wide">NEW</span>
+  </a>
+
+  <!-- Cart -->
+  <a href="{% url 'view_cart' %}" class="flex flex-col items-center text-gray-700 hover:text-black transition-all relative">
+    <img src="{% static 'icons/cart.svg' %}" alt="Cart" class="w-4 h-4 mb-0.5" />
+    Cart
+    <span class="absolute top-0 right-[6px] bg-red-500 text-white text-[10px] rounded-full px-1.5 leading-tight font-bold"></span>
+  </a>
+
+  <!-- Account -->
+  <a href="{% url 'account' %}" class="flex flex-col items-center text-gray-700 hover:text-black transition-all">
+    <img src="{% static 'icons/user.svg' %}" alt="Account" class="w-4 h-4 mb-0.5" />
+    Account
+  </a>
+</nav>
+
+
+<footer class="relative bg-cover bg-center bg-no-repeat text-white font-[Montserrat] px-6 md:px-16 pt-10 pb-24 md:pb-10 mt-10" style="background-image: url('{% static '/images/footer-black.jpg' %}');">
+  <div class="absolute inset-0 bg-black bg-opacity-80"></div> <!-- Dark overlay -->
+  
+  <div class="relative max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 z-10">
+    
+    <div>
+      <h3 class="text-base font-semibold mb-3 text-white">Clauch</h3>
+      <ul class="space-y-1 text-gray-300 text-sm">
+        <li>At Chhatrapti Shivaji Maharaj Chowk,</li>
+        <li>Near Gurudev Hotel,</li>
+        <li>Kalyan West</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-base font-semibold mb-3 text-white">Help</h3>
+      <ul class="space-y-1 text-gray-300 text-sm">
+        <li><a href="#" class="hover:text-white transition">Shipping</a></li>
+        <li><a href="#" class="hover:text-white transition">Returns</a></li>
+        <li><a href="#" class="hover:text-white transition">FAQs</a></li>
+        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-base font-semibold mb-3 text-white">Company</h3>
+      <ul class="space-y-1 text-gray-300 text-sm">
+        <li><a href="#" class="hover:text-white transition">About Us</a></li>
+        <li><a href="#" class="hover:text-white transition">Careers</a></li>
+        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-white transition">Terms & Conditions</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-base font-semibold mb-3 text-white">Follow Us</h3>
+      <ul class="space-y-1 text-gray-300 text-sm">
+        <li><a href="https://www.instagram.com/clauch_clothing" class="hover:text-white transition">Instagram</a></li>
+        <li><a href="https://www.facebook.com/share/1ZLneUtHX5/" class="hover:text-white transition">Facebook</a></li>
+        <li><a href="https://www.youtube.com/@Clauchclothing/shorts" class="hover:text-white transition">YouTube</a></li>
+      </ul>
+
+      <h3 class="text-base font-semibold mt-6 mb-2 text-white">Contact Us</h3>
+      <ul class="space-y-1 text-gray-300 text-sm">
+        <li><a href="tel:+919021275825" class="hover:text-white transition">+91 9021275825</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="relative mt-10 border-t border-gray-700 pt-4 text-center text-xs text-gray-400 z-10">
+    © 2025 Clauch. All rights reserved. | Developed by <span class="font-medium text-white">Waseans</span>
+  </div>
+</footer>
+
+
+</body>
+</html>

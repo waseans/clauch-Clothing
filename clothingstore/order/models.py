@@ -1,0 +1,102 @@
+from django.db import models
+
+# Create your models here.
+from django.db import models
+from user.models import CustomUser, Product, ProductColor
+# Assuming this is in an app like 'order' or 'cart'
+# order/models.py
+
+from django.db import models
+from user.models import CustomUser, Product, ProductColor # Make sure these imports are correct
+
+class CartItem(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    color = models.ForeignKey(ProductColor, on_delete=models.SET_NULL, null=True)
+    # REMOVED: size = models.CharField(max_length=10)
+    quantity = models.PositiveIntegerField(default=1) # This is now the quantity of PACKS/SETS
+
+    # Snapshot fields (keep these as they are good for historical data)
+    product_name = models.CharField(max_length=255)
+    product_image = models.ImageField(upload_to='cart_snapshots/')
+    actual_price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # unique_together now only considers user, product, and color
+        # as the 'size' is implicit in the product's 'sizes' field (the pack definition)
+        unique_together = ('user', 'product', 'color')
+
+    def __str__(self):
+        color_info = f" ({self.color.name})" if self.color else ""
+        # Reflects that it's a quantity of packs
+        return f"{self.product.name}{color_info} x{self.quantity} packs"
+
+
+class Order(models.Model):
+    PAYMENT_CHOICES = (
+        ('COD', 'Cash on Delivery'),
+        ('RZP', 'Razorpay'),
+    )
+
+    STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('PAID', 'Paid'),
+        ('SHIPPED', 'Shipped'),
+        ('DELIVERED', 'Delivered'),
+        ('CANCELLED', 'Cancelled'),
+    )
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    email = models.EmailField(blank=True)
+    address = models.TextField()
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=10)
+
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
+    payment_id = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    coupon_code = models.CharField(max_length=50, blank=True, null=True)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order #{self.id} by {self.user.phone_number}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    color = models.ForeignKey(ProductColor, on_delete=models.SET_NULL, null=True)
+    # REMOVED: size = models.CharField(max_length=10)
+    quantity = models.PositiveIntegerField() # This is now the quantity of PACKS/SETS
+
+    # Snapshot at the time of ordering
+    product_name = models.CharField(max_length=255)
+    product_image = models.ImageField(upload_to='order_snapshots/')
+    actual_price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        color_info = f" ({self.color.name})" if self.color else ""
+        # Reflects that it's a quantity of packs
+        return f"{self.product_name}{color_info} x{self.quantity} packs"
+
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    discount_type = models.CharField(max_length=10, choices=[('PERCENT', 'Percent'), ('FLAT', 'Flat')])
+    discount_value = models.DecimalField(max_digits=10, decimal_places=2)
+    min_order_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    active = models.BooleanField(default=True)
+    expires_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.code

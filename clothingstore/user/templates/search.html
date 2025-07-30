@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="bg-white w-full min-h-screen px-4 sm:px-6 lg:px-16 py-8 text-gray-900 font-[Montserrat]">
+
+  <section class="mb-8">
+    <form method="get" action="{% url 'search_results' %}">
+      <div class="flex justify-center">
+        <div class="flex items-center w-full max-w-2xl px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm">
+          <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            name="q"
+            value="{{ query }}" {# Keep value="{{ query }}" to pre-fill search bar #}
+            id="search-input"
+            autocomplete="off"
+            class="ml-3 bg-transparent w-full text-sm focus:outline-none text-gray-800 placeholder-gray-400"
+            placeholder="Search for products or categories..."
+            required
+          >
+        </div>
+      </div>
+      <div id="suggestion-box"
+        class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-full max-w-2xl bg-white border border-gray-200 rounded shadow-md z-50 hidden"></div>
+    </form>
+  </section>
+
+  {% if query %}
+  <section class="mb-10">
+    <h2 class="text-base font-semibold text-gray-800 mb-4">Results for <span class="text-black">"{{ query }}"</span></h2>
+
+    {% if results %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+      {% for product in results %}
+      <a href="{% url 'product_detail' slug=product.slug %}"
+         class="group border border-gray-200 rounded-md shadow-sm hover:shadow-md transition overflow-hidden text-sm">
+        <div class="w-full h-64 overflow-hidden">
+          <img src="{{ product.primary_image.url }}" alt="{{ product.name }}"
+               class="w-full h-full object-cover transition group-hover:scale-105">
+        </div>
+        <div class="p-2 pb-3"> {# Added pb-3 for consistent bottom padding #}
+          <p class="font-medium text-gray-900 group-hover:underline truncate">{{ product.name }}</p>
+          
+          {# Price per Piece - Main and larger #}
+          <div class="text-base font-bold text-gray-900 mt-1"> {# Increased size and bold #}
+            ₹{{ product.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span>
+          </div>
+
+          {# Price per Set - Smaller and less prominent #}
+          {% if product.get_total_pieces_in_set > 0 %}
+              <p class="text-xs text-gray-500 mt-0.5"> {# Smaller text and lighter color #}
+                  Set: ₹{{ product.discount_price|default:product.price|floatformat:0 }}
+              </p>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-sm">No results found for "{{ query }}".</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if popular_searches %}
+  <section class="mb-8">
+    <h3 class="text-sm font-semibold text-gray-700 uppercase mb-3 tracking-wide">Most Searched</h3>
+    <div class="flex flex-wrap gap-2">
+      {% for term in popular_searches %}
+      <a href="{% url 'search_results' %}?q={{ term }}"
+         class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition">
+        {{ term }}
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if popular_categories %}
+  <section class="mb-10">
+    <h3 class="text-sm font-semibold text-gray-700 uppercase mb-3 tracking-wide">Popular Categories</h3>
+    <div class="flex flex-wrap gap-4">
+      {% for category in popular_categories %}
+      <a href="{% url 'search_results' %}?q={{ category.name }}"
+         class="group text-xs flex flex-col items-center text-gray-700 hover:text-black transition">
+        <div class="w-14 h-14 rounded-full overflow-hidden border bg-white shadow">
+          <img src="{{ category.image.url }}" alt="{{ category.name }}"
+               class="object-cover w-full h-full transition group-hover:scale-105" />
+        </div>
+        <p class="mt-1 truncate w-16 text-center">{{ category.name }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if popular_products %}
+  <section>
+    <h3 class="text-sm font-semibold text-gray-700 uppercase mb-3 tracking-wide">Popular Products</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+      {% for product in popular_products %}
+      <a href="{% url 'product_detail' slug=product.slug %}"
+         class="group block border border-gray-200 rounded-md shadow-sm hover:shadow-md transition overflow-hidden text-sm">
+        <div class="w-full h-64 overflow-hidden">
+          <img src="{{ product.primary_image.url }}" alt="{{ product.name }}"
+               class="w-full h-full object-cover transition group-hover:scale-105">
+        </div>
+        <div class="p-2 pb-3"> {# Added pb-3 for consistent bottom padding #}
+          <p class="font-medium text-gray-900 truncate group-hover:underline">{{ product.name }}</p>
+          
+          {# Price per Piece - Main and larger #}
+          <div class="text-base font-bold text-gray-900 mt-1"> {# Increased size and bold #}
+            ₹{{ product.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span>
+          </div>
+
+          {# Price per Set - Smaller and less prominent #}
+          {% if product.get_total_pieces_in_set > 0 %}
+              <p class="text-xs text-gray-500 mt-0.5"> {# Smaller text and lighter color #}
+                  Set: ₹{{ product.discount_price|default:product.price|floatformat:0 }}
+              </p>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById('search-input');
+  const suggestionBox = document.getElementById('suggestion-box');
+  let timeout = null;
+
+  input.addEventListener("input", () => {
+    const query = input.value.trim();
+    if (timeout) clearTimeout(timeout);
+
+    if (query.length > 1) {
+      timeout = setTimeout(() => {
+        fetch(`/search/suggestions/?q=${encodeURIComponent(query)}`)
+          .then(res => res.json())
+          .then(data => {
+            suggestionBox.innerHTML = "";
+            if (data.products.length > 0) {
+              data.products.slice(0, 3).forEach(product => {
+                const item = document.createElement("a");
+                item.href = `/product/${product.slug}/`;
+                item.className = "flex items-center gap-3 px-4 py-3 hover:bg-gray-50 border-b border-gray-100";
+
+                const img = document.createElement("img");
+                img.src = product.image;
+                img.alt = product.name;
+                img.className = "w-10 h-10 rounded object-cover";
+
+                const info = document.createElement("div");
+                info.className = "flex-1";
+                // NOTE: price_display from backend might need to be adjusted if you want the full breakdown here
+                // For simplicity, I'm keeping price_display as it was, assuming it's a simple formatted price.
+                // If you need price/piece and price/set in suggestions, you'd need to send that from the backend.
+                info.innerHTML = `
+                  <p class="text-sm font-medium text-gray-800">${product.name}</p>
+                  <p class="text-xs text-gray-500">${product.price_display}</p>
+                `;
+
+                item.appendChild(img);
+                item.appendChild(info);
+                suggestionBox.appendChild(item);
+              });
+              suggestionBox.classList.remove("hidden");
+            } else {
+              suggestionBox.classList.add("hidden");
+            }
+          });
+      }, 250);
+    } else {
+      suggestionBox.classList.add("hidden");
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !suggestionBox.contains(e.target)) {
+      suggestionBox.classList.add("hidden");
+    }
+  });
+});
+</script>
+{% endblock %}

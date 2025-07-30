@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-10 px-4 sm:px-8 lg:px-20 font-[Montserrat]">
+  <h1 class="text-2xl font-semibold mb-8 text-gray-900">🧾 Checkout</h1>
+
+  <div class="grid lg:grid-cols-3 gap-10">
+
+    <div class="bg-white p-6 rounded-xl shadow-sm text-sm order-1 lg:order-last lg:sticky lg:top-20">
+      <h3 class="text-lg font-semibold mb-4 text-gray-900">Order Summary</h3>
+      <div class="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+        {% for item in cart_items %}
+        <div class="flex gap-4 border-b pb-4">
+          <img src="{{ item.product_image.url }}" class="w-16 h-16 rounded object-cover border">
+          <div class="flex-1">
+            <p class="font-medium text-gray-900">{{ item.product_name }}</p>
+            <p class="text-gray-500">Size: {{ item.size }} | Color: {{ item.color.name }}</p>
+            <p class="text-gray-500">Qty: {{ item.quantity }} sets</p> {# Explicitly state "sets" #}
+            
+            {# Price per Piece #}
+            <p class="text-gray-600">Price/Piece: ₹{{ item.product.get_current_price_per_piece|floatformat:0 }}</p>
+
+            {# Price per Set (Conditional) #}
+            {% if item.product.get_total_pieces_in_set > 0 %}
+                <p class="text-gray-500 text-xs">Price/Set: ₹{{ item.product.discount_price|default:item.product.price|floatformat:0 }}</p>
+            {% endif %}
+
+            {# Total for this item #}
+            <p class="font-semibold text-gray-800 mt-1">Total: ₹{{ item.total_price|floatformat:0 }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="mt-6 text-sm space-y-2">
+        <div class="flex justify-between text-gray-700">
+          <span>Subtotal</span>
+          <span>₹{{ total|floatformat:0 }}</span> {# Format total as integer #}
+        </div>
+        <div class="flex justify-between">
+          <span>Discount</span>
+          <span class="text-green-600">− ₹{{ discount|floatformat:0 }}</span> {# Format discount as integer #}
+        </div>
+        <div class="flex justify-between">
+          <span>Shipping</span>
+          <span class="text-green-600">Free</span>
+        </div>
+        <hr>
+        <div class="flex justify-between font-bold text-base text-gray-900">
+          <span>Total</span>
+          <span>₹{{ total_after_discount|floatformat:0 }}</span> {# Format total_after_discount as integer #}
+        </div>
+      </div>
+    </div>
+
+    <form method="POST" class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm space-y-6 order-last lg:order-1" id="checkout-form">
+      {% csrf_token %}
+      <input type="hidden" name="place_order" value="1">
+
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <label class="text-gray-600">Full Name *</label>
+          <input name="full_name" type="text" required
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+        <div>
+          <label class="text-gray-600">Phone *</label>
+          <input name="phone" type="text" required
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+        <div>
+          <label class="text-gray-600">Email</label>
+          <input name="email" type="email"
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+        <div>
+          <label class="text-gray-600">Pincode *</label>
+          <input name="pincode" type="text" required
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+        <div class="md:col-span-2">
+          <label class="text-gray-600">Address *</label>
+          <textarea name="address" required
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"></textarea>
+        </div>
+        <div>
+          <label class="text-gray-600">City *</label>
+          <input name="city" type="text" required
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+        <div>
+          <label class="text-gray-600">State *</label>
+          <input name="state" type="text" required
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm font-medium text-gray-600">Coupon Code</label>
+        <div class="flex mt-1 gap-2">
+          <input type="text" name="coupon_code" placeholder="Enter coupon code"
+            class="flex-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black text-sm">
+          <button formaction="{% url 'checkout' %}" formmethod="get"
+            class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-black transition text-sm font-medium">
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <input type="hidden" name="payment_method" value="RZP">
+        <button type="button" id="rzp-button"
+          class="mt-6 w-full py-3 bg-black text-white rounded font-semibold hover:bg-gray-900 transition text-sm">
+          Pay ₹{{ total_after_discount|floatformat:0 }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if razorpay_order %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const razorpayBtn = document.getElementById("rzp-button");
+
+  razorpayBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const options = {
+      "key": "{{ razorpay_key }}",
+      "amount": "{{ amount|safe }}",
+      "currency": "INR",
+      "name": "Your Brand",
+      "description": "Clothing Purchase",
+      "order_id": "{{ razorpay_order.id }}",
+      "handler": function (response) {
+        const form = document.getElementById("checkout-form");
+        form.insertAdjacentHTML("beforeend", `<input type="hidden" name="razorpay_payment_id" value="${response.razorpay_payment_id}">`);
+        form.submit();
+      },
+      "theme": {
+        "color": "#000000"
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+</script>
+{% endif %}
+{% endblock %}

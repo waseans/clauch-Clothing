@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const lazyBackgrounds = document.querySelectorAll(".lazy-bg");
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const bgUrl = el.getAttribute("data-bg");
+
+          const img = new Image();
+          img.src = bgUrl;
+          img.onload = () => {
+            el.style.backgroundImage = `url('${bgUrl}')`;
+            el.classList.add("bg-loaded");
+          };
+
+          observer.unobserve(el);
+        }
+      });
+    }, {
+      rootMargin: "0px",
+      threshold: 0.1
+    });
+
+    lazyBackgrounds.forEach(bg => observer.observe(bg));
+  });
+</script>
+
+<!-- ✅ Hero Section -->
+<div class="relative w-full h-[70vh] overflow-hidden bg-black text-white font-montserrat">
+  <div class="swiper h-full z-0">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide bg-cover bg-center lazy-bg" data-bg-mobile="{% static 'images/banner-4-mobile.webp' %}" data-bg-desktop="{% static 'images/banner-4-desktop.webp' %}"></div>
+      <div class="swiper-slide bg-cover bg-center lazy-bg" data-bg-mobile="{% static 'images/banner-3-mobile.webp' %}" data-bg-desktop="{% static 'images/banner-2-desktop.webp' %}"></div>
+      <div class="swiper-slide bg-cover bg-center lazy-bg" data-bg-mobile="{% static 'images/banner-1-mobile.webp' %}" data-bg-desktop="{% static 'images/banner-3-desktop.webp' %}"></div>
+    </div>
+  </div>
+
+  <div class="swiper-pagination absolute bottom-[90px] left-1/2 transform -translate-x-1/2 z-20 flex justify-center items-center gap-2 w-fit"></div>
+
+  <div class="absolute top-6 left-1/2 -translate-x-1/2 z-10 text-[13px] font-semibold tracking-[0.2em] uppercase text-white">
+    CLAUTCH.COM
+  </div>
+
+  <!-- 🔍 Search Form -->
+  <form method="GET" action="{% url 'search_results' %}" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-xl z-10">
+    <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white px-4 py-2 rounded-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input 
+  type="text" 
+  name="q" 
+  placeholder="Search..." 
+  id="search-input" 
+  class="w-full bg-transparent focus:outline-none placeholder-white/80 text-base" 
+  style="font-size:16px;" 
+/>
+    </div>
+  </form>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+    <a href="{% url 'new' %}" class="bg-white text-black text-xs px-6 py-2 rounded-full font-medium shadow-sm hover:bg-neutral-200 transition-all">
+      SHOP NOW
+    </a>
+  </div>
+</div>
+
+<!-- Swiper + Responsive Scripts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script>
+  const swiper = new Swiper('.swiper', {
+    loop: true,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      renderBullet: function (index, className) {
+        return `<span class="${className} bullet inline-block w-[8px] h-[8px] rounded-full bg-white/40 transition-all duration-300 ease-in-out"></span>`;
+      },
+    },
+    on: {
+      slideChange: function () {
+        const bullets = document.querySelectorAll('.swiper-pagination .bullet');
+        bullets.forEach((b, i) => {
+          if (i === swiper.realIndex) {
+            b.style.width = '24px';
+            b.style.opacity = '1';
+            b.style.backgroundColor = 'white';
+          } else {
+            b.style.width = '8px';
+            b.style.opacity = '0.4';
+            b.style.backgroundColor = 'white';
+          }
+        });
+      }
+    },
+  });
+
+  function setResponsiveBackgrounds() {
+    const isMobile = window.innerWidth <= 768;
+    document.querySelectorAll('.lazy-bg').forEach(slide => {
+      const bgMobile = slide.getAttribute('data-bg-mobile');
+      const bgDesktop = slide.getAttribute('data-bg-desktop');
+      const selected = isMobile ? bgMobile : bgDesktop;
+      if (selected) {
+        slide.style.backgroundImage = `url('${selected}')`;
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', setResponsiveBackgrounds);
+  window.addEventListener('resize', setResponsiveBackgrounds);
+</script>
+
+<!-- 🔁 Rotating Placeholder -->
+<script>
+  const placeholders = [
+    "Search for baggy jeans",
+    "Search oversized shirt",
+    "Search cargos",
+    "Search summer fits",
+  ];
+  let index = 0;
+  setInterval(() => {
+    index = (index + 1) % placeholders.length;
+    const input = document.getElementById("search-input");
+    input.placeholder = placeholders[index];
+  }, 3500);
+</script>
+
+<style>
+  .animate-fade {
+    animation: fadein 0.6s ease-in-out;
+  }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- ✅ Category Grid -->
+<div class="w-full bg-white py-6 px-4">
+  <h2 class="text-lg font-semibold font-montserrat uppercase mb-6 text-center tracking-wide">
+    Order By Category
+  </h2>
+
+  <!-- Mobile: grid layout | Desktop: flex layout -->
+  <div class="grid grid-cols-3 gap-4 md:flex md:flex-wrap md:justify-center md:gap-6">
+    {% for category in categories %}
+      <a href="{% url 'category_detail' category.slug %}" class="block w-full max-w-[100px] md:max-w-[140px]">
+        <div class="relative group transform-style preserve-3d transition-transform duration-500 hover:rotate-y-[8deg] hover:-rotate-x-[5deg]">
+          <img src="{{ category.image.url }}" alt="{{ category.name }}" loading="lazy"
+            class="w-full aspect-[2.5/4] object-cover shadow-md group-hover:scale-105 transition duration-300" />
+          <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[11px] md:text-sm font-montserrat font-semibold tracking-wide text-white drop-shadow">
+            {{ category.name }}
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- ✅ Autoplay Background Video Section (Mobile Only) -->
+<div class="w-full overflow-hidden block md:hidden">
+  <video autoplay muted loop playsinline class="w-full h-auto block">
+    <source src="{% static 'videos/banner-video2.mp4' %}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- ✅ Desktop-Only Banner Image Section -->
+<div class="w-full hidden md:block">
+  <img src="{% static 'images/homepage-banner-desktop.png' %}" alt="Desktop Banner" class="w-full h-auto block">
+</div>
+
+
+<!-- Popular Products Section -->
+<div class="px-3 mt-6 bg-white" style="font-family: 'Montserrat', sans-serif;">
+
+  <!-- Section Heading -->
+  <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 text-center py-4 mb-4">Popular Products</h2>
+
+  <!-- Filter Buttons -->
+  <div class="flex justify-center gap-2 mb-6" id="product-filter-buttons">
+  <button data-category="all" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">All</button>
+  <button data-category="shirt" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">Shirt</button>
+  <button data-category="tshirt" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">Tshirt</button>
+  <button data-category="jeans" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">Jeans</button>
+</div>
+
+<!-- Product Grid Wrapper -->
+<div id="popular-products-container">
+  {% include 'partials/popular_products_grid.html' with products=popular_products %}
+</div>
+<script>
+document.querySelectorAll('.filter-btn').forEach(button => {
+  button.addEventListener('click', function () {
+    const category = this.getAttribute('data-category');
+    
+    // Highlight active button
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('bg-black', 'text-white'));
+    this.classList.add('bg-black', 'text-white');
+
+    fetch(`/ajax/filter-popular-products/?category=${category}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('popular-products-container').innerHTML = data.html;
+      })
+      .catch(error => console.error('Error:', error));
+  });
+});
+</script>
+
+
+</div>
+
+
+<!-- 🔧 Perspective -->
+<style>
+  .perspective {
+    perspective: 1200px;
+  }
+</style>
+
+{% endblock %}

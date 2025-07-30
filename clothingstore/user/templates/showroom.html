@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- 🌟 CLAUCH HERO SECTION -->
+<section class="relative h-[90vh] w-full bg-black text-white overflow-hidden font-montserrat">
+  <!-- Background Image -->
+  <div class="absolute inset-0">
+    <img src="{% static 'images/showroom112.webp' %}" alt="Clauch Fashion" class="w-full h-full object-cover object-center opacity-90" />
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div> <!-- overlay -->
+  </div>
+
+  <!-- Hero Content -->
+  <div class="relative z-10 h-full flex flex-col justify-center items-center text-center px-6 md:px-12">
+    <p class="text-[12px] tracking-[0.3em] uppercase text-white/80 mb-2">Welcome to</p>
+    <h1 class="text-4xl sm:text-6xl font-bold tracking-wide leading-tight drop-shadow-xl">
+      CLAUCH <br class="block sm:hidden" />
+      Showroom
+    </h1>
+    <p class="mt-4 text-white/90 text-base sm:text-lg max-w-xl">
+      Premium Men's Wear for Modern Businesses. Curated Selections. Factory Rates.
+    </p>
+    <div class="mt-6 flex flex-wrap justify-center gap-4">
+      <a href="{% url 'login' %}" class="px-6 py-3 bg-white text-black rounded-full font-semibold hover:bg-neutral-200 transition">
+        Partner Login
+      </a>
+      <a href="#manufacturing-videos" class="px-6 py-3 border border-white text-white rounded-full font-semibold hover:bg-white hover:text-black transition">
+        Manufacturing Videos
+      </a>
+    </div>
+  </div>
+
+  <!-- Bottom Tagline -->
+  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-white/70 tracking-wider uppercase">
+    #StyleMatters | #BusinessWear | #Clauch
+  </div>
+</section>
+
+
+<section class="w-full bg-[#FAFAFA] text-gray-900 font-montserrat py-20 px-6 sm:px-12 lg:px-24">
+  <div class="max-w-7xl mx-auto space-y-16">
+
+    <!-- Section Title Centered -->
+    <div class="text-center">
+      <h2 class="text-4xl sm:text-3xl font-bold tracking-tight">
+        A fashionable workspace
+      </h2>
+      <div class="w-16 h-1 bg-black mt-4 mx-auto rounded"></div>
+    </div>
+
+    <!-- Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+      <!-- LEFT: Split Paragraphs -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-base sm:text-lg text-gray-700 leading-relaxed font-montserrat">
+        <p>
+          The Clauch showroom is a space where fashion meets purpose. Our collections are styled in a modern, Nordic-inspired setup — curated to inspire your brand's next step.
+        </p>
+        <p>
+          Visit us to explore the full Clauch experience. Our team will help you find the right fits and guide you on trends that match your vision and audience.
+        </p>
+      </div>
+
+
+      <!-- RIGHT: Framed Image -->
+      <div class="relative w-full max-w-xl mx-auto flex items-center justify-center">
+        <div class="absolute top-6 left-6 w-full h-full bg-[#EAEAEA] rounded-3xl -z-10 shadow-lg"></div>
+        <img src="{% static 'images/showroom-11.png' %}" alt="Clauch Showroom"
+             class="w-full h-auto object-contain rounded-3xl shadow-xl border-[6px] border-white" />
+      </div>
+
+
+    </div>
+
+
+
+
+  </div>
+</section>
+
+---
+
+<!-- 🎥 MANUFACTURING VIDEOS SECTION -->
+<section id="manufacturing-videos" class="w-full bg-white text-gray-900 font-montserrat py-20 px-6 sm:px-12 lg:px-24">
+  <div class="max-w-7xl mx-auto space-y-16">
+
+    <!-- Section Title Centered -->
+    <div class="text-center">
+      <h2 class="text-4xl sm:text-3xl font-bold tracking-tight">
+        Our Manufacturing Process
+      </h2>
+      <div class="w-16 h-1 bg-black mt-4 mx-auto rounded"></div>
+      <p class="mt-4 text-gray-700 text-base sm:text-lg">Get an exclusive look behind the scenes at how our premium menswear is crafted with precision and care.</p>
+    </div>
+
+    <!-- Video Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Video 1 -->
+      <div class="aspect-w-16 aspect-h-9">
+        <iframe src="https://www.youtube.com/embed/your-video-id-1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-lg"></iframe>
+      </div>
+      <!-- Video 2 -->
+      <div class="aspect-w-16 aspect-h-9">
+        <iframe src="https://www.youtube.com/embed/your-video-id-2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-lg"></iframe>
+      </div>
+      <!-- Video 3 -->
+      <div class="aspect-w-16 aspect-h-9">
+        <iframe src="https://www.youtube.com/embed/your-video-id-3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-lg"></iframe>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+---
+
+<!-- 🗓 Book Visit Section with Image and Overlay -->
+<div class="relative w-full h-[500px] sm:h-[600px] rounded-2xl overflow-hidden">
+
+  <!-- Background Image with Overlay -->
+  <div class="absolute inset-0">
+    <img src="{% static 'images/showroom-456.webp' %}" alt="Clauch Showroom" class="w-full h-full object-cover object-center " />
+    <div class="absolute inset-0 "></div>
+  </div>
+
+  <!-- Foreground Content -->
+  <div class="relative z-10 w-full h-full flex items-end p-6 sm:p-10">
+    <div class="bg-[#F8F8F8]/90 rounded-xl p-6 w-full max-w-xs font-montserrat">
+      <h3 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">Book Your Visit</h3>
+
+      <p class="text-sm sm:text-base text-gray-800 mb-2 leading-relaxed">
+        <span class="font-medium">Opening Hours:</span><br>
+        Mon – Thurs: 8:30 AM – 4:00 PM<br>
+        Fri: 8:30 AM – 3:30 PM
+      </p>
+
+      <p class="text-sm sm:text-base text-gray-800 mb-4 leading-relaxed">
+        <span class="font-medium">Address:</span><br>
+        Roshan Baugh, Bhiwandi – 421302
+      </p>
+
+      <a href="#contact" class="inline-block text-sm font-medium text-black underline hover:text-gray-700 transition">
+        Contact Us
+      </a>
+    </div>
+  </div>
+</div>
+
+---
+
+<!-- Store Locator Section -->
+<section class="w-full bg-[#FAFAFA] text-gray-900 font-montserrat py-16 px-6 md:px-16">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-3xl font-bold mb-8 text-center text-gray-900">Find Our Stores</h2>
+    <p class="text-lg text-gray-700 mb-12 text-center max-w-2xl mx-auto">
+      Visit us at our showrooms to experience the quality and style of Clauch menswear firsthand.
+    </p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Clauch Kalyan Store -->
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="h-80 w-full">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15074.654760548173!2d73.0936296!3d19.2380788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be795d9ba885fb9%3A0x9b5b323af7c81ec!2sClauch%20Clothing!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold text-gray-900 mb-2">Clauch Kalyan</h3>
+          <p class="text-gray-700 mb-4">
+            At Chhatrapti Shivaji Maharaj Chowk,<br>
+            Near Gurudev Hotel,<br>
+            Kalyan West, Maharashtra 421301
+          </p>
+          <a href="https://www.google.com/maps/place/Clauch+Clothing/@19.2380788,73.0936296,14z/data=!4m22!1m15!4m14!1m6!1m2!1s0x3be795d9ba885fb9:0x9b5b323af7c81ec!2sClauch+Clothing,+Land+Mark+Kuba+Hotel,+At,+Chatrapati+Shivaji+Maharaj+Chowk,+near+Kalyan+Station+Road,+Bhanu+Sagar+Talkies,+Bhanunagar+Kalyan(West),+Kalyan+West,+Kalyan,+Maharashtra+421301!2m2!1d73.1296785!2d19.2380788!1m6!1m2!1s0x3be7bd8212f7c2dd:0x231246fe25879b24!2sCLAUCH,+suprim+hotel+opsite,+Dhamankar+Naka,+Narpoli,+Bhiwandi,+Maharashtra+421302!2m2!1d73.0523349!2d19.2893031!3m5!1s0x3be795d9ba885fb9:0x9b5b323af7c81ec!8m2!3d19.2380788!4d73.1296785!16s%2Fg%2F11xrkz71xk?entry=ttu&g_ep=EgoyMDI1MDcyNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="inline-block text-black font-semibold hover:underline transition">Get Directions</a>
+        </div>
+      </div>
+
+      <!-- Clauch Bhiwandi Store -->
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="h-80 w-full">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15065.71960249539!2d73.0378051!3d19.2894567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7bd8212f7c2dd%3A0x231246fe25879b24!2sCLAUCH!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold text-gray-900 mb-2">Clauch Bhiwandi</h3>
+          <p class="text-gray-700 mb-4">
+            Suprim Hotel Opposite,<br>
+            Dhamankar Naka, Narpoli,<br>
+            Bhiwandi, Maharashtra 421302
+          </p>
+          <a href="https://www.google.com/maps/dir//Clauch+Clothing,+Land+Mark+Kuba+Hotel,+At,+Chatrapati+Shivaji+Maharaj+Chowk,+near+Kalyan+Station+Road,+Bhanu+Sagar+Talkies,+Bhanunagar+Kalyan(West),+Kalyan+West,+Kalyan,+Maharashtra+421301/@19.2894567,72.9697495,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x3be795d9ba885fb9:0x9b5b323af7c81ec!2m2!1d73.1296785!2d19.2380788?entry=ttu&g_ep=EgoyMDI1MDcyNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="inline-block text-black font-semibold hover:underline transition">Get Directions</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block footer %}
+<footer class="bg-white text-gray-800 text-sm font-[Montserrat] border-t border-gray-200 px-6 md:px-16 pt-10 pb-24 md:pb-10 mt-10">
+  <div class="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+
+    <div>
+      <h3 class="text-base font-semibold mb-2">Clauch</h3>
+      <ul class="space-y-1">
+        <li>At Chhatrapti Shivaji Maharaj Chowk,</li>
+        <li>Near Gurudev Hotel,</li>
+        <li>Kalyan West</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-base font-semibold mb-2">Help</h3>
+      <ul class="space-y-1">
+        <li><a href="#" class="hover:text-black transition">Shipping</a></li>
+        <li><a href="#" class="hover:text-black transition">Returns</a></li>
+        <li><a href="#" class="hover:text-black transition">FAQs</a></li>
+        <li><a href="#" class="hover:text-black transition">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-base font-semibold mb-2">Company</h3>
+      <ul class="space-y-1">
+        <li><a href="#" class="hover:text-black transition">About Us</a></li>
+        <li><a href="#" class="hover:text-black transition">Careers</a></li>
+        <li><a href="#" class="hover:text-black transition">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-black transition">Terms & Conditions</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-base font-semibold mb-2">Follow Us</h3>
+      <ul class="space-y-1">
+        <li><a href="https://www.instagram.com/clauch_clothing?utm_source=qr&igsh=MTNpNHN4c3JkaWdrcg==" class="hover:text-black transition">Instagram</a></li>
+        <li><a href="https://www.facebook.com/share/1ZLneUtHX5/?mibextid=qi2Omg" class="hover:text-black transition">Facebook</a></li>
+        <li><a href="https://www.youtube.com/@Clauchclothing/shorts" class="hover:text-black transition">YouTube</a></li>
+      </ul>
+      <h3 class="text-base font-semibold mb-2 mt-4">Contact Us</h3>
+      <ul class="space-y-1">
+        <li><a href="tel:+919021275825" class="hover:text-black transition">91 9021275825</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-10 border-t border-gray-100 pt-4 text-center text-xs text-gray-500">
+    © 2025 Clauch. All rights reserved. | Developed by <span class="font-medium text-black">Waseans</span>
+  </div>
+</footer>
+{% endblock %}

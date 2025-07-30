@@ -1,0 +1,779 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* Existing styles (keep them as they are fine) */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    font-size: 12px !important;
+    color: #1f2937 !important;
+  }
+
+  .swiper-pagination-bullet {
+    background-color: #1f2937 !important;
+    width: 6px !important;
+    height: 6px !important;
+    opacity: 1 !important;
+  }
+
+  .swiper-pagination-bullet-active {
+    background-color: #111827 !important;
+  }
+
+  /* NEW STYLES FOR THE CART NOTIFICATION */
+  .cart-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out, transform 0.4s ease-in-out;
+    min-width: 300px;
+    justify-content: space-between;
+  }
+
+  .cart-notification.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .cart-notification.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .cart-notification.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .cart-notification .icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .cart-notification .message {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .cart-notification .cart-link {
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+    background-color: #374151;
+    color: white;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .cart-notification .cart-link:hover {
+    background-color: #1f2937;
+  }
+
+  @media (max-width: 768px) {
+    .cart-notification {
+      bottom: 20px;
+      top: auto;
+      transform: translateX(-50%) translateY(50px);
+    }
+    .cart-notification.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  /* NEW STYLES FOR GET QUOTE MODAL */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  }
+
+  .modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 500px;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-in-out;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-overlay.show .modal-content {
+    transform: translateY(0);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+  }
+
+  .modal-form label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-form input[type="text"],
+  .modal-form input[type="email"],
+  .modal-form input[type="tel"],
+  .modal-form textarea,
+  .modal-form input[type="number"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #374151;
+  }
+
+  .modal-form textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  .modal-form input[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #1f2937;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .modal-form input[type="submit"]:hover {
+    background-color: #111827;
+  }
+
+  .quote-product-details {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #4b5563;
+  }
+  .quote-product-details strong {
+    color: #1f2937;
+  }
+</style>
+
+<div class="fixed top-4 left-4 z-50">
+  <a href="{% url 'new' %}" class="bg-white border border-gray-300 rounded-full w-9 h-9 flex items-center justify-center shadow">
+    ←
+  </a>
+</div>
+
+<div class="max-w-6xl mx-auto px-4 pt-4 pb-32 md:flex md:gap-8">
+  <div class="md:w-1/2">
+    <div class="relative w-full h-[65vh] md:h-[75vh] overflow-hidden">
+      <div class="swiper swiper-container h-full">
+        <div class="swiper-wrapper" id="carousel-images">
+          {% if color_images %}
+            {% for image in color_images %}
+              <div class="swiper-slide">
+                <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain" />
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="swiper-slide">
+              <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover" />
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="swiper-pagination absolute bottom-2 left-0 right-0 flex justify-center !text-gray-800 !bg-transparent !text-[10px]"></div>
+        <div class="swiper-button-prev absolute top-1/2 left-2 transform -translate-y-1/2 cursor-pointer text-gray-800 text-[10px] w-5 h-5 opacity-80 hover:opacity-100 transition"></div>
+        <div class="swiper-button-next absolute top-1/2 right-2 transform -translate-y-1/2 cursor-pointer text-gray-800 text-[10px] w-5 h-5 opacity-80 hover:opacity-100 transition"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="md:w-1/2">
+    <div class="flex justify-between items-start mb-4">
+      <h1 class="text-xl md:text-2xl font-semibold text-gray-900 w-2/3 leading-snug">{{ product.name }}</h1>
+      <div class="text-right">
+        {% if product.discount_price %}
+          <div class="text-lg font-bold text-black">Rs {{ product.get_current_price_per_piece|floatformat:2 }}</div>
+          <div class="text-sm line-through text-gray-400">Rs {{ product.get_original_price_per_piece|floatformat:2 }}</div>
+        {% else %}
+          <div class="text-lg font-bold text-black">Rs {{ product.get_current_price_per_piece|floatformat:2 }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-sm font-medium mb-1">Color</h3>
+      <div class="flex gap-2">
+        {% for color in colors %}
+          {% if color.slug %}
+            <div id="color-btn-{{ color.id }}"
+              data-color-slug="{{ color.slug }}"
+              data-color-name="{{ color.name }}"
+              onclick="selectColor({{ color.id }})"
+              class="cursor-pointer w-5 h-5 border border-gray-300 ring-offset-2 {% if color.id == primary_color.id %}ring-2 ring-black{% endif %}"
+              style="background-color: {{ color.hex_code }};">
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-medium mb-1">Set Composition</h3>
+      </div>
+      <p class="text-gray-700 text-sm">
+        This set includes: <strong>{{ product.sizes }}</strong>
+        {% if product.get_total_pieces_in_set > 0 %}
+          (<span class="font-semibold">{{ product.get_total_pieces_in_set }} pieces</span> total per set)
+        {% endif %}
+      </p>
+
+      {% if product.get_total_pieces_in_set > 0 %}
+        <p class="text-gray-700 text-sm mt-1">
+            Total price for one set:
+            <span class="font-bold text-black">
+                {% if product.discount_price %}
+                    Rs {{ product.discount_price }}
+                    <span class="line-through text-gray-400 text-xs">Rs {{ product.price }}</span>
+                {% else %}
+                    Rs {{ product.price }}
+                {% endif %}
+            </span>
+        </p>
+      {% endif %}
+
+       <div class="mt-4">
+          <label for="set_quantity" class="text-sm font-medium mb-1 block">Quantity of Sets <span class="text-red-500">*</span> (Minimum: 1 Set)</label>
+          <input type="number" id="set_quantity" name="set_quantity" min="1" value="1"
+                 class="w-24 px-3 py-1 border rounded-md text-sm text-center">
+       </div>
+    </div>
+    <div class="mt-6 hidden md:block sticky bottom-4">
+      <form id="add-to-cart-form-desktop" action="{% url 'add_to_cart' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <input type="hidden" name="color_id" id="selected_color_id_desktop" value="{{ primary_color.id }}">
+        <button type="submit" class="w-full py-3 bg-black text-white font-semibold text-sm rounded-lg mb-2">
+          Add to Cart
+        </button>
+      </form>
+      <button type="button" id="add-to-quote-btn-desktop" class="w-full py-3 border border-gray-300 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
+        Get Quote
+      </button>
+    </div>
+
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 md:hidden">
+      <div class="flex gap-2 p-4">
+        <button type="button" id="add-to-quote-btn-mobile" class="flex-1 py-3 border border-gray-300 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
+          Get Quote
+        </button>
+        <form id="add-to-cart-form-mobile" action="{% url 'add_to_cart' %}" method="POST" class="flex-1">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <input type="hidden" name="color_id" id="selected_color_id_mobile" value="{{ primary_color.id }}">
+          <button type="submit"
+            class="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-900 transition">
+            Add to Cart
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="mb-4 text-sm text-gray-700 font-[Montserrat]">
+      {{ product.description }}
+    </div>
+
+    <div class="space-y-4 font-[Montserrat] text-sm text-gray-800">
+
+      <div class="border-b pb-2">
+        <button onclick="toggleSection('offers')" class="w-full flex justify-between items-center font-semibold">
+          Offers <span id="icon-offers">+</span>
+        </button>
+        <div id="content-offers" class="mt-2 hidden">
+          <ul class="list-disc list-inside text-gray-700 space-y-1">
+            <li><strong>Special B2B Pricing:</strong> Contact us for bulk order discounts beyond 100 sets.</li>
+            <li><strong>Volume Discounts:</strong> Automatic discounts applied for orders of 50+ sets.</li>
+            <li><strong>New Customer Incentive:</strong> 5% off your first order (min. 20 sets).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-b pb-2">
+        <button onclick="toggleSection('reviews')" class="w-full flex justify-between items-center font-semibold">
+          Reviews <span id="icon-reviews">+</span>
+        </button>
+        <div id="content-reviews" class="mt-2 hidden">
+          <ul class="space-y-2 text-gray-700">
+            <li><span class="text-yellow-500">⭐️⭐️⭐️⭐️☆</span> — <em>"Excellent quality for our hospitality needs. Durable and well-packaged."</em></li>
+            <li><span class="text-yellow-500">⭐️⭐️⭐️⭐️⭐️</span> — <em>"Seamless ordering process and prompt delivery. Highly recommended for bulk purchases!"</em></li>
+            <li><span class="text-yellow-500">⭐️⭐️⭐️☆☆</span> — <em>"Good value, but one set had a minor stitching issue. Easily resolved with customer service."</em></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-b pb-2">
+        <button onclick="toggleSection('delivery')" class="w-full flex justify-between items-center font-semibold">
+          Delivery <span id="icon-delivery">+</span>
+        </button>
+        <div id="content-delivery" class="mt-2 hidden">
+          <div class="bg-gray-100 p-3 rounded text-gray-700 leading-relaxed">
+            Estimated delivery for bulk orders: <strong>5–10 working days</strong> (subject to quantity).<br />
+            <strong>Free shipping</strong> on all orders above ₹10,000.<br />
+            All deliveries are handled by trusted logistics partners for secure and timely arrival.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button onclick="toggleSection('returns')" class="w-full flex justify-between items-center font-semibold">
+          Returns <span id="icon-returns">+</span>
+        </button>
+        <div id="content-returns" class="mt-2 hidden">
+          <p class="text-gray-700 leading-relaxed">
+            <strong>15-day return or replacement</strong> for manufacturing defects or incorrect items.<br />
+            Items must be <strong>unused</strong>, in original packaging, and include all tags.<br />
+            Refunds processed within 7–10 business days after quality inspection. For bulk orders, please contact our B2B sales team for specific return policies.
+          </p>
+        </div>
+
+        
+
+      </div>
+      {% if product.size_chart %}
+      <div>
+        <button onclick="toggleSection('size-chart')" class="w-full flex justify-between items-center font-semibold">
+          Size Chart <span id="icon-size-chart">+</span>
+        </button>
+        <div id="content-size-chart" class="mt-2 hidden">
+          <img src="{{ product.size_chart.url }}" alt="Size Chart" class="w-full h-auto object-contain">
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if recommended_products %}
+<div class="max-w-6xl mx-auto px-4 md:px-0 mb-24">
+  <h3 class="text-sm font-semibold mb-2">You may also like</h3>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    {% for rec in recommended_products %}
+    <div>
+      <a href="{% url 'product_detail' rec.slug %}">
+        <img src="{{ rec.primary_image.url }}" class="w-full h-40 object-cover rounded" />
+        <p class="text-xs mt-1 truncate">{{ rec.name }}</p>
+        <p class="text-xs font-medium text-black">Rs {{ rec.get_current_price_per_piece|floatformat:2 }}</p>
+        {% if rec.get_total_pieces_in_set > 0 %}
+            <p class="text-xs text-gray-700">Set: Rs {{ rec.discount_price|default:rec.price }}</p>
+        {% endif %}
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if related_products %}
+  <section class="mt-12">
+    <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-6 px-1">You May Also Be Interested In</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      {% for product in related_products %}
+        <div class="w-full">
+          <div class="relative bg-white rounded-md overflow-hidden border border-gray-200">
+            <a href="{% url 'product_detail' product.slug %}">
+              <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-contain aspect-square p-2">
+            </a>
+            <button class="absolute top-2 right-2 bg-black text-white text-xs px-3 py-1 rounded shadow-md hover:shadow-lg transition-all">
+              ADD
+            </button>
+          </div>
+          <div class="pt-2 px-1 pb-2"> {# Added pb-2 for better spacing below prices #}
+            <p class="text-xs sm:text-sm text-gray-900 leading-tight truncate">{{ product.name }}</p>
+
+            {# Price per Piece - Main and larger #}
+            <div class="text-base font-bold text-gray-900 mt-1"> {# Increased size and bold #}
+              ₹{{ product.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span>
+            </div>
+
+            {# Price per Set - Smaller and less prominent #}
+            {% if product.get_total_pieces_in_set > 0 %}
+                <p class="text-xs text-gray-500 mt-0.5"> {# Smaller text and lighter color #}
+                    Set: ₹{{ product.discount_price|default:product.price|floatformat:0 }}
+                </p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<div id="cart-notification" class="cart-notification hidden">
+  <span class="icon" id="notification-icon"></span>
+  <div class="message" id="notification-message"></div>
+  <a id="notification-cart-link" href="#" class="cart-link">View Cart</a>
+</div>
+
+<div id="quote-modal-overlay" class="modal-overlay hidden">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeQuoteModal()">&times;</span>
+    <h2 class="text-xl font-semibold mb-6 text-gray-900">Request a Quote for this Product</h2>
+
+    <div class="quote-product-details mb-4">
+      <p>Product: <strong><span id="quote-product-name">{{ product.name }}</span></strong></p>
+      <p>Color: <strong id="quote-color-display"></strong></p>
+      <p>Set Composition: <strong>{{ product.sizes }}</strong>
+        {% if product.get_total_pieces_in_set > 0 %}
+          ({{ product.get_total_pieces_in_set }} pieces total)
+        {% endif %}
+      </p>
+      <p>Price per Piece: <strong>Rs {{ product.get_current_price_per_piece|floatformat:2 }}</strong></p>
+      <p>Price per Set: <strong>Rs {{ product.discount_price|default:product.price }}</strong></p>
+      <p id="quote-warning" class="text-sm text-red-600 mt-2 hidden">
+        Please select a color before requesting a quote.
+      </p>
+    </div>
+
+    <form id="quote-form" class="modal-form">
+      <label for="quote-name">Your Name <span class="text-red-500">*</span></label>
+      <input type="text" id="quote-name" required>
+
+      <label for="quote-company">Company Name</label>
+      <input type="text" id="quote-company">
+
+      <label for="quote-email">Work Email <span class="text-red-500">*</span></label>
+      <input type="email" id="quote-email" required>
+
+      <label for="quote-phone">Phone Number <span class="text-red-500">*</span></label>
+      <input type="tel" id="quote-phone" required pattern="[0-9]{10}" title="Please enter a 10-digit phone number">
+
+      <label for="quote-set-quantity">Quantity of Sets <span class="text-red-500">*</span> (Minimum: 1)</label>
+      <input type="number" id="quote-set-quantity" value="1" min="1" required>
+
+      <label for="quote-notes">Additional Details / Specific Requirements</label>
+      <textarea id="quote-notes" placeholder="e.g., specific delivery dates, branding requirements, larger quantities..."></textarea>
+
+      <input type="submit" value="Send Quote Request via WhatsApp">
+    </form>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script>
+  let swiperInstance;
+
+  function initSwiper() {
+    swiperInstance = new Swiper('.swiper-container', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  }
+
+  // Handle color selection
+  let selectedColorName = "{{ primary_color.name }}"; // Store selected color name
+  function selectColor(colorId) {
+    document.querySelectorAll('[id^="color-btn-"]').forEach(btn => {
+      btn.classList.remove('ring-2', 'ring-black');
+    });
+
+    const selected = document.getElementById(`color-btn-${colorId}`);
+    selected.classList.add('ring-2', 'ring-black');
+
+    // Update hidden input values for both desktop & mobile forms
+    document.getElementById('selected_color_id_desktop').value = colorId;
+    document.getElementById('selected_color_id_mobile').value = colorId;
+    selectedColorName = selected.getAttribute('data-color-name'); // Update selected color name
+
+    const colorSlug = selected.getAttribute('data-color-slug');
+    const productSlug = "{{ product.slug }}";
+    if (colorSlug && productSlug) {
+      const newUrl = `/product/${productSlug}/${colorSlug}/`;
+      // For color change, it's often better to reload to load specific images from server
+      window.location.href = newUrl;
+    }
+  }
+
+
+  // --- Cart Notification Functions ---
+  const cartNotification = document.getElementById('cart-notification');
+  const notificationIcon = document.getElementById('notification-icon');
+  const notificationMessage = document.getElementById('notification-message');
+  const notificationCartLink = document.getElementById('notification-cart-link');
+  let notificationTimeout;
+
+  function showNotification(message, type, cartUrl = '') {
+    clearTimeout(notificationTimeout);
+
+    cartNotification.classList.remove('success', 'error', 'show');
+    cartNotification.classList.add('hidden');
+
+    cartNotification.classList.add(type);
+    notificationMessage.textContent = message;
+
+    if (type === 'success') {
+      notificationIcon.innerHTML = '&#10004;'; // Checkmark Unicode
+      notificationCartLink.href = cartUrl;
+      notificationCartLink.classList.remove('hidden');
+    } else {
+      notificationIcon.innerHTML = '&#10060;'; // Cross mark Unicode
+      notificationCartLink.classList.add('hidden');
+    }
+
+    setTimeout(() => {
+        cartNotification.classList.remove('hidden');
+        cartNotification.classList.add('show');
+    }, 50);
+
+    notificationTimeout = setTimeout(() => {
+      hideNotification();
+    }, 5000);
+  }
+
+  function hideNotification() {
+    cartNotification.classList.remove('show');
+    setTimeout(() => {
+      cartNotification.classList.add('hidden');
+    }, 400);
+  }
+
+// --- AJAX Form Submission Handlers ---
+document.getElementById("add-to-cart-form-desktop").addEventListener("submit", handleAddToCart);
+document.getElementById("add-to-cart-form-mobile").addEventListener("submit", handleAddToCart);
+
+async function handleAddToCart(event) {
+    const form = event.target;
+    const colorId = document.getElementById('selected_color_id_desktop').value; // or mobile, they sync
+    const setQuantityInput = document.getElementById('set_quantity');
+    const setQuantity = parseInt(setQuantityInput.value);
+
+    // --- Client-side validation ---
+    if (!colorId) {
+      showNotification("Please select a color for the product.", "error");
+      event.preventDefault();
+      return;
+    }
+
+    if (isNaN(setQuantity) || setQuantity < 1) { // Changed from 10 to 1
+        showNotification("Quantity of sets must be at least 1 to add to cart.", "error"); // Updated message
+        event.preventDefault();
+        setQuantityInput.style.border = '1px solid red';
+        return;
+    } else {
+        setQuantityInput.style.border = '';
+    }
+
+    const formData = new FormData(form);
+    formData.append('set_quantity', setQuantity);
+
+    event.preventDefault();
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.status === 'success') {
+                showNotification(data.message, 'success', data.cart_url);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        } else {
+            const errorData = await response.json();
+            showNotification(errorData.message || 'An error occurred while adding to cart.', 'error');
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        showNotification('Network error. Please try again.', 'error');
+    }
+}
+
+
+  // --- Get Quote Modal Logic ---
+  const quoteModalOverlay = document.getElementById('quote-modal-overlay');
+  const quoteForm = document.getElementById('quote-form');
+  const quoteWarning = document.getElementById('quote-warning');
+  const quoteColorDisplay = document.getElementById('quote-color-display');
+  const quoteProductNameDisplay = document.getElementById('quote-product-name');
+  const quoteSetQuantityInput = document.getElementById('quote-set-quantity');
+  const whatsappNumber = '917028885969'; // Your target WhatsApp number
+
+  function openQuoteModal() {
+    const colorId = document.getElementById('selected_color_id_desktop').value;
+
+    if (!colorId) {
+        quoteWarning.classList.remove('hidden');
+    } else {
+        quoteWarning.classList.add('hidden');
+    }
+
+    quoteColorDisplay.textContent = selectedColorName || 'Not Selected';
+    quoteProductNameDisplay.textContent = "{{ product.name }}"; // Ensure product name is always displayed
+
+    quoteSetQuantityInput.value = document.getElementById('set_quantity').value || 1; // Pre-fill with current quantity or default to 1
+    quoteSetQuantityInput.min = "1"; // Ensure min is set to 1 for the quote modal input
+
+    quoteModalOverlay.classList.remove('hidden');
+    setTimeout(() => {
+      quoteModalOverlay.classList.add('show');
+    }, 50);
+  }
+
+  function closeQuoteModal() {
+    quoteModalOverlay.classList.remove('show');
+    setTimeout(() => {
+      quoteModalOverlay.classList.add('hidden');
+      quoteForm.reset();
+    }, 300);
+  }
+
+  // Event listener for Add to Quote buttons
+  document.getElementById('add-to-quote-btn-desktop').addEventListener('click', openQuoteModal);
+  document.getElementById('add-to-quote-btn-mobile').addEventListener('click', openQuoteModal);
+
+  // Handle quote form submission
+  quoteForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('quote-name').value;
+    const company = document.getElementById('quote-company').value;
+    const email = document.getElementById('quote-email').value;
+    const phone = document.getElementById('quote-phone').value;
+    const setQuantity = parseInt(quoteSetQuantityInput.value);
+    const notes = document.getElementById('quote-notes').value;
+
+    // Basic validation
+    if (!name || !email || !phone || isNaN(setQuantity) || setQuantity < 1) { // Changed from 10 to 1
+        alert("Please fill in all required fields (Name, Work Email, Phone Number) and ensure Quantity of Sets is at least 1."); // Updated message
+        return;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+        alert("Please enter a valid 10-digit phone number.");
+        return;
+    }
+
+    const productName = "{{ product.name }}";
+    const productUrl = window.location.href;
+    const selectedProductColor = selectedColorName;
+    const setComposition = "{{ product.sizes|escapejs }}";
+
+    // Get prices from the Django context directly
+    const pricePerSet = "{{ product.discount_price|default:product.price|floatformat:2 }}";
+    const pricePerPiece = "{{ product.get_current_price_per_piece|floatformat:2 }}";
+    const totalPiecesInSet = "{{ product.get_total_pieces_in_set }}";
+
+
+    let whatsappMessage = `*New B2B Quote Request - Website Inquiry*\n\n`;
+    whatsappMessage += `*Product Name:* ${productName}\n`;
+    whatsappMessage += `*Product URL:* ${productUrl}\n`;
+    whatsappMessage += `*Price per Set:* Rs ${pricePerSet}\n`;
+    whatsappMessage += `*Price per Piece:* Rs ${pricePerPiece} (for ${totalPiecesInSet} pieces)\n`; // Include total pieces
+    whatsappMessage += `*Selected Color:* ${selectedProductColor}\n`;
+    whatsappMessage += `*Set Composition:* ${setComposition}\n`;
+    whatsappMessage += `*Quantity of Sets Requested:* ${setQuantity}\n\n`;
+    whatsappMessage += `*Customer Contact Details:*\n`;
+    whatsappMessage += `  Name: ${name}\n`;
+    whatsappMessage += company ? `  Company: ${company}\n` : '';
+    whatsappMessage += `  Email: ${email}\n`;
+    whatsappMessage += `  Phone: ${phone}\n`;
+    whatsappMessage += notes ? `\n*Additional Requirements:*\n${notes}\n` : '';
+
+    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+
+    window.open(whatsappLink, '_blank');
+
+    closeQuoteModal();
+    showNotification("Your quote request has been sent! Please check WhatsApp to finalize.", "success");
+  });
+
+
+  // --- General Functions for Collapsible Sections ---
+  function toggleSection(id) {
+    const content = document.getElementById(`content-${id}`);
+    const icon = document.getElementById(`icon-${id}`);
+    const isOpen = !content.classList.contains("hidden");
+    content.classList.toggle("hidden");
+    icon.innerText = isOpen ? "+" : "−";
+  }
+
+  // --- Initial Page Load Setup ---
+  document.addEventListener("DOMContentLoaded", () => {
+    initSwiper();
+
+    const initialColorBtn = document.querySelector('[id^="color-btn-"].ring-2');
+    if (initialColorBtn) {
+        const initialColorId = initialColorBtn.id.replace('color-btn-', '');
+        document.getElementById('selected_color_id_desktop').value = initialColorId;
+        document.getElementById('selected_color_id_mobile').value = initialColorId;
+        selectedColorName = initialColorBtn.getAttribute('data-color-name') || "{{ primary_color.name }}";
+    }
+  });
+</script>
+
+{% endblock %}

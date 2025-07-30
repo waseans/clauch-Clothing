@@ -1,0 +1,41 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.so
+*.egg-info/
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3-journal
+
+# Virtualenv
+venv/
+ENV/
+env/
+
+# VSCode / IDEs
+.vscode/
+.idea/
+*.swp
+
+# Environment variables
+*.env
+**/.env
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Node/React (if you are using frontend in React or Node)
+node_modules/
+dist/
+build/
+npm-debug.log
+
+# __EXCEPT__ the database
+# (don’t ignore your database file like `db.sqlite3` unless you add it manually)

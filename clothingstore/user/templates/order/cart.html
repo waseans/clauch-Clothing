@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="w-full bg-gray-50 min-h-screen py-6 px-4 sm:px-6 lg:px-10 font-[Montserrat]">
+  <h1 class="text-xl font-semibold mb-5 flex items-center gap-2">
+     Your Cart <img src="{% static 'images/cart.png' %}" alt="Cart" class="w-5 h-5">
+  </h1>
+
+  {% if cart_items %}
+  <div class="grid md:grid-cols-3 gap-5">
+
+    <div class="md:col-span-2 space-y-3">
+      {% for entry in cart_items %}
+      <div class="bg-white rounded-xl shadow-sm flex items-start gap-3 p-3 text-sm hover:shadow-md transition">
+
+        <img src="{{ entry.item.color.images.first.image.url }}" alt="{{ entry.item.product.name }}"
+             class="w-20 h-20 object-cover rounded border" />
+
+        <div class="flex-1">
+          <h2 class="font-medium text-gray-800 text-sm leading-snug">{{ entry.item.product.name }}</h2>
+          <p class="text-xs text-gray-500">Size: {{ entry.item.size }} | Color: {{ entry.item.color.name }}</p>
+          
+          {# Price per Piece - Main and larger #}
+          <div class="text-xs text-gray-600 mt-0.5">
+            Price/Piece: ₹{{ entry.item.product.get_current_price_per_piece|floatformat:0 }}
+          </div>
+
+          {# Price per Set - Smaller and less prominent, only if total pieces in set > 0 #}
+          {% if entry.item.product.get_total_pieces_in_set > 0 %}
+              <p class="text-xs text-gray-500 mt-0.5">
+                  Price/Set: ₹{{ entry.item.product.discount_price|default:entry.item.product.price|floatformat:0 }}
+              </p>
+          {% endif %}
+
+          <form method="POST" action="{% url 'update_cart_quantity' %}" class="mt-2 flex items-center gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ entry.item.id }}">
+            <button name="action" value="decrease"
+                    class="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded text-base">−</button>
+            <span class="text-sm">{{ entry.item.quantity }} sets</span> {# Explicitly state "sets" here #}
+            <button name="action" value="increase"
+                    class="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded text-base">+</button>
+          </form>
+        </div>
+
+        <div class="flex flex-col items-end justify-between h-full min-w-[70px]">
+          <p class="text-sm font-semibold text-gray-800">₹{{ entry.subtotal|floatformat:0 }}</p> {# Format subtotal as integer #}
+          <form method="POST" action="{% if entry.item.id %}{% url 'remove_from_cart_db' entry.item.id %}{% else %}{% url 'remove_from_cart' entry.key %}{% endif %}">
+            {% csrf_token %}
+            <button class="mt-3 hover:opacity-80">
+              <img src="{% static 'images/delete.png' %}" alt="Delete" class="w-4 h-4">
+            </button>
+          </form>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="bg-white p-4 rounded-xl shadow-sm sticky top-20 text-sm">
+      <h3 class="text-lg font-semibold mb-3">Order Summary</h3>
+      <div class="flex justify-between mb-1">
+        <span>Subtotal</span>
+        <span>₹{{ total|floatformat:0 }}</span> {# Format total as integer #}
+      </div>
+      <div class="flex justify-between mb-1">
+        <span>Shipping</span>
+        <span class="text-green-600">Free</span>
+      </div>
+      <hr class="my-2">
+      <div class="flex justify-between font-semibold text-base">
+        <span>Total</span>
+        <span>₹{{ total|floatformat:0 }}</span> {# Format total as integer #}
+      </div>
+
+      <a href="{% url 'checkout' %}"
+         class="block text-center mt-5 py-2 bg-black text-white rounded-md text-sm hover:bg-gray-900 transition">
+        Proceed to Checkout
+      </a>
+    </div>
+
+  </div>
+  {% else %}
+  <div class="bg-white p-6 text-center shadow rounded-lg max-w-md mx-auto font-[Montserrat]">
+    <p class="text-gray-500 text-sm">Your cart is empty.</p>
+    <a href="{% url 'new' %}" class="mt-4 inline-block bg-black text-white px-5 py-2 rounded hover:bg-gray-900 transition text-sm">
+      Browse Products
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
