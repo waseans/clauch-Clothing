@@ -6,7 +6,6 @@
   <meta name="description" content="{{ product.description|truncatechars:150 }}">
   <meta name="keywords" content="{{ product.name }}, {{ product.categories.all|join:", " }}">
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="product">
   <meta property="og:title" content="{{ product.name }} | Clauch">
   <meta property="og:description" content="{{ product.description|truncatechars:150 }}">
@@ -14,7 +13,6 @@
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
   <meta property="og:site_name" content="Clauch">
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ product.name }} | Clauch">
   <meta name="twitter:description" content="{{ product.description|truncatechars:150 }}">
@@ -623,6 +621,8 @@ document.getElementById("add-to-cart-form-desktop").addEventListener("submit", h
 document.getElementById("add-to-cart-form-mobile").addEventListener("submit", handleAddToCart);
 
 async function handleAddToCart(event) {
+    event.preventDefault(); // Prevent default form submission
+
     const form = event.target;
     const colorId = document.getElementById('selected_color_id_desktop').value; // or mobile, they sync
     const setQuantityInput = document.getElementById('set_quantity');
@@ -631,13 +631,11 @@ async function handleAddToCart(event) {
     // --- Client-side validation ---
     if (!colorId) {
       showNotification("Please select a color for the product.", "error");
-      event.preventDefault();
       return;
     }
 
-    if (isNaN(setQuantity) || setQuantity < 1) { // Changed from 10 to 1
-        showNotification("Quantity of sets must be at least 1 to add to cart.", "error"); // Updated message
-        event.preventDefault();
+    if (isNaN(setQuantity) || setQuantity < 1) {
+        showNotification("Quantity of sets must be at least 1 to add to cart.", "error");
         setQuantityInput.style.border = '1px solid red';
         return;
     } else {
@@ -647,17 +645,27 @@ async function handleAddToCart(event) {
     const formData = new FormData(form);
     formData.append('set_quantity', setQuantity);
 
-    event.preventDefault();
-
     try {
         const response = await fetch(form.action, {
             method: 'POST',
             body: formData,
             headers: {
                 'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-            }
+            },
+            // Important: Set 'redirect' to 'manual' to inspect 302 responses
+            // However, for login_required, fetch will *not* automatically follow 302 for POST.
+            // It will resolve with a redirected property.
+            redirect: 'follow' // 'follow' is default, and will make fetch follow the redirect if possible for GET requests.
+                               // For POST with a 302, it won't follow, but `response.redirected` will be true.
         });
 
+        // If the request was redirected (e.g., by @login_required), handle it
+        if (response.redirected) {
+            window.location.href = response.url; // Redirect the browser to the login page
+            return; // Stop further execution
+        }
+
+        // Only try to parse JSON if the response is okay and not a redirect
         if (response.ok) {
             const data = await response.json();
             if (data.status === 'success') {
@@ -666,8 +674,15 @@ async function handleAddToCart(event) {
                 showNotification(data.message, 'error');
             }
         } else {
-            const errorData = await response.json();
-            showNotification(errorData.message || 'An error occurred while adding to cart.', 'error');
+            // Attempt to parse JSON for more specific error messages from the server
+            // If it's not JSON, fall back to a generic message
+            try {
+                const errorData = await response.json();
+                showNotification(errorData.message || 'An error occurred while adding to cart.', 'error');
+            } catch (jsonError) {
+                showNotification('An unexpected server error occurred.', 'error');
+                console.error('Server responded with non-JSON error:', response.status, response.statusText);
+            }
         }
     } catch (error) {
         console.error('Fetch error:', error);
