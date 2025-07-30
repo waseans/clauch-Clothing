@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block meta %}
+  <title>{{ product.name }} | Clauch</title>
+  <meta name="description" content="{{ product.description|truncatechars:150 }}">
+  <meta name="keywords" content="{{ product.name }}, {{ product.categories.all|join:", " }}">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="{{ product.name }} | Clauch">
+  <meta property="og:description" content="{{ product.description|truncatechars:150 }}">
+  <meta property="og:image" content="{{ product.primary_image.url }}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="Clauch">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ product.name }} | Clauch">
+  <meta name="twitter:description" content="{{ product.description|truncatechars:150 }}">
+  <meta name="twitter:image" content="{{ product.primary_image.url }}">
+{% endblock %}
+
+
 {% block content %}
 <style>
   /* Existing styles (keep them as they are fine) */

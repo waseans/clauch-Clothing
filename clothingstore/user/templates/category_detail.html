@@ -1,5 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
+{% block seo %}
+  <title>{{ category.name }} | Clauch</title>
+  <meta name="description" content="Explore premium wholesale clothing in the {{ category.name }} category. Best B2B deals only on Clauch.">
+  <meta name="keywords" content="{{ category.name }}, wholesale {{ category.name }}, B2B fashion, Clauch clothing, bulk fashion orders">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="{{ category.name }} | Clauch">
+  <meta property="og:description" content="Wholesale deals for {{ category.name }} clothing. View sets, sizes, prices.">
+  <meta property="og:image" content="{{ category.image.url }}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ category.name }} | Clauch">
+  <meta name="twitter:description" content="Shop premium wholesale {{ category.name }} sets in bulk from Clauch.">
+  <meta name="twitter:image" content="{{ category.image.url }}">
+{% endblock %}
+
 
 {% block content %}
 <div class="text-center text-lg sm:text-xl font-semibold mt-6 mb-4 uppercase tracking-wide">
