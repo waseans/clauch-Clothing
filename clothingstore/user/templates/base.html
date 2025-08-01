@@ -17,6 +17,34 @@
   <meta name="author" content="Clauch Clothing">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://clauch.in/">
+  <!-- ✅ Logo Favicon (Browser Tab Icon) -->
+<link rel="icon" href="{% static 'images/clauch-logo.jpg' %}" type="image/jpeg">
+
+<!-- ✅ SEO Logo for Structured Data (already partially done, just ensure it's correct) -->
+<meta property="og:image" content="https://clauch.in/static/images/clauch-logo.jpg">
+<meta property="twitter:image" content="https://clauch.in/static/images/clauch-logo.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Clauch Clothing",
+  "url": "https://clauch.in/",
+  "logo": "https://clauch.in/static/images/clauch-logo.jpg",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+91-9021275825",
+    "contactType": "Customer Support"
+  },
+  "sameAs": [
+    "https://www.instagram.com/clauch_clothing",
+    "https://www.facebook.com/share/1ZLneUtHX5/",
+    "https://www.youtube.com/@Clauchclothing/shorts"
+  ]
+}
+</script>
+
+
 
   <!-- ✅ Open Graph / Facebook -->
   <meta property="og:type" content="website">
