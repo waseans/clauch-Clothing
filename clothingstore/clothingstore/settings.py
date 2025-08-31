@@ -24,14 +24,20 @@ SECRET_KEY = 'django-insecure-*r4swiv!p=2oj48kq9&p3@d%nbgjp4yoz-u((g!2g&vz@nxfv!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ['94d4ccfc9c7f.ngrok-free.app',
-                 '127.0.0.1', 'localhost','16.171.172.137', 'clauch.in']
+ALLOWED_HOSTS = [
+    '94d4ccfc9c7f.ngrok-free.app',
+    '127.0.0.1', 
+    'localhost',
+    '16.171.172.137', 
+    'clauch.in',
+    'www.clauch.in', # Add this line
+]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://94d4ccfc9c7f.ngrok-free.app',
     'https://clauch.in',
-    'https://16.171.172.137'
+    'https://www.clauch.in', # Add this line
+    'https://16.171.172.137',
 ]
 
 # Application definition
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'user',
     'owner',
     'ckeditor',
