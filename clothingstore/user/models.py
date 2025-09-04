@@ -231,3 +231,73 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone_number
+
+
+
+from django.db import models
+from django.utils.text import slugify
+from ckeditor.fields import RichTextField
+from django.conf import settings
+
+class Course(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    short_description = models.TextField()
+    long_description = models.TextField()
+    html_content = RichTextField(blank=True, null=True)
+    thumbnail = models.ImageField(upload_to="courses/thumbnails/")
+    banner = models.ImageField(upload_to="courses/banners/", blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+    def get_display_price(self):
+        return self.discount_price if self.discount_price else self.price
+
+    def has_discount(self):
+        return self.discount_price is not None
+
+
+class CourseVideo(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos")
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    thumbnail = models.ImageField(upload_to="courses/videos/thumbnails/", blank=True, null=True)
+    video_file = models.FileField(upload_to="courses/videos/")
+
+    def __str__(self):
+        return f"{self.course.title} - {self.title}"
+
+
+class CoursePDF(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="pdfs")
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    file = models.FileField(upload_to="courses/pdfs/")
+
+    def __str__(self):
+        return f"{self.course.title} - {self.title}"
+
+
+class CourseEnrollment(models.Model):
+    STATUS_CHOICES = (("active", "Active"), ("pending", "Pending"), ("cancelled", "Cancelled"))
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="enrollments")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    price_paid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "course")
+
+    def __str__(self):
+        return f"{self.user} - {self.course} ({self.status})"

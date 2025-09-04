@@ -135,3 +135,56 @@ class CustomUserAdmin(BaseUserAdmin):
     )
 
 admin.site.register(CustomUser, CustomUserAdmin)
+
+
+
+from django.contrib import admin
+from .models import Course, CourseVideo, CoursePDF, CourseEnrollment
+
+
+class CourseVideoInline(admin.TabularInline):
+    model = CourseVideo
+    extra = 1
+    fields = ("title", "description", "thumbnail", "video_file")
+    show_change_link = True
+
+
+class CoursePDFInline(admin.TabularInline):
+    model = CoursePDF
+    extra = 1
+    fields = ("title", "description", "file")
+    show_change_link = True
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ("title", "price", "discount_price", "created_at", "has_discount")
+    list_filter = ("created_at",)
+    search_fields = ("title", "short_description", "long_description")
+    prepopulated_fields = {"slug": ("title",)}
+    inlines = [CourseVideoInline, CoursePDFInline]
+    readonly_fields = ("created_at",)
+    ordering = ("-created_at",)
+
+
+@admin.register(CourseVideo)
+class CourseVideoAdmin(admin.ModelAdmin):
+    list_display = ("title", "course")
+    search_fields = ("title", "description")
+    list_filter = ("course",)
+
+
+@admin.register(CoursePDF)
+class CoursePDFAdmin(admin.ModelAdmin):
+    list_display = ("title", "course")
+    search_fields = ("title", "description")
+    list_filter = ("course",)
+
+
+@admin.register(CourseEnrollment)
+class CourseEnrollmentAdmin(admin.ModelAdmin):
+    list_display = ("user", "course", "status", "price_paid", "created_at")
+    list_filter = ("status", "created_at")
+    search_fields = ("user__username", "course__title")
+    readonly_fields = ("created_at",)
+    ordering = ("-created_at",)

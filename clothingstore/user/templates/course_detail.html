@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Clauch Academy{% endblock %}
+
+{% block content %}
+<div class="bg-[#FAFAFA] min-h-screen py-12 px-6 sm:px-12 lg:px-24 font-[Montserrat]">
+  <div class="max-w-5xl mx-auto space-y-10">
+
+    <!-- Course Banner -->
+    {% if course.banner %}
+      <div class="w-full h-64 sm:h-80 md:h-96 overflow-hidden rounded-2xl shadow">
+        <img src="{{ course.banner.url }}" 
+             alt="{{ course.title }}" 
+             class="w-full h-full object-cover">
+      </div>
+    {% else %}
+      <div class="w-full h-64 bg-gray-200 flex items-center justify-center rounded-2xl shadow">
+        <span class="text-gray-600">No Banner Available</span>
+      </div>
+    {% endif %}
+
+    <!-- Course Info -->
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">{{ course.title }}</h1>
+      <p class="text-gray-600 mt-2 text-lg">{{ course.short_description }}</p>
+      <div class="mt-4 text-sm text-gray-800 leading-relaxed">
+        {{ course.long_description }}
+      </div>
+      {% if course.html_content %}
+        <div class="mt-6 prose prose-sm max-w-none">
+          {{ course.html_content|safe }}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Videos Section -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-4">Course Videos</h2>
+      {% if course.videos.all %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {% for video in course.videos.all %}
+          <div class="bg-white rounded-xl shadow p-4">
+            <div class="w-full h-40 overflow-hidden rounded">
+              {% if video.thumbnail %}
+                <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}" 
+                     class="w-full h-full object-cover">
+              {% else %}
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span class="text-gray-500">No Thumbnail</span>
+                </div>
+              {% endif %}
+            </div>
+            <h3 class="mt-3 text-base font-bold">{{ video.title }}</h3>
+            <p class="text-xs text-gray-600 mt-1">{{ video.description }}</p>
+            <video controls class="w-full mt-3 rounded">
+              <source src="{{ video.video_file.url }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-gray-500">No videos added yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- PDFs Section -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-4">Downloadable PDFs</h2>
+      {% if course.pdfs.all %}
+        <ul class="space-y-3">
+          {% for pdf in course.pdfs.all %}
+          <li class="bg-white shadow p-4 rounded flex items-center justify-between">
+            <div>
+              <p class="font-medium">{{ pdf.title }}</p>
+              <p class="text-xs text-gray-600">{{ pdf.description }}</p>
+            </div>
+            <a href="{{ pdf.file.url }}" download
+               class="text-sm bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition">
+              Download
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-gray-500">No PDFs available for this course.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

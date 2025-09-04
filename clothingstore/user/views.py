@@ -581,3 +581,64 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Logged out successfully.")
     return redirect("login")
+
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.http import JsonResponse
+import razorpay
+
+from .models import Course, CourseEnrollment
+
+# Razorpay client
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+def course_list(request):
+    courses = Course.objects.all()
+    user_enrollments = []
+    if request.user.is_authenticated:
+        user_enrollments = CourseEnrollment.objects.filter(user=request.user, status="active").values_list("course_id", flat=True)
+    return render(request, "course.html", {"courses": courses, "user_enrollments": user_enrollments})
+
+
+@login_required
+def course_detail(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    enrolled = CourseEnrollment.objects.filter(user=request.user, course=course, status="active").exists()
+    if not enrolled:
+        return redirect("course_list")
+    return render(request, "course_detail.html", {"course": course})
+
+
+@login_required
+def create_order(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    amount = int(course.get_display_price() * 100)  # in paise
+
+    # Create Razorpay order
+    order = razorpay_client.order.create({
+        "amount": amount,
+        "currency": "INR",
+        "payment_capture": "1"
+    })
+
+    return JsonResponse({
+        "order_id": order["id"],
+        "amount": amount,
+        "currency": "INR",
+        "course_slug": slug
+    })
+
+
+@login_required
+def payment_success(request, slug):
+    course = get_object_or_404(Course, slug=slug)
+    CourseEnrollment.objects.update_or_create(
+        user=request.user,
+        course=course,
+        defaults={"status": "active", "price_paid": course.get_display_price()},
+    )
+    return redirect("course_detail", slug=slug)

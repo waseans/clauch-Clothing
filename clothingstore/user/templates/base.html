@@ -155,6 +155,9 @@
     <a href="{% url 'showroom' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Showroom
     </a>
+    <a href="{% url 'course_list' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+      Courses
+    </a>
   </div>
 </div>
 
@@ -199,26 +202,29 @@
 
   <!-- Navigation Links -->
   <nav class="space-x-2">
-    <a href="{% url 'home' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
-      Home
-    </a>
-    <a href="{% url 'search' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
-      Search
-    </a>
-    <a href="{% url 'new' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
-      B2B Collection
-    </a>
-    <a href="{% url 'showroom' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
-  Clauch Showroom
-</a>
+  <a href="{% url 'home' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    Home
+  </a>
+  <a href="{% url 'search' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    Search
+  </a>
+  <a href="{% url 'new' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    B2B Collection
+  </a>
+  <a href="{% url 'showroom' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    Clauch Showroom
+  </a>
+  <a href="{% url 'course_list' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    Courses
+  </a>
+  <a href="{% url 'view_cart' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    Cart
+  </a>
+  <a href="{% url 'account' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    Account
+  </a>
+</nav>
 
-    <a href="{% url 'view_cart' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
-      Cart
-    </a>
-    <a href="{% url 'account' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
-      Account
-    </a>
-  </nav>
 </header>
 
 
@@ -295,6 +301,7 @@
       <h3 class="text-base font-semibold mb-3 text-white">Company</h3>
       <ul class="space-y-1 text-gray-300 text-sm">
         <li><a href="#" class="hover:text-white transition">About Us</a></li>
+        <li><a href="{% url 'course_list' %}" class="hover:text-white transition">Courses</a></li>
         <li><a href="#" class="hover:text-white transition">Careers</a></li>
         <li><a href="{% url 'privacy_policy' %}" class="hover:text-white transition">Privacy Policy</a></li>
         <li><a href="{% url 'terms_and_condition' %}" class="hover:text-white transition">Terms & Conditions</a></li>

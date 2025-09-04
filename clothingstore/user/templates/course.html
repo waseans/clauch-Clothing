@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Courses - Clauch{% endblock %}
+
+{% block content %}
+<div class="bg-[#FAFAFA] min-h-screen py-16 px-6 sm:px-12 lg:px-24 font-[Montserrat]">
+  <div class="max-w-7xl mx-auto space-y-10">
+
+    <!-- Page Header -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold mb-3">Our Courses</h1>
+      <p class="text-gray-600 text-lg">
+        These courses will help you learn directly from the <b>Clauch Founder</b> —
+        his real experiences, what to do, what not to do, and how to grow your clothing brand.
+      </p>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {% for course in courses %}
+      <div class="w-full bg-white rounded-2xl shadow hover:shadow-lg transition group overflow-hidden">
+        <div class="relative">
+          <!-- Course Thumbnail -->
+          <div class="w-full h-48 sm:h-56 md:h-64 overflow-hidden">
+            <img src="{{ course.thumbnail.url }}" 
+                 alt="{{ course.title }}" 
+                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+          </div>
+
+          <!-- Buy / Go Button -->
+          {% if user.is_authenticated %}
+            {% if course.id in user_enrollments %}
+              <a href="{% url 'course_detail' course.slug %}"
+                 class="absolute top-2 right-2 bg-green-600 text-white text-xs px-4 py-2 rounded shadow hover:bg-green-700 transition z-20">
+                Go →
+              </a>
+            {% else %}
+              <button 
+                onclick="startPayment('{{ course.slug }}', '{{ course.get_display_price }}')" 
+                class="absolute top-2 right-2 bg-black text-white text-xs px-4 py-2 rounded shadow hover:bg-gray-800 transition z-20">
+                Buy
+              </button>
+            {% endif %}
+          {% else %}
+            <a href="{% url 'login' %}?next={% url 'course_list' %}"
+               class="absolute top-2 right-2 bg-black text-white text-xs px-4 py-2 rounded shadow hover:bg-gray-800 transition z-20">
+              Login to Buy
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Course Info -->
+        <div class="p-4">
+          <h3 class="text-base font-semibold text-gray-900 truncate">{{ course.title }}</h3>
+          <div class="text-sm font-bold text-gray-800 mt-1">
+            ₹{{ course.get_display_price }}
+            {% if course.has_discount %}
+              <span class="line-through text-gray-500 text-xs ml-2">₹{{ course.price }}</span>
+            {% endif %}
+          </div>
+          <p class="text-xs text-gray-600 mt-2 line-clamp-3">
+            {{ course.short_description }}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+function startPayment(courseSlug, amount) {
+  fetch(`/course/${courseSlug}/create-order/`)
+    .then(response => response.json())
+    .then(data => {
+      var options = {
+        "key": "{{ settings.RAZORPAY_KEY_ID }}",
+        "amount": data.amount,
+        "currency": data.currency,
+        "name": "Clauch Academy",
+        "description": "Course Purchase",
+        "order_id": data.order_id,
+        "handler": function (response){
+          window.location.href = `/course/${courseSlug}/success/`;
+        },
+        "theme": {
+          "color": "#111827"
+        }
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+    });
+}
+</script>
+{% endblock %}

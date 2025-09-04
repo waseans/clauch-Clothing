@@ -31,4 +31,9 @@ urlpatterns = [
     
     # Add this line to handle the robots.txt file
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+
+    path("course/", views.course_list, name="course_list"),   # /course/
+    path("course/<slug:slug>/", views.course_detail, name="course_detail"),  # /course/<slug>/
+    path("course/<slug:slug>/create-order/", views.create_order, name="create_order"),  # /course/<slug>/create-order/
+    path("course/<slug:slug>/success/", views.payment_success, name="payment_success"), # /course/<slug>/success/
 ]
