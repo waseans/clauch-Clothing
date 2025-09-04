@@ -44,13 +44,13 @@
         </div>
       </div>
 
-      <!-- Contact Form -->
+      <!-- Contact Form (WhatsApp Integration) -->
       <div class="bg-white shadow rounded-lg p-6">
         <h2 class="text-xl font-semibold mb-4">Send Us a Message</h2>
-        <form action="#" method="POST" class="space-y-4">
-          <input type="text" name="name" placeholder="Your Name" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required>
-          <input type="email" name="email" placeholder="Your Email" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required>
-          <textarea name="message" rows="5" placeholder="Your Message" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required></textarea>
+        <form id="whatsappForm" class="space-y-4">
+          <input type="text" id="name" placeholder="Your Name" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required>
+          <input type="email" id="email" placeholder="Your Email" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required>
+          <textarea id="message" rows="5" placeholder="Your Message" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required></textarea>
           <button type="submit" class="w-full py-3 bg-black text-white font-semibold rounded-md hover:bg-gray-900 transition">Send Message</button>
         </form>
       </div>
@@ -94,4 +94,21 @@
 
   </div>
 </div>
+
+<!-- WhatsApp Form Script -->
+<script>
+  document.getElementById("whatsappForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let message = document.getElementById("message").value;
+
+    let phoneNumber = "919021275825"; // WhatsApp number (without +)
+    let text = `Hello Clauch,%0A%0AName: ${name}%0AEmail: ${email}%0AMessage: ${message}`;
+
+    let url = `https://wa.me/${phoneNumber}?text=${text}`;
+    window.open(url, "_blank"); // Opens WhatsApp chat
+  });
+</script>
 {% endblock %}
