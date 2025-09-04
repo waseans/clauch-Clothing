@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us - Clauch{% endblock %}
+
+{% block content %}
+<div class="bg-[#FAFAFA] min-h-screen py-16 px-6 sm:px-12 lg:px-24 font-[Montserrat]">
+  <div class="max-w-6xl mx-auto space-y-16">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900">Contact Us</h1>
+      <p class="mt-4 text-lg text-gray-600">We’d love to hear from you. Reach out to us for inquiries, support, or showroom visits.</p>
+    </div>
+
+    <!-- Contact Info + Form -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+      <!-- Contact Information -->
+      <div class="space-y-8">
+        <div class="bg-white shadow rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Get in Touch</h2>
+          <ul class="space-y-3 text-gray-700 text-base leading-relaxed">
+            <li><span class="font-medium">Phone:</span> <a href="tel:+919021275825" class="hover:underline">+91 9021275825</a></li>
+            <li><span class="font-medium">Email:</span> <a href="mailto:info@clauch.com" class="hover:underline">info@clauch.com</a></li>
+          </ul>
+        </div>
+
+        <!-- Store Addresses -->
+        <div class="bg-white shadow rounded-lg p-6 space-y-6">
+          <div>
+            <h2 class="text-xl font-semibold mb-4">Visit Our Stores</h2>
+            <p class="mb-4 text-gray-700">
+              <span class="font-medium">Clauch Kalyan:</span><br>
+              At Chhatrapti Shivaji Maharaj Chowk,<br>
+              Near Gurudev Hotel, Kalyan West, Maharashtra 421301
+            </p>
+            <p class="text-gray-700">
+              <span class="font-medium">Clauch Bhiwandi:</span><br>
+              Suprim Hotel Opposite,<br>
+              Dhamankar Naka, Narpoli, Bhiwandi, Maharashtra 421302
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Send Us a Message</h2>
+        <form action="#" method="POST" class="space-y-4">
+          <input type="text" name="name" placeholder="Your Name" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required>
+          <input type="email" name="email" placeholder="Your Email" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required>
+          <textarea name="message" rows="5" placeholder="Your Message" class="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-black" required></textarea>
+          <button type="submit" class="w-full py-3 bg-black text-white font-semibold rounded-md hover:bg-gray-900 transition">Send Message</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Google Maps -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      
+      <!-- Kalyan Store -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15074.654760548173!2d73.0936296!3d19.2380788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be795d9ba885fb9%3A0x9b5b323af7c81ec!2sClauch%20Clothing!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+          width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold text-gray-900 mb-2">Clauch Kalyan</h3>
+          <p class="text-gray-700">
+            At Chhatrapti Shivaji Maharaj Chowk,<br>
+            Near Gurudev Hotel, Kalyan West,<br>
+            Maharashtra 421301
+          </p>
+        </div>
+      </div>
+
+      <!-- Bhiwandi Store -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15065.71960249539!2d73.0378051!3d19.2894567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7bd8212f7c2dd%3A0x231246fe25879b24!2sCLAUCH!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+          width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold text-gray-900 mb-2">Clauch Bhiwandi</h3>
+          <p class="text-gray-700 mb-4">
+            Suprim Hotel Opposite,<br>
+            Dhamankar Naka, Narpoli,<br>
+            Bhiwandi, Maharashtra 421302
+          </p>
+          <a href="https://www.google.com/maps/dir//Clauch+Bhiwandi/@19.2894567,73.0378051,15z" target="_blank" class="inline-block text-black font-semibold hover:underline transition">Get Directions</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}

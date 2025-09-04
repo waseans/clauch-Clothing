@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FAQ - Clauch{% endblock %}
+
+{% block content %}
+<div class="bg-[#f9f9f9] min-h-screen py-10 px-4 font-[Montserrat]">
+  <div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-2xl sm:text-3xl font-bold mb-2">Frequently Asked Questions</h1>
+      <p class="text-sm text-gray-500">Find answers to common questions about shopping at Clauch.</p>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="space-y-4">
+
+      <!-- Question 1 -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <button onclick="toggleFaq('faq1')" class="w-full text-left flex justify-between items-center">
+          <span class="text-sm sm:text-base font-medium">How long does delivery take?</span>
+          <span id="icon-faq1" class="text-xl">+</span>
+        </button>
+        <div id="answer-faq1" class="hidden mt-3 text-sm text-gray-700 leading-relaxed">
+          Orders are usually delivered within <strong>3-7 business days</strong> depending on your location.
+          You will also receive a tracking link once your order has been dispatched.
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <button onclick="toggleFaq('faq2')" class="w-full text-left flex justify-between items-center">
+          <span class="text-sm sm:text-base font-medium">What is your return policy?</span>
+          <span id="icon-faq2" class="text-xl">+</span>
+        </button>
+        <div id="answer-faq2" class="hidden mt-3 text-sm text-gray-700 leading-relaxed">
+          You can request a return within <strong>7 days of delivery</strong> for unused and unworn items 
+          in original packaging. Refunds are processed within 7-10 business days.
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <button onclick="toggleFaq('faq3')" class="w-full text-left flex justify-between items-center">
+          <span class="text-sm sm:text-base font-medium">Do you offer international shipping?</span>
+          <span id="icon-faq3" class="text-xl">+</span>
+        </button>
+        <div id="answer-faq3" class="hidden mt-3 text-sm text-gray-700 leading-relaxed">
+          Currently, we ship only within India. International shipping will be available soon.
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <button onclick="toggleFaq('faq4')" class="w-full text-left flex justify-between items-center">
+          <span class="text-sm sm:text-base font-medium">What payment methods do you accept?</span>
+          <span id="icon-faq4" class="text-xl">+</span>
+        </button>
+        <div id="answer-faq4" class="hidden mt-3 text-sm text-gray-700 leading-relaxed">
+          We accept major payment methods including UPI, Credit/Debit Cards, Net Banking, and Wallets.
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="bg-white shadow rounded-lg p-6">
+        <button onclick="toggleFaq('faq5')" class="w-full text-left flex justify-between items-center">
+          <span class="text-sm sm:text-base font-medium">Can I track my order?</span>
+          <span id="icon-faq5" class="text-xl">+</span>
+        </button>
+        <div id="answer-faq5" class="hidden mt-3 text-sm text-gray-700 leading-relaxed">
+          Yes, once your order is shipped, you will receive a tracking link via email and SMS.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function toggleFaq(id) {
+    const answer = document.getElementById("answer-" + id);
+    const icon = document.getElementById("icon-" + id);
+    if (answer.classList.contains("hidden")) {
+      answer.classList.remove("hidden");
+      icon.textContent = "−";
+    } else {
+      answer.classList.add("hidden");
+      icon.textContent = "+";
+    }
+  }
+</script>
+{% endblock %}

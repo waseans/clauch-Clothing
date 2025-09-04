@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Privacy Policy - Clauch{% endblock %}
+
+{% block content %}
+<div class="bg-[#f9f9f9] min-h-screen py-10 px-4 font-[Montserrat]">
+  <div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-2xl sm:text-3xl font-bold mb-2">Privacy Policy</h1>
+      <p class="text-sm text-gray-500">Your privacy is important to us at Clauch.</p>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">1. Information We Collect</h2>
+      <p class="text-sm text-gray-700 leading-relaxed">
+        We collect personal information such as your name, email, phone number, shipping address,
+        and payment details when you place an order. Additionally, we may collect non-personal data 
+        like browser type, device information, and usage statistics to improve our services.
+      </p>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">2. How We Use Your Information</h2>
+      <p class="text-sm text-gray-700 leading-relaxed">
+        The information we collect is used to process your orders, deliver products, 
+        improve customer support, personalize your shopping experience, and send important 
+        updates or promotional offers (only with your consent).
+      </p>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">3. Data Protection</h2>
+      <p class="text-sm text-gray-700 leading-relaxed">
+        We implement strong security measures to protect your personal data. 
+        However, no online transmission is 100% secure, and we cannot guarantee absolute safety.
+      </p>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">4. Sharing Your Information</h2>
+      <p class="text-sm text-gray-700 leading-relaxed">
+        We do not sell or rent your personal data. Information may only be shared with trusted 
+        service providers (like payment gateways, delivery partners) strictly for order fulfillment 
+        and legal compliance.
+      </p>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">5. Your Rights</h2>
+      <p class="text-sm text-gray-700 leading-relaxed">
+        You have the right to access, update, or request deletion of your personal information. 
+        You can also opt-out of marketing communications anytime by contacting us.
+      </p>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">6. Changes to This Policy</h2>
+      <p class="text-sm text-gray-700 leading-relaxed">
+        We may update this Privacy Policy from time to time. Any changes will be reflected on this page 
+        with the updated effective date.
+      </p>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="text-center text-sm text-gray-600">
+      <p>If you have any questions about our Privacy Policy, please <a href="{% url 'contact' %}" class="underline hover:text-black">contact us</a>.</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

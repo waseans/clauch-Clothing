@@ -144,6 +144,29 @@ def cart_view(request):
 def showroom_view(request):
     return render(request, "showroom.html")
 
+
+from django.shortcuts import render
+
+
+def faq_view(request):
+    return render(request, "faq.html")
+
+def shipping_return_view(request):
+    return render(request, "shipping_return.html")
+
+def return_view(request):
+    return render(request, "return.html")
+
+def contact_view(request):
+    return render(request, "contact.html")
+
+def privacy_policy_view(request):
+    return render(request, "privacy_policy.html")
+
+def terms_and_condition_view(request):
+    return render(request, "terms_and_condition.html")
+
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 

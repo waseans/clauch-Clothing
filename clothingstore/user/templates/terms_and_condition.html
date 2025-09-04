@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terms & Conditions - Clauch{% endblock %}
+
+{% block content %}
+<div class="bg-[#FAFAFA] min-h-screen py-16 px-6 sm:px-12 lg:px-24 font-[Montserrat]">
+  <div class="max-w-5xl mx-auto space-y-10">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900">Terms & Conditions</h1>
+      <p class="mt-4 text-lg text-gray-600">By using Clauch, you agree to the following terms and conditions. Please read them carefully.</p>
+    </div>
+
+    <!-- Content -->
+    <div class="bg-white shadow rounded-lg p-8 space-y-8 text-gray-700 leading-relaxed">
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">1. Introduction</h2>
+        <p>
+          Welcome to Clauch. These Terms & Conditions govern your use of our website and services. By accessing or purchasing from Clauch, you accept and agree to these terms.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">2. Products & Pricing</h2>
+        <p>
+          All products listed on our website are subject to availability. Prices are displayed in INR and may be updated without prior notice. We strive to ensure accuracy, but errors may occur.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">3. Orders & Payments</h2>
+        <p>
+          Placing an order on our website constitutes an offer to purchase. Once your order is confirmed, you are required to make full payment. We accept secure payment methods as displayed at checkout.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">4. Shipping & Delivery</h2>
+        <p>
+          We aim to process and ship orders promptly. Delivery times may vary depending on your location. Clauch is not responsible for delays caused by courier services or unforeseen events.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">5. Returns & Exchanges</h2>
+        <p>
+          Please refer to our <a href="{% url 'shipping_return' %}" class="text-black font-medium hover:underline">Shipping & Return Policy</a> for detailed information on return eligibility, timelines, and conditions.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">6. Intellectual Property</h2>
+        <p>
+          All designs, content, and branding displayed on Clauch are the intellectual property of Clauch Clothing. Unauthorized reproduction, distribution, or use is strictly prohibited.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">7. Limitation of Liability</h2>
+        <p>
+          Clauch will not be held liable for any direct, indirect, or incidental damages arising from the use of our website, products, or services.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">8. Governing Law</h2>
+        <p>
+          These Terms & Conditions are governed by the laws of India. Any disputes will be subject to the jurisdiction of courts in Maharashtra.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">9. Changes to Terms</h2>
+        <p>
+          Clauch reserves the right to update these Terms & Conditions at any time. Users are encouraged to review this page periodically for changes.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-3">10. Contact Us</h2>
+        <p>
+          For any queries regarding these Terms & Conditions, please reach out at <a href="mailto:info@clauch.com" class="text-black font-medium hover:underline">info@clauch.com</a> or call <a href="tel:+919021275825" class="text-black font-medium hover:underline">+91 9021275825</a>.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

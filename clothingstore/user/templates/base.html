@@ -264,12 +264,12 @@
   </a>
 </nav>
 
-
 <footer class="relative bg-cover bg-center bg-no-repeat text-white font-[Montserrat] px-6 md:px-16 pt-10 pb-24 md:pb-10 mt-10" style="background-image: url('{% static '/images/footer-black.jpg' %}');">
   <div class="absolute inset-0 bg-black bg-opacity-80"></div> <!-- Dark overlay -->
-  
+
   <div class="relative max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 z-10">
-    
+
+    <!-- Clauch Address -->
     <div>
       <h3 class="text-base font-semibold mb-3 text-white">Clauch</h3>
       <ul class="space-y-1 text-gray-300 text-sm">
@@ -279,32 +279,35 @@
       </ul>
     </div>
 
+    <!-- Help Section -->
     <div>
       <h3 class="text-base font-semibold mb-3 text-white">Help</h3>
       <ul class="space-y-1 text-gray-300 text-sm">
-        <li><a href="#" class="hover:text-white transition">Shipping</a></li>
-        <li><a href="#" class="hover:text-white transition">Returns</a></li>
-        <li><a href="#" class="hover:text-white transition">FAQs</a></li>
-        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+        <li><a href="{% url 'shipping_return' %}" class="hover:text-white transition">Shipping & Return</a></li>
+        <li><a href="{% url 'faq' %}" class="hover:text-white transition">FAQs</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-white transition">Contact</a></li>
+        <li><a href="{% url 'showroom' %}" class="hover:text-white transition">Showroom</a></li>
       </ul>
     </div>
 
+    <!-- Company Section -->
     <div>
       <h3 class="text-base font-semibold mb-3 text-white">Company</h3>
       <ul class="space-y-1 text-gray-300 text-sm">
         <li><a href="#" class="hover:text-white transition">About Us</a></li>
         <li><a href="#" class="hover:text-white transition">Careers</a></li>
-        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
-        <li><a href="#" class="hover:text-white transition">Terms & Conditions</a></li>
+        <li><a href="{% url 'privacy_policy' %}" class="hover:text-white transition">Privacy Policy</a></li>
+        <li><a href="{% url 'terms_and_condition' %}" class="hover:text-white transition">Terms & Conditions</a></li>
       </ul>
     </div>
 
+    <!-- Social + Contact -->
     <div>
       <h3 class="text-base font-semibold mb-3 text-white">Follow Us</h3>
       <ul class="space-y-1 text-gray-300 text-sm">
-        <li><a href="https://www.instagram.com/clauch_clothing" class="hover:text-white transition">Instagram</a></li>
-        <li><a href="https://www.facebook.com/share/1ZLneUtHX5/" class="hover:text-white transition">Facebook</a></li>
-        <li><a href="https://www.youtube.com/@Clauchclothing/shorts" class="hover:text-white transition">YouTube</a></li>
+        <li><a href="https://www.instagram.com/clauch_clothing" target="_blank" class="hover:text-white transition">Instagram</a></li>
+        <li><a href="https://www.facebook.com/share/1ZLneUtHX5/" target="_blank" class="hover:text-white transition">Facebook</a></li>
+        <li><a href="https://www.youtube.com/@Clauchclothing/shorts" target="_blank" class="hover:text-white transition">YouTube</a></li>
       </ul>
 
       <h3 class="text-base font-semibold mt-6 mb-2 text-white">Contact Us</h3>
@@ -315,6 +318,7 @@
 
   </div>
 
+  <!-- Bottom Note -->
   <div class="relative mt-10 border-t border-gray-700 pt-4 text-center text-xs text-gray-400 z-10">
     © 2025 Clauch. All rights reserved. | Developed by <span class="font-medium text-white">Waseans</span>
   </div>

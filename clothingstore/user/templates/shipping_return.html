@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Shipping & Return - Clauch{% endblock %}
+
+{% block content %}
+<div class="bg-[#f9f9f9] min-h-screen py-10 px-4 font-[Montserrat]">
+  <div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-2xl sm:text-3xl font-bold mb-2">Shipping & Return Policy</h1>
+      <p class="text-sm text-gray-500">Everything you need to know about our delivery and return process.</p>
+    </div>
+
+    <!-- Shipping Policy -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">Shipping Policy</h2>
+      <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700 leading-relaxed">
+        <li>Orders are usually processed within <strong>1-2 business days</strong>.</li>
+        <li>Delivery timelines vary by location and typically take <strong>3-7 business days</strong> within India.</li>
+        <li>You will receive a tracking link once your order has been dispatched.</li>
+        <li>We currently offer <strong>standard shipping across India</strong>. International shipping will be available soon.</li>
+        <li>Shipping charges (if applicable) will be displayed during checkout.</li>
+      </ul>
+    </div>
+
+    <!-- Return Policy -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-3">Return & Exchange Policy</h2>
+      <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700 leading-relaxed">
+        <li>You may request a return or exchange within <strong>7 days of delivery</strong>.</li>
+        <li>Products must be unused, unworn, and in their original packaging with all tags intact.</li>
+        <li>Certain items such as innerwear and clearance sale items are <strong>not eligible</strong> for returns.</li>
+        <li>Refunds will be processed to your original payment method within <strong>7-10 business days</strong> after approval.</li>
+        <li>To initiate a return, please <a href="{% url 'contact' %}" class="underline hover:text-black">contact our support team</a> with your order ID.</li>
+      </ul>
+    </div>
+
+    <!-- Note -->
+    <div class="text-center text-xs text-gray-500">
+      <p>Clauch reserves the right to update the Shipping & Return policy at any time without prior notice.</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
