@@ -642,3 +642,20 @@ def payment_success(request, slug):
         defaults={"status": "active", "price_paid": course.get_display_price()},
     )
     return redirect("course_detail", slug=slug)
+
+
+
+# views.py
+from django.http import FileResponse, Http404
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import CourseVideo, CourseEnrollment
+
+@login_required
+def protected_video(request, video_id):
+    video = get_object_or_404(CourseVideo, id=video_id)
+    enrolled = CourseEnrollment.objects.filter(user=request.user, course=video.course, status="active").exists()
+    if not enrolled:
+        raise Http404("Video not found or you are not enrolled.")
+    
+    return FileResponse(video.video_file.open(), content_type="video/mp4")

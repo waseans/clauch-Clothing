@@ -4,25 +4,26 @@
 {% block title %}Courses - Clauch{% endblock %}
 
 {% block content %}
-<div class="bg-[#FAFAFA] min-h-screen py-16 px-6 sm:px-12 lg:px-24 font-[Montserrat]">
+<div class="bg-[#FAFAFA] min-h-screen py-16 px-4 sm:px-8 lg:px-20 font-[Montserrat]">
   <div class="max-w-7xl mx-auto space-y-10">
 
     <!-- Page Header -->
     <div class="text-center">
-      <h1 class="text-3xl font-bold mb-3">Our Courses</h1>
-      <p class="text-gray-600 text-lg">
-        These courses will help you learn directly from the <b>Clauch Founder</b> —
-        his real experiences, what to do, what not to do, and how to grow your clothing brand.
+      <h1 class="text-2xl sm:text-3xl font-extralight mb-2 tracking-tight">Our Courses</h1>
+      <p class="text-gray-600 text-sm sm:text-base font-light leading-relaxed">
+        Learn directly from the <b class="font-semibold">Clauch Founder</b> —
+        his real experiences, what to do, what not to do, and how to scale your clothing brand.
       </p>
     </div>
 
     <!-- Courses Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
       {% for course in courses %}
-      <div class="w-full bg-white rounded-2xl shadow hover:shadow-lg transition group overflow-hidden">
+      <div class="w-full bg-white rounded-xl shadow-md hover:shadow-lg transition group overflow-hidden">
         <div class="relative">
+
           <!-- Course Thumbnail -->
-          <div class="w-full h-48 sm:h-56 md:h-64 overflow-hidden">
+          <div class="w-full h-44 sm:h-52 md:h-60 overflow-hidden">
             <img src="{{ course.thumbnail.url }}" 
                  alt="{{ course.title }}" 
                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
@@ -32,34 +33,35 @@
           {% if user.is_authenticated %}
             {% if course.id in user_enrollments %}
               <a href="{% url 'course_detail' course.slug %}"
-                 class="absolute top-2 right-2 bg-green-600 text-white text-xs px-4 py-2 rounded shadow hover:bg-green-700 transition z-20">
+                 class="absolute top-2 right-2 bg-green-600 text-white text-xs sm:text-sm px-3 py-1 rounded shadow hover:bg-green-700 transition z-20">
                 Go →
               </a>
             {% else %}
               <button 
                 onclick="startPayment('{{ course.slug }}', '{{ course.get_display_price }}')" 
-                class="absolute top-2 right-2 bg-black text-white text-xs px-4 py-2 rounded shadow hover:bg-gray-800 transition z-20">
+                class="absolute top-2 right-2 bg-black text-white text-xs sm:text-sm px-3 py-1 rounded shadow hover:bg-gray-800 transition z-20">
                 Buy
               </button>
             {% endif %}
           {% else %}
             <a href="{% url 'login' %}?next={% url 'course_list' %}"
-               class="absolute top-2 right-2 bg-black text-white text-xs px-4 py-2 rounded shadow hover:bg-gray-800 transition z-20">
+               class="absolute top-2 right-2 bg-black text-white text-xs sm:text-sm px-3 py-1 rounded shadow hover:bg-gray-800 transition z-20">
               Login to Buy
             </a>
           {% endif %}
+
         </div>
 
         <!-- Course Info -->
-        <div class="p-4">
-          <h3 class="text-base font-semibold text-gray-900 truncate">{{ course.title }}</h3>
-          <div class="text-sm font-bold text-gray-800 mt-1">
+        <div class="p-3 sm:p-4">
+          <h3 class="text-sm sm:text-base font-light text-gray-900 truncate tracking-tight">{{ course.title }}</h3>
+          <div class="text-sm font-medium text-gray-800 mt-1">
             ₹{{ course.get_display_price }}
             {% if course.has_discount %}
-              <span class="line-through text-gray-500 text-xs ml-2">₹{{ course.price }}</span>
+              <span class="line-through text-gray-400 text-xs ml-1 sm:ml-2">₹{{ course.price }}</span>
             {% endif %}
           </div>
-          <p class="text-xs text-gray-600 mt-2 line-clamp-3">
+          <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 leading-snug line-clamp-3">
             {{ course.short_description }}
           </p>
         </div>
