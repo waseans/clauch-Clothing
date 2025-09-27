@@ -30,15 +30,20 @@ ALLOWED_HOSTS = [
     'localhost',
     '16.171.172.137', 
     'clauch.in',
-    'www.clauch.in', # Add this line
+    'www.clauch.in',
+    'clauchfactory.com',      # new domain
+    'www.clauchfactory.com',  # new domain www
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://94d4ccfc9c7f.ngrok-free.app',
     'https://clauch.in',
-    'https://www.clauch.in', # Add this line
+    'https://www.clauch.in',
     'https://16.171.172.137',
+    'https://clauchfactory.com',      # new domain
+    'https://www.clauchfactory.com',  # new domain www
 ]
+
 
 # Application definition
 
