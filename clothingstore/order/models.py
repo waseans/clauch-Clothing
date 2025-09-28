@@ -75,8 +75,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     color = models.ForeignKey(ProductColor, on_delete=models.SET_NULL, null=True)
-    # REMOVED: size = models.CharField(max_length=10)
-    quantity = models.PositiveIntegerField() # This is now the quantity of PACKS/SETS
+    quantity = models.PositiveIntegerField()  # Quantity of PACKS/SETS
 
     # Snapshot at the time of ordering
     product_name = models.CharField(max_length=255)
@@ -84,11 +83,13 @@ class OrderItem(models.Model):
     actual_price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
+    # NEW fields (important snapshot data)
+    price_per_piece_at_purchase = models.DecimalField(max_digits=10, decimal_places=2)
+    total_pieces_in_set_at_purchase = models.PositiveIntegerField()
+
     def __str__(self):
         color_info = f" ({self.color.name})" if self.color else ""
-        # Reflects that it's a quantity of packs
         return f"{self.product_name}{color_info} x{self.quantity} packs"
-
 
 class Coupon(models.Model):
     code = models.CharField(max_length=50, unique=True)
