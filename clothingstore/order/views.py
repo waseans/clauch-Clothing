@@ -554,4 +554,5 @@ def create_shipment_for_order(request, order_id):
         messages.error(request, message)
     
     # Redirect back to the dashboard
-    return redirect('admin_shipment_dashboard')
+    # At the end of the function
+    return redirect('admin_shipment_dashboard_default')
