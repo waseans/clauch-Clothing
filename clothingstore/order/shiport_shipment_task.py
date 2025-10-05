@@ -2,13 +2,13 @@
 
 import json
 import logging
+import requests  # <-- Moved import to the top
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib import messages
-
+# Unused 'messages' import removed
 from .models import Order
-from .shiport_utils import get_cheapest_shipping_rate # We still use this to get the service details
+from .shiport_utils import get_cheapest_shipping_rate
 
 logger = logging.getLogger(__name__)
 
@@ -25,19 +25,15 @@ def process_shipment_for_order(order_id):
 
     # --- 1. Calculate Dimensions and Weight from the Order ---
     total_weight = sum([item.product.weight * item.quantity for item in order.items.all()])
-    max_length = max([item.product.length for item in order.items.all()] or [30.0]) # Default if empty
-    max_width = max([item.product.width for item in order.items.all()] or [20.0]) # Default if empty
+    max_length = max([item.product.length for item in order.items.all()] or [30.0])
+    max_width = max([item.product.width for item in order.items.all()] or [20.0])
     total_height = sum([item.product.height * item.quantity for item in order.items.all()])
 
-    # --- 2. Get the Cheapest Service (just like the test script) ---
+    # --- 2. Get the Cheapest Service ---
     shiport_payment_mode = "prepaid" if order.payment_method == "RZP" else "cod"
     service = get_cheapest_shipping_rate(
-        to_pincode=order.pincode,
-        total_weight=total_weight,
-        length=max_length,
-        width=max_width,
-        height=total_height,
-        payment_mode=shiport_payment_mode
+        to_pincode=order.pincode, total_weight=total_weight, length=max_length,
+        width=max_width, height=total_height, payment_mode=shiport_payment_mode
     )
 
     if not service:
@@ -46,71 +42,55 @@ def process_shipment_for_order(order_id):
         logger.warning("Could not find a shipping service for Order #%s.", order.id)
         return False, f"Could not find a shipping service for Order #{order.id}."
 
-    # --- 3. Build the Payload EXACTLY Like the Test Script ---
-    # Determine COD amount
+    # --- 3. Build the Payload with Sanitized Data ---
     cod_amount = 0
     if order.payment_method == "COD":
         cod_amount = float(order.subtotal - order.discount_amount)
 
-    # Build the list of items
     items_payload = []
     for item in order.items.all():
         items_payload.append({
-            "item_name": item.product_name,
-            "item_value": float(item.actual_price), # Value of one set/pack
-            "item_quantity": item.quantity, # Number of sets/packs
-            "weight": float(item.product.weight),
-            "length": float(item.product.length),
-            "width": float(item.product.width),
+            "item_name": item.product_name, "item_value": float(item.actual_price),
+            "item_quantity": item.quantity, "weight": float(item.product.weight),
+            "length": float(item.product.length), "width": float(item.product.width),
             "height": float(item.product.height)
         })
 
-    # The main payload
+    # --- ADDED: Automatic Phone Number Sanitization ---
+    original_phone = order.phone
+    digits_only = ''.join(filter(str.isdigit, original_phone))
+    sanitized_phone = digits_only[-10:]
+    if sanitized_phone != original_phone:
+        logger.warning(
+            "Phone for Order #%s sanitized from '%s' to '%s' for Shiport API.",
+            order.id, original_phone, sanitized_phone
+        )
+    # ------------------------------------------------
+
     payload = {
-        "warehouse_name": "Trades",
-        "address_id": settings.SHIPORT_WAREHOUSE_ADDRESS_ID,
-        "carrier_id": service["carrier_id"],
-        "courier_id": service.get("courier_id"),
-        "company_name": service["service_name"],
-        "mode": "Domestic",
-        "payment_mode": shiport_payment_mode,
-        "cod_amount": cod_amount,
-        "product_type_name": service["product_type_name"],
-        "receiver_address": order.address,
-        "receiver_city": order.city,
-        "receiver_country_code": "IN",
-        "receiver_country_name": "India",
-        "receiver_email": order.email,
-        "receiver_mobile": order.phone,
-        "receiver_name": order.full_name,
-        "receiver_pincode": order.pincode,
-        "receiver_state_name": order.state,
-        "return_address": "Roshan Baugh",
-        "return_city": "Bhiwandi",
-        "return_country_code": "IN",
-        "return_country_name": "India",
-        "return_email": "shop@example.com",
-        "return_mobile": "7028885969",
-        "return_name": "Shop Owner",
-        "return_pincode": "421302",
-        "return_state_name": "Maharashtra",
-        "service_name": service["service_name"],
-        "shipment_type": "Parcel",
-        "type": "Parcel",
-        "total_amount": float(service["total_charges"]), # Using shipping charge like the test script
-        "total_weight": float(total_weight),
-        "weight": float(total_weight),
-        "length": float(max_length),
-        "width": float(max_width),
-        "height": float(total_height),
-        "order_number": str(order.id),
-        "product_id": service["service_provider_id"],
+        "warehouse_name": "Trades", "address_id": settings.SHIPORT_WAREHOUSE_ADDRESS_ID,
+        "carrier_id": service["carrier_id"], "courier_id": service.get("courier_id"),
+        "company_name": service["service_name"], "mode": "Domestic",
+        "payment_mode": shiport_payment_mode, "cod_amount": cod_amount,
+        "product_type_name": service["product_type_name"], "receiver_address": order.address,
+        "receiver_city": order.city, "receiver_country_code": "IN",
+        "receiver_country_name": "India", "receiver_email": order.email,
+        "receiver_mobile": sanitized_phone,  # <-- USING THE SANITIZED PHONE
+        "receiver_name": order.full_name, "receiver_pincode": order.pincode,
+        "receiver_state_name": order.state, "return_address": "Roshan Baugh",
+        "return_city": "Bhiwandi", "return_country_code": "IN",
+        "return_country_name": "India", "return_email": "shop@example.com",
+        "return_mobile": "7028885969", "return_name": "Shop Owner",
+        "return_pincode": "421302", "return_state_name": "Maharashtra",
+        "service_name": service["service_name"], "shipment_type": "Parcel",
+        "type": "Parcel", "total_amount": float(service["total_charges"]),
+        "total_weight": float(total_weight), "weight": float(total_weight),
+        "length": float(max_length), "width": float(max_width), "height": float(total_height),
+        "order_number": str(order.id), "product_id": service["service_provider_id"],
         "items": items_payload,
     }
     
     # --- 4. Make the API Call and Update the Order ---
-    from .shiport_utils import requests # Import requests here to avoid circular dependency issues
-    
     logger.info("➡️ Creating Shiport shipment for Order #%s...", order.id)
     logger.debug("Shipment creation payload: %s", json.dumps(payload, indent=2))
     
@@ -122,9 +102,7 @@ def process_shipment_for_order(order_id):
         }
         response = requests.post(
             f"{settings.SHIPORT_API_BASE_URL}/new_shipment_create",
-            headers=headers,
-            json=payload,
-            timeout=300
+            headers=headers, json=payload, timeout=300
         )
         if response.status_code == 400:
              logger.error("❌ Shiport returned 400 Bad Request. Raw Response: %s", response.text)
