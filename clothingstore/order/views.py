@@ -319,7 +319,7 @@ def checkout_view(request):
                 messages.error(request, f"Could not create payment order: {e}")
                 order.status = "CANCELLED"
                 order.save()
-                return redirect('checkout_view')
+                return redirect('checkout')
 
     # --- GET Request: Display the Initial Checkout Page ---
     context = {
