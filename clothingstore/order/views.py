@@ -168,17 +168,85 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import CartItem, Coupon, Order, OrderItem # Assuming these are your models
 
+import razorpay
+from decimal import Decimal
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import CartItem, Order, OrderItem, Coupon
+from .shiport_utils import get_cheapest_shipping_rate, create_shiport_shipment
+# order/views.py
 
 import razorpay
 from decimal import Decimal
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import CartItem, Order, OrderItem, Coupon
-from .shiport_utils import get_cheapest_shipping_rate, create_shiport_shipment # Import the new functions
+# We no longer need to import the shiport utils here
+# from .shiport_utils import get_cheapest_shipping_rate, create_shiport_shipment 
+# order/views.py
 
-razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+import razorpay
+from decimal import Decimal
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import CartItem, Order, OrderItem, Coupon
+# Re-import the get_cheapest_shipping_rate function
+from .shiport_utils import get_cheapest_shipping_rate, create_shiport_shipment 
+
+
+# --- NEW AJAX VIEW FOR DYNAMIC SHIPPING CALCULATION ---
+@login_required(login_url='login')
+@require_POST
+def ajax_calculate_shipping(request):
+    pincode = request.POST.get('pincode')
+    payment_method = request.POST.get('payment_method', 'RZP') # Default to Prepaid
+    
+    if not pincode or not pincode.isdigit() or len(pincode) != 6:
+        return JsonResponse({'error': 'Please enter a valid 6-digit pincode.'}, status=400)
+
+    cart_items = CartItem.objects.filter(user=request.user)
+    if not cart_items.exists():
+        return JsonResponse({'error': 'Your cart is empty.'}, status=400)
+
+    # Calculate weight and dimensions
+    total_weight = sum([item.product.weight * item.quantity for item in cart_items])
+    max_length = max([item.product.length for item in cart_items] or [0])
+    max_width = max([item.product.width for item in cart_items] or [0])
+    total_height = sum([item.product.height * item.quantity for item in cart_items])
+    
+    shiport_payment_mode = "prepaid" if payment_method == "RZP" else "cod"
+    shipping_service = get_cheapest_shipping_rate(
+        to_pincode=pincode, total_weight=total_weight, length=max_length,
+        width=max_width, height=total_height, payment_mode=shiport_payment_mode
+    )
+
+    if not shipping_service:
+        return JsonResponse({'error': 'Sorry, we do not ship to this pincode.'}, status=400)
+
+    shipping_charge = Decimal(shipping_service['total_charges'])
+    
+    # Store the verified shipping details in the session
+    request.session['shipping_info'] = {
+        'charge': str(shipping_charge),
+        'service': shipping_service
+    }
+
+    # Calculate totals
+    subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
+    grand_total = subtotal + shipping_charge # Note: Coupon is applied on final submission
+
+    return JsonResponse({
+        'shipping_charge': shipping_charge,
+        'grand_total': grand_total,
+    })
+
+# order/views.py
 
 @login_required(login_url='login')
 def checkout_view(request):
@@ -189,149 +257,114 @@ def checkout_view(request):
         messages.warning(request, "Your cart is empty.")
         return redirect('view_cart')
 
-    # --- Calculate Subtotal and Cart Details (Same as before) ---
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
     subtotal = Decimal(str(subtotal))
 
-    # --- Initial State for Shipping and Payment ---
-    shipping_charge = Decimal("0.00")
-    shipping_service = None
-    amount_to_pay_now = subtotal # Start with subtotal
-    
-    # --- POST Request: Main Logic for Placing Order ---
+    if 'shipping_info' in request.session:
+        del request.session['shipping_info']
+
     if request.method == 'POST':
+        # ... (The entire POST logic remains exactly the same as before) ...
         data = request.POST
-        required_fields = ['full_name', 'phone', 'address', 'city', 'state', 'pincode', 'payment_method']
-        if not all(data.get(field) for field in required_fields):
-            messages.error(request, "Please fill all required address fields.")
-            return redirect('checkout_view')
-
-        # 1. Calculate Total Weight and Dimensions for Shipping API
-        total_weight = sum([item.product.weight * item.quantity for item in cart_items])
-        # Note: A simple heuristic for dimensions. For a real app, consider a packing algorithm.
-        max_length = max([item.product.length for item in cart_items] or [0])
-        max_width = max([item.product.width for item in cart_items] or [0])
-        total_height = sum([item.product.height * item.quantity for item in cart_items])
-
-        # 2. Get Shipping Rate from Shiport
-        payment_method = data['payment_method']
-        shiport_payment_mode = "prepaid" if payment_method == "RZP" else "cod"
-        shipping_service = get_cheapest_shipping_rate(
-            to_pincode=data['pincode'],
-            total_weight=total_weight,
-            length=max_length,
-            width=max_width,
-            height=total_height,
-            payment_mode=shiport_payment_mode
-        )
-
-        if not shipping_service:
-            messages.error(request, "Could not find a shipping service for your pincode. Please try again.")
-            return redirect('checkout_view')
         
-        shipping_charge = Decimal(shipping_service['total_charges'])
-
-        # 3. Handle Coupon
-        coupon_code = data.get("coupon_code", "")
-        discount = Decimal("0.00")
-        if coupon_code:
-            # (Coupon logic remains the same, applied to subtotal)
-            try:
-                coupon = Coupon.objects.get(code=coupon_code, active=True)
-                if subtotal >= coupon.min_order_amount:
-                    if coupon.discount_type == 'FLAT': discount = min(coupon.discount_value, subtotal)
-                    elif coupon.discount_type == 'PERCENT': discount = (coupon.discount_value / 100) * subtotal
-            except Coupon.DoesNotExist: pass
-
-        # 4. Determine Final Amounts and Amount to Pay NOW
-        grand_total = subtotal + shipping_charge - discount
-        
-        if payment_method == "COD":
-            # For COD, user pays only shipping fee in advance
-            amount_to_pay_now = shipping_charge
-        elif payment_method == "RZP":
-            # For Prepaid, user pays the full grand total
-            amount_to_pay_now = grand_total
-        
-        razorpay_amount = int(amount_to_pay_now * 100)
-
-        # 5. Create Order in Database (Status: PENDING)
-        order = Order.objects.create(
-            user=user,
-            full_name=data['full_name'], phone=data['phone'], email=data.get('email', ''),
-            address=data['address'], city=data['city'], state=data['state'], pincode=data['pincode'],
-            payment_method=payment_method,
-            subtotal=subtotal,
-            shipping_charge=shipping_charge,
-            coupon_code=coupon_code or None,
-            discount_amount=discount,
-            grand_total=grand_total,
-            shipping_service_name=shipping_service['service_name'],
-            payment_id=data.get("razorpay_payment_id", ""),
-            status="PENDING",
-        )
-        # Create OrderItems
-        for item in cart_items:
-            OrderItem.objects.create(order=order, product=item.product, color=item.color, quantity=item.quantity,
-                                     product_name=item.product.name, product_image=item.product.primary_image,
-                                     actual_price=item.actual_price, discount_price=item.discount_price,
-                                     price_per_piece_at_purchase=item.product.get_current_price_per_piece(),
-                                     total_pieces_in_set_at_purchase=item.product.get_total_pieces_in_set())
-
-        # 6. Check for Razorpay Payment ID and Process Shipment
         if data.get("razorpay_payment_id"):
+            order_id = request.session.get('order_id')
+            if not order_id:
+                messages.error(request, "Your session expired. Please try again.")
+                return redirect('checkout')
+
+            order = get_object_or_404(Order, id=order_id, user=user)
+            order.payment_id = data.get("razorpay_payment_id")
             order.status = "PAID"
             order.save()
 
-            # Create Shiport shipment AFTER payment is confirmed
-            shipment_result = create_shiport_shipment(order, shipping_service)
-            if shipment_result and shipment_result.get('data', {}).get('awb_number'):
-                order.tracking_id = shipment_result['data']['awb_number']
-                order.shipping_label_url = shipment_result['data'].get('label_url')
-                order.status = "SHIPPED"
-                order.save()
-            else:
-                # Payment was made but shipment failed. Flag for manual action.
-                messages.error(request, "Payment successful, but failed to book shipment. Please contact support.")
-            
             cart_items.delete()
+            if 'order_id' in request.session: del request.session['order_id']
+            
             return redirect('order_success', order_id=order.id)
-        else:
-            # This part is for when the user needs to be sent to Razorpay
-            # The order is created, now we generate the Razorpay order to be paid
-            try:
-                razorpay_order = razorpay_client.order.create({
-                    "amount": razorpay_amount,
-                    "currency": "INR",
-                    "payment_capture": 1,
-                    "notes": {"order_id": order.id}
-                })
-                # We render the page again, but this time with the Razorpay order details
-                # The user will now see the Razorpay popup to complete the payment
-                context = {
-                    "cart_items": cart_items, "subtotal": subtotal, "shipping_charge": shipping_charge,
-                    "discount": discount, "grand_total": grand_total, "razorpay_order": razorpay_order,
-                    "razorpay_key": settings.RAZORPAY_KEY_ID, "amount_to_pay_now": razorpay_amount,
-                    "order": order, # Pass the created order to the template
-                }
-                return render(request, 'order/checkout.html', context)
-            except Exception as e:
-                messages.error(request, f"Could not create payment order: {e}")
-                order.status = "CANCELLED"
-                order.save()
-                return redirect('checkout')
 
-    # --- GET Request: Display the Initial Checkout Page ---
-    context = {
-        "cart_items": cart_items,
+        shipping_info = request.session.get('shipping_info')
+        if not shipping_info:
+            messages.error(request, "Please calculate shipping before proceeding to pay.")
+            return redirect('checkout')
+
+        shipping_charge = Decimal(shipping_info['charge'])
+        shipping_service = shipping_info['service']
+        
+        grand_total = subtotal + shipping_charge
+        payment_method = data.get('payment_method', 'RZP')
+        amount_to_pay_now = grand_total if payment_method == "RZP" else shipping_charge
+        razorpay_amount = int(amount_to_pay_now * 100)
+
+        order = Order.objects.create(
+            user=user, full_name=data['full_name'], phone=data['phone'], email=data.get('email', ''),
+            address=data['address'], city=data['city'], state=data['state'], pincode=data['pincode'],
+            payment_method=payment_method, subtotal=subtotal, 
+            shipping_charge=shipping_charge, grand_total=grand_total,
+            shipping_service_name=shipping_service['service_name'], status="PENDING",
+        )
+        for item in cart_items:
+            order.items.create(
+                 product=item.product, color=item.color, quantity=item.quantity,
+                 product_name=item.product.name, product_image=item.product.primary_image,
+                 actual_price=item.actual_price, discount_price=item.discount_price,
+                 price_per_piece_at_purchase=item.product.get_current_price_per_piece(),
+                 total_pieces_in_set_at_purchase=item.product.get_total_pieces_in_set()
+            )
+        
+        request.session['order_id'] = order.id
+
+        try:
+            razorpay_order = razorpay_client.order.create({
+                "amount": razorpay_amount, "currency": "INR", "payment_capture": 1, "notes": {"order_id": order.id}
+            })
+            order.razorpay_order_id = razorpay_order['id']
+            order.save()
+            
+            # We need to process the cart items for display here too
+            processed_cart_items = []
+            for item in cart_items:
+                price = item.discount_price or item.actual_price
+                processed_cart_items.append({
+                    'product': item.product,
+                    'color': item.color,
+                    'quantity': item.quantity,
+                    'total_price': price * item.quantity
+                })
+
+            context = {
+                "cart_items": processed_cart_items, "subtotal": subtotal, "shipping_charge": shipping_charge,
+                "grand_total": grand_total, "razorpay_order": razorpay_order,
+                "razorpay_key": settings.RAZORPAY_KEY_ID, "amount_to_pay_now": razorpay_amount,
+                "order": order, "form_data": data,
+            }
+            return render(request, 'order/checkout.html', context)
+        except Exception as e:
+            messages.error(request, f"Could not create payment order: {e}")
+            order.status = "CANCELLED"; order.save()
+            return redirect('checkout')
+
+    # --- UPDATED GET Request (initial page load) ---
+    # We now process the cart items to calculate total_price for each
+    processed_cart_items = []
+    for item in cart_items:
+        price = item.discount_price or item.actual_price
+        processed_cart_items.append({
+            'product': item.product,
+            'color': item.color,
+            'quantity': item.quantity,
+            'total_price': price * item.quantity
+        })
+
+    context = { 
+        "cart_items": processed_cart_items, # Pass the processed list
         "subtotal": subtotal,
-        "shipping_charge": shipping_charge, # Initially 0
-        "grand_total": subtotal, # Initially same as subtotal
-        "razorpay_key": settings.RAZORPAY_KEY_ID,
-        "user_profile": user
+        "shipping_charge": Decimal("0.00"), 
+        "grand_total": subtotal,
+        "razorpay_key": settings.RAZORPAY_KEY_ID, 
+        "user_profile": user 
     }
     return render(request, 'order/checkout.html', context)
-
 # --- Other views (keep as is, but ensure consistency with no 'size' field) ---
 from django.shortcuts import render, get_object_or_404
 from .models import Order
@@ -448,3 +481,77 @@ def update_profile(request):
             messages.error(request, f"Error updating profile: {e}")
 
     return redirect("account")
+
+
+
+
+# ... (at the top of the file, with other imports)
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
+
+# ... (all your existing views like checkout_view, etc.)
+
+
+# --- ADD THIS NEW VIEW FOR THE ADMIN DASHBOARD ---
+# order/views.py
+# order/views.py
+# order/views.py
+# order/views.py
+
+@staff_member_required
+def admin_shipment_dashboard(request, status_filter='pending'):
+    # Base queryset now ALSO filters for Prepaid (RZP) orders only
+    base_query = Order.objects.filter(payment_method='RZP').exclude(
+        status__in=['PENDING', 'CANCELLED', 'DELIVERED']
+    )
+
+    # Apply status filter based on the URL parameter
+    if status_filter == 'pending':
+        orders_to_display = base_query.filter(Q(status='PAID') | Q(status='SHIPMENT_FAILED'))
+        active_tab = 'pending'
+    elif status_filter == 'shipped':
+        orders_to_display = base_query.filter(status='SHIPPED')
+        active_tab = 'shipped'
+    else: # 'all'
+        orders_to_display = base_query
+        active_tab = 'all'
+
+    orders_to_display = orders_to_display.prefetch_related('items__product').order_by('-created_at')
+
+    processed_orders = []
+    for order in orders_to_display:
+        total_weight = sum([item.product.weight * item.quantity for item in order.items.all()])
+        # The COD calculation is no longer needed and has been removed
+        processed_orders.append({
+            'order': order,
+            'total_weight': total_weight,
+        })
+
+    context = {
+        'orders': processed_orders,
+        'active_tab': active_tab,
+    }
+    return render(request, 'order/admin_shipments.html', context)
+
+# ... (all your existing views)
+
+
+# Add this import at the top of your views.py
+from .shiport_shipment_task import process_shipment_for_order
+
+# ...
+
+# --- REPLACE your old function with this one ---
+@staff_member_required
+def create_shipment_for_order(request, order_id):
+    # Call the new task function to do all the work
+    success, message = process_shipment_for_order(order_id)
+
+    # Show a success or error message to the admin
+    if success:
+        messages.success(request, message)
+    else:
+        messages.error(request, message)
+    
+    # Redirect back to the dashboard
+    return redirect('admin_shipment_dashboard')

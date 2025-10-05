@@ -26,6 +26,8 @@ class CartItem(models.Model):
 # --------------------------------------------------------------------------
 # Order Model (Updated with Shipping Fields and Defaults)
 # --------------------------------------------------------------------------
+# order/models.py
+
 class Order(models.Model):
     PAYMENT_CHOICES = (
         ('COD', 'Cash on Delivery'),
@@ -34,6 +36,7 @@ class Order(models.Model):
     STATUS_CHOICES = (
         ('PENDING', 'Pending'),
         ('PAID', 'Paid'),
+        ('SHIPMENT_FAILED', 'Shipment Failed'), # <-- NEW STATUS ADDED
         ('SHIPPED', 'Shipped'),
         ('DELIVERED', 'Delivered'),
         ('CANCELLED', 'Cancelled'),
@@ -49,9 +52,10 @@ class Order(models.Model):
     state = models.CharField(max_length=100)
     pincode = models.CharField(max_length=10)
 
-    # --- Payment & Pricing Info (Updated for Shipping) ---
+    # --- Payment & Pricing Info ---
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
-    payment_id = models.CharField(max_length=100, blank=True, null=True)
+    payment_id = models.CharField(max_length=100, blank=True, null=True, help_text="The Razorpay Payment ID (pay_...)")
+    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True, help_text="The Razorpay Order ID (order_...)")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Total price of products before discount and shipping.")
@@ -69,8 +73,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} by {self.user.phone_number}"
-
-
 # --------------------------------------------------------------------------
 # OrderItem Model (Unchanged)
 # --------------------------------------------------------------------------
