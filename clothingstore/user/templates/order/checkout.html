@@ -4,29 +4,29 @@
 {% block content %}
 <div class="bg-gray-50 min-h-screen py-10 px-4 sm:px-8 lg:px-20 font-[Montserrat]">
   <h1 class="text-2xl font-semibold mb-8 text-gray-900">🧾 Checkout</h1>
+  
+  {% if messages %}
+    <div class="mb-6">
+      {% for message in messages %}
+        <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <div class="grid lg:grid-cols-3 gap-10">
 
-    <div class="bg-white p-6 rounded-xl shadow-sm text-sm order-1 lg:order-last lg:sticky lg:top-20">
+    <div class="bg-white p-6 rounded-xl shadow-sm text-sm order-1 lg:order-last lg:sticky lg:top-20 h-fit">
       <h3 class="text-lg font-semibold mb-4 text-gray-900">Order Summary</h3>
       <div class="space-y-4 max-h-[400px] overflow-y-auto pr-1">
         {% for item in cart_items %}
         <div class="flex gap-4 border-b pb-4">
-          <img src="{{ item.product_image.url }}" class="w-16 h-16 rounded object-cover border">
+          <img src="{{ item.product.primary_image.url }}" class="w-16 h-16 rounded object-cover border">
           <div class="flex-1">
-            <p class="font-medium text-gray-900">{{ item.product_name }}</p>
-            <p class="text-gray-500">Size: {{ item.size }} | Color: {{ item.color.name }}</p>
-            <p class="text-gray-500">Qty: {{ item.quantity }} sets</p> {# Explicitly state "sets" #}
-            
-            {# Price per Piece #}
-            <p class="text-gray-600">Price/Piece: ₹{{ item.product.get_current_price_per_piece|floatformat:0 }}</p>
-
-            {# Price per Set (Conditional) #}
-            {% if item.product.get_total_pieces_in_set > 0 %}
-                <p class="text-gray-500 text-xs">Price/Set: ₹{{ item.product.discount_price|default:item.product.price|floatformat:0 }}</p>
-            {% endif %}
-
-            {# Total for this item #}
+            <p class="font-medium text-gray-900">{{ item.product.name }}</p>
+            <p class="text-gray-500">Size: {{ item.product.sizes }} | Color: {{ item.color.name }}</p>
+            <p class="text-gray-500">Qty: {{ item.quantity }} sets</p>
             <p class="font-semibold text-gray-800 mt-1">Total: ₹{{ item.total_price|floatformat:0 }}</p>
           </div>
         </div>
@@ -35,42 +35,56 @@
       <div class="mt-6 text-sm space-y-2">
         <div class="flex justify-between text-gray-700">
           <span>Subtotal</span>
-          <span>₹{{ total|floatformat:0 }}</span> {# Format total as integer #}
+          <span>₹{{ subtotal|floatformat:0 }}</span>
         </div>
-        <div class="flex justify-between">
+        {% if discount > 0 %}
+        <div class="flex justify-between text-green-600">
           <span>Discount</span>
-          <span class="text-green-600">− ₹{{ discount|floatformat:0 }}</span> {# Format discount as integer #}
+          <span>− ₹{{ discount|floatformat:0 }}</span>
         </div>
+        {% endif %}
         <div class="flex justify-between">
           <span>Shipping</span>
-          <span class="text-green-600">Free</span>
+          <span>
+            {% if shipping_charge > 0 %}
+              ₹{{ shipping_charge|floatformat:0 }}
+            {% else %}
+              <span class="text-xs text-gray-500">Calculated at next step</span>
+            {% endif %}
+          </span>
         </div>
         <hr>
         <div class="flex justify-between font-bold text-base text-gray-900">
-          <span>Total</span>
-          <span>₹{{ total_after_discount|floatformat:0 }}</span> {# Format total_after_discount as integer #}
+          <span>Grand Total</span>
+          <span>₹{{ grand_total|floatformat:0 }}</span>
         </div>
+        {% if order and order.payment_method == 'COD' %}
+        <div class="flex justify-between font-bold text-base text-yellow-600 bg-yellow-100 p-2 rounded-md">
+            <span>Amount to Pay Now</span>
+            <span>₹{{ order.shipping_charge|floatformat:0 }}</span>
+        </div>
+        {% endif %}
       </div>
     </div>
 
     <form method="POST" class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm space-y-6 order-last lg:order-1" id="checkout-form">
       {% csrf_token %}
-      <input type="hidden" name="place_order" value="1">
+      <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
 
       <div class="grid md:grid-cols-2 gap-4 text-sm">
         <div>
           <label class="text-gray-600">Full Name *</label>
-          <input name="full_name" type="text" required
+          <input name="full_name" type="text" value="{{ user.get_full_name }}" required
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div>
           <label class="text-gray-600">Phone *</label>
-          <input name="phone" type="text" required
+          <input name="phone" type="text" value="{{ user.phone_number }}" required
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div>
           <label class="text-gray-600">Email</label>
-          <input name="email" type="email"
+          <input name="email" type="email" value="{{ user.email }}"
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div>
@@ -94,58 +108,75 @@
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
       </div>
-
+      
       <div>
-        <label class="text-sm font-medium text-gray-600">Coupon Code</label>
-        <div class="flex mt-1 gap-2">
-          <input type="text" name="coupon_code" placeholder="Enter coupon code"
-            class="flex-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black text-sm">
-          <button formaction="{% url 'checkout' %}" formmethod="get"
-            class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-black transition text-sm font-medium">
-            Apply
-          </button>
+        <label class="text-sm font-medium text-gray-900">Payment Method</label>
+        <div class="mt-2 grid sm:grid-cols-2 gap-4">
+          <label class="flex items-center p-4 border rounded-lg cursor-pointer has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
+            <input type="radio" name="payment_method" value="RZP" class="form-radio h-4 w-4" checked>
+            <div class="ml-3 text-sm">
+              <p class="font-semibold">Prepaid</p>
+              <p class="text-xs">Pay full amount now via UPI, Cards, etc.</p>
+            </div>
+          </label>
+          <label class="flex items-center p-4 border rounded-lg cursor-pointer has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
+            <input type="radio" name="payment_method" value="COD" class="form-radio h-4 w-4">
+            <div class="ml-3 text-sm">
+              <p class="font-semibold">Cash on Delivery</p>
+              <p class="text-xs">Pay only shipping fee now.</p>
+            </div>
+          </label>
         </div>
       </div>
 
       <div>
-        <input type="hidden" name="payment_method" value="RZP">
-        <button type="button" id="rzp-button"
+        <button type="submit" id="place-order-btn"
           class="mt-6 w-full py-3 bg-black text-white rounded font-semibold hover:bg-gray-900 transition text-sm">
-          Pay ₹{{ total_after_discount|floatformat:0 }}
+          Calculate Shipping & Proceed to Pay
         </button>
       </div>
     </form>
   </div>
 </div>
 
-{% if razorpay_order %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  const razorpayBtn = document.getElementById("rzp-button");
-
-  razorpayBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-
-    const options = {
+  // This script section will only execute if the backend has successfully created a Razorpay order
+  // This happens AFTER you click "Proceed to Pay" and the page reloads.
+  {% if razorpay_order %}
+  var options = {
       "key": "{{ razorpay_key }}",
-      "amount": "{{ amount|safe }}",
+      "amount": "{{ amount_to_pay_now }}", // This is the dynamic amount from the backend
       "currency": "INR",
-      "name": "Clauch Factory",
-      "description": "Clothing Purchase",
+      "name": "Your Store Name",
+      "description": "Order Payment",
       "order_id": "{{ razorpay_order.id }}",
-      "handler": function (response) {
-        const form = document.getElementById("checkout-form");
-        form.insertAdjacentHTML("beforeend", `<input type="hidden" name="razorpay_payment_id" value="${response.razorpay_payment_id}">`);
-        form.submit();
+      "handler": function (response){
+          // This function is called after a successful payment
+          // 1. Set the payment ID in our hidden form field
+          document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+          
+          // 2. Submit the form to the backend for final processing
+          document.getElementById('checkout-form').submit();
+      },
+      "prefill": {
+          "name": "{{ order.full_name }}",
+          "email": "{{ order.email }}",
+          "contact": "{{ order.phone }}"
       },
       "theme": {
-        "color": "#000000"
+          "color": "#000000"
       }
-    };
-
-    const rzp = new Razorpay(options);
-    rzp.open();
-  });
+  };
+  var rzp1 = new Razorpay(options);
+  
+  // Open the Razorpay payment dialog immediately on page load
+  rzp1.open();
+  
+  // Optional: Update button state to prevent re-submission
+  const payBtn = document.getElementById('place-order-btn');
+  payBtn.disabled = true;
+  payBtn.innerText = 'Processing Payment...';
+  {% endif %}
 </script>
-{% endif %}
 {% endblock %}

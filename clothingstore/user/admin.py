@@ -40,7 +40,8 @@ class ProductColorInline(admin.TabularInline):
 # Admin: Product
 # -------------------------------------------
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('thumbnail', 'name', 'price', 'discount_price', 'get_categories', 'get_primary_color')
+    # Added 'weight' to the list display for a quick overview
+    list_display = ('thumbnail', 'name', 'price', 'discount_price', 'weight', 'get_categories', 'get_primary_color')
     list_filter = ('categories',)
     search_fields = ('name', 'slug')
     prepopulated_fields = {"slug": ("name",)}
@@ -50,6 +51,10 @@ class ProductAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('name', 'slug', 'categories', 'price', 'discount_price', 'sizes', 'size_chart')
+        }),
+        # New fieldset to group all shipping-related fields together
+        ("Shipping Details (kg & cm)", {
+            'fields': ('weight', 'length', 'width', 'height')
         }),
         ("Details", {
             'fields': ('description', 'html_description')

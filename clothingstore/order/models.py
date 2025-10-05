@@ -1,46 +1,36 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from user.models import CustomUser, Product, ProductColor
-# Assuming this is in an app like 'order' or 'cart'
-# order/models.py
 
-from django.db import models
-from user.models import CustomUser, Product, ProductColor # Make sure these imports are correct
-
+# --------------------------------------------------------------------------
+# CartItem Model (Unchanged)
+# --------------------------------------------------------------------------
 class CartItem(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     color = models.ForeignKey(ProductColor, on_delete=models.SET_NULL, null=True)
-    # REMOVED: size = models.CharField(max_length=10)
-    quantity = models.PositiveIntegerField(default=1) # This is now the quantity of PACKS/SETS
-
-    # Snapshot fields (keep these as they are good for historical data)
+    quantity = models.PositiveIntegerField(default=1) # Quantity of PACKS/SETS
     product_name = models.CharField(max_length=255)
     product_image = models.ImageField(upload_to='cart_snapshots/')
     actual_price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        # unique_together now only considers user, product, and color
-        # as the 'size' is implicit in the product's 'sizes' field (the pack definition)
         unique_together = ('user', 'product', 'color')
 
     def __str__(self):
         color_info = f" ({self.color.name})" if self.color else ""
-        # Reflects that it's a quantity of packs
         return f"{self.product.name}{color_info} x{self.quantity} packs"
 
 
+# --------------------------------------------------------------------------
+# Order Model (Updated with Shipping Fields and Defaults)
+# --------------------------------------------------------------------------
 class Order(models.Model):
     PAYMENT_CHOICES = (
         ('COD', 'Cash on Delivery'),
         ('RZP', 'Razorpay'),
     )
-
     STATUS_CHOICES = (
         ('PENDING', 'Pending'),
         ('PAID', 'Paid'),
@@ -49,6 +39,7 @@ class Order(models.Model):
         ('CANCELLED', 'Cancelled'),
     )
 
+    # --- Customer and Address Info ---
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
@@ -58,12 +49,21 @@ class Order(models.Model):
     state = models.CharField(max_length=100)
     pincode = models.CharField(max_length=10)
 
+    # --- Payment & Pricing Info (Updated for Shipping) ---
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
     payment_id = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Total price of products before discount and shipping.")
+    shipping_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     coupon_code = models.CharField(max_length=50, blank=True, null=True)
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    grand_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="The final amount paid by the customer.")
+
+    # 🚚 Shipping & Tracking Information
+    shipping_service_name = models.CharField(max_length=100, blank=True, null=True, default=None, help_text="e.g., Delhivery, XpressBees")
+    tracking_id = models.CharField(max_length=100, blank=True, null=True, default=None, help_text="AWB Number from the courier")
+    shipping_label_url = models.URLField(blank=True, null=True, default=None, help_text="URL to the shipping label PDF")
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -71,19 +71,18 @@ class Order(models.Model):
         return f"Order #{self.id} by {self.user.phone_number}"
 
 
+# --------------------------------------------------------------------------
+# OrderItem Model (Unchanged)
+# --------------------------------------------------------------------------
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     color = models.ForeignKey(ProductColor, on_delete=models.SET_NULL, null=True)
-    quantity = models.PositiveIntegerField()  # Quantity of PACKS/SETS
-
-    # Snapshot at the time of ordering
+    quantity = models.PositiveIntegerField()
     product_name = models.CharField(max_length=255)
     product_image = models.ImageField(upload_to='order_snapshots/')
     actual_price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-
-    # NEW fields (important snapshot data)
     price_per_piece_at_purchase = models.DecimalField(max_digits=10, decimal_places=2)
     total_pieces_in_set_at_purchase = models.PositiveIntegerField()
 
@@ -91,6 +90,10 @@ class OrderItem(models.Model):
         color_info = f" ({self.color.name})" if self.color else ""
         return f"{self.product_name}{color_info} x{self.quantity} packs"
 
+
+# --------------------------------------------------------------------------
+# Coupon Model (Unchanged)
+# --------------------------------------------------------------------------
 class Coupon(models.Model):
     code = models.CharField(max_length=50, unique=True)
     discount_type = models.CharField(max_length=10, choices=[('PERCENT', 'Percent'), ('FLAT', 'Flat')])

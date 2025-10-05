@@ -40,29 +40,49 @@ from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 import re # Import regex for parsing sizes
-
+from django.db import models
+from django.utils.text import slugify
+from ckeditor.fields import RichTextField
+import re
 
 # -----------------------------
-# Product Model (Updated)
+# Product Model (Complete and Updated)
 # -----------------------------
 class Product(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
     categories = models.ManyToManyField('Category', related_name='products')
 
-    # Price for one full set (e.g., if a set has 4 shirts, this is the price for all 4)
+    # Price for one full set
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price for one full set.")
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
                                          help_text="Discounted price for one full set.")
 
-    # Describes the composition of sizes in the set (e.g., "1S, 2M, 1L")
-    # This field will now define how many pieces are in a set.
+    # Describes the composition of sizes in the set
     sizes = models.CharField(
         max_length=255,
-        help_text="Composition of sizes in the set (e.g., '1S, 2M, 1L, 1XL'). "
-                  "This determines the total pieces in one set."
+        help_text="Composition of sizes in the set (e.g., '1S, 2M, 1L, 1XL')."
+    )
+    
+    # 📦 Shipping Details
+    weight = models.FloatField(
+        default=0.5,
+        help_text="Weight of the packaged set in kilograms (kg)."
+    )
+    length = models.FloatField(
+        default=30.0,
+        help_text="Length of the packaged set in centimeters (cm)."
+    )
+    width = models.FloatField(
+        default=20.0,
+        help_text="Width of the packaged set in centimeters (cm)."
+    )
+    height = models.FloatField(
+        default=10.0,
+        help_text="Height of the packaged set in centimeters (cm)."
     )
 
+    # General Product Information
     rating = models.FloatField(default=0.0)
     reviews_count = models.PositiveIntegerField(default=0)
     description = models.TextField()
@@ -86,18 +106,13 @@ class Product(models.Model):
         based on the 'sizes' string (e.g., "1S, 2M, 1L" -> 4 pieces).
         """
         total_pieces = 0
-        # Regex to find numbers followed by a size (e.g., "1S", "2M", "10XL")
-        # It handles both single letters and two digits for sizes (e.g., 28, 30, etc.)
-        # and also cases like just "S" implied as "1S".
         pieces_matches = re.findall(r'(\d+)?([A-Z]{1,3}|\d{2})', self.sizes.replace(' ', ''))
 
         for count_str, _size_code in pieces_matches:
             try:
-                # If count_str is empty (e.g., "S" implies 1S), default to 1
                 count = int(count_str) if count_str else 1
                 total_pieces += count
             except ValueError:
-                # Handle cases where parsing might fail, though regex should prevent most
                 continue
         return total_pieces
 
@@ -107,11 +122,10 @@ class Product(models.Model):
         """
         total_pieces = self.get_total_pieces_in_set()
         if total_pieces == 0:
-            return 0.00 # Avoid division by zero
+            return 0.00
 
-        if self.discount_price is not None:
-            return self.discount_price / total_pieces
-        return self.price / total_pieces
+        current_price = self.discount_price if self.discount_price is not None else self.price
+        return current_price / total_pieces
 
     def get_original_price_per_piece(self):
         """
@@ -119,7 +133,7 @@ class Product(models.Model):
         """
         total_pieces = self.get_total_pieces_in_set()
         if total_pieces == 0:
-            return 0.00 # Avoid division by zero
+            return 0.00
         return self.price / total_pieces
 
     # Note: price and discount_price are already "per set" by definition now.
