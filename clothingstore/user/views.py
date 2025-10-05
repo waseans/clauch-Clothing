@@ -486,7 +486,7 @@ User = get_user_model()
 
 client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
 
-TWILIO_TEMPLATE_SID = "HXcd8a4c539a039e2e6ea4d77b056d609f"  # Your approved template SID
+TWILIO_TEMPLATE_SID = "HX82e5aa4c5b2e9c33c875742e453cdea9"  # Your approved template SID
 
 def login_view(request):
     context = {
@@ -532,7 +532,7 @@ def send_otp(request):
             client.messages.create(
                 to=f"whatsapp:+91{phone}",
                 from_=os.getenv("TWILIO_WHATSAPP_FROM"),
-                content_sid="HXcd8a4c539a039e2e6ea4d77b056d609f",  # ✅ Approved template SID
+                content_sid="HX82e5aa4c5b2e9c33c875742e453cdea9",  # ✅ Approved template SID
                 content_variables=json.dumps({"1": code})  # ✅ JSON string for template
             )
             messages.success(request, "OTP sent successfully!")
