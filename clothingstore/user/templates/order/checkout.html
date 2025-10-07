@@ -37,10 +37,12 @@
         <hr>
         <div class="flex justify-between font-bold text-base text-gray-900">
           <span>Grand Total</span>
-          <span id="summary-grand-total">₹{{ grand_total|floatformat:0 }}</span>
+          <span id="summary-grand-total">₹{{ subtotal|floatformat:0 }}</span>
         </div>
-        <div id="amount-to-pay-now-container" class="hidden font-bold text-base text-yellow-600 bg-yellow-100 p-2 rounded-md">
-            </div>
+        <div id="cod-note-container" class="hidden text-xs text-gray-600 bg-gray-100 p-2 rounded-md mt-2">
+          You are paying the shipping fee now. The remaining amount of 
+          <strong class="text-gray-800">₹{{ subtotal|floatformat:0 }}</strong> is to be paid on delivery.
+        </div>
       </div>
     </div>
 
@@ -51,47 +53,41 @@
       <div class="grid md:grid-cols-2 gap-4 text-sm">
         <div>
           <label class="text-gray-600">Full Name *</label>
-          <input name="full_name" type="text" value="{{ form_data.full_name|default:user.full_name }}" required
+          <input name="full_name" type="text" value="{{ form_data.full_name|default:user.full_name|default:'' }}" required
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div>
           <label class="text-gray-600">Phone *</label>
-          <input name="phone" type="text" value="{{ form_data.phone|default:user.phone_number }}" required
+          <input name="phone" type="text" value="{{ form_data.phone|default:user.phone_number|default:'' }}" required
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div>
           <label class="text-gray-600">Email</label>
-          <input name="email" type="email" value="{{ form_data.email|default:user.email }}"
+          <input name="email" type="email" value="{{ form_data.email|default:user.email|default:'' }}"
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div>
           <label class="text-gray-600">Pincode *</label>
-          <input name="pincode" id="pincode-input" type="text" value="{{ form_data.pincode }}" required
+          <input name="pincode" id="pincode-input" type="text" value="{{ form_data.pincode|default:'' }}" required
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div class="md:col-span-2">
           <label class="text-gray-600">Address *</label>
           <textarea name="address" required
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">{{ form_data.address }}</textarea>
+            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">{{ form_data.address|default:'' }}</textarea>
         </div>
         <div>
           <label class="text-gray-600">City *</label>
-          <input name="city" type="text" value="{{ form_data.city }}" required
+          <input name="city" type="text" value="{{ form_data.city|default:'' }}" required
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
         <div>
           <label class="text-gray-600">State *</label>
-          <input name="state" type="text" value="{{ form_data.state }}" required
+          <input name="state" type="text" value="{{ form_data.state|default:'' }}" required
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
         </div>
       </div>
       
-      <div>
-        <button type="button" id="calculate-shipping-btn" class="w-full py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
-          Calculate Shipping
-        </button>
-      </div>
-
       <div>
         <label class="text-sm font-medium text-gray-900">Payment Method</label>
         <div class="mt-2 grid sm:grid-cols-2 gap-4">
@@ -113,9 +109,15 @@
       </div>
 
       <div>
+        <button type="button" id="calculate-shipping-btn" class="w-full mt-4 py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+          Calculate Shipping
+        </button>
+      </div>
+
+      <div>
         <button type="submit" id="pay-now-btn" disabled
           class="mt-6 w-full py-3 bg-black text-white rounded font-semibold transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
-          Pay Now
+          Proceed to Pay
         </button>
       </div>
     </form>
@@ -124,38 +126,84 @@
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  // (The AJAX script is the same as before)
-  document.getElementById('calculate-shipping-btn').addEventListener('click', function() {
-    const pincode = document.getElementById('pincode-input').value;
-    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const payBtn = document.getElementById('pay-now-btn');
-    const messageContainer = document.getElementById('message-container');
-    const amountToPayContainer = document.getElementById('amount-to-pay-now-container');
+document.addEventListener('DOMContentLoaded', function() {
+  // --- Element Definitions ---
+  const pincodeInput = document.getElementById('pincode-input');
+  const calculateBtn = document.getElementById('calculate-shipping-btn');
+  const payBtn = document.getElementById('pay-now-btn');
+  const messageContainer = document.getElementById('message-container');
+  const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const subtotal = parseFloat("{{ subtotal }}");
 
-    this.innerText = 'Calculating...';
-    this.disabled = true;
+  const summaryShippingEl = document.getElementById('summary-shipping');
+  const summaryGrandTotalEl = document.getElementById('summary-grand-total');
+  const codNoteContainer = document.getElementById('cod-note-container');
+
+  // --- State Reset Function ---
+  function resetShippingState() {
+    payBtn.disabled = true;
+    payBtn.innerText = 'Proceed to Pay';
+    summaryShippingEl.classList.add('text-gray-500');
+    summaryShippingEl.innerText = 'Enter pincode to calculate';
+    summaryGrandTotalEl.innerText = `₹${Math.round(subtotal)}`;
+    codNoteContainer.classList.add('hidden');
     messageContainer.innerHTML = '';
-    amountToPayContainer.classList.add('hidden');
+  }
 
+  // --- Event Listeners ---
+  pincodeInput.addEventListener('input', resetShippingState);
+  paymentMethodRadios.forEach(radio => radio.addEventListener('change', resetShippingState));
+  calculateBtn.addEventListener('click', handleShippingCalculation);
+
+  // --- Main Calculation Logic ---
+  function handleShippingCalculation() {
+    const pincode = pincodeInput.value;
+    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+    if (pincode.length !== 6 || !/^\d+$/.test(pincode)) {
+        messageContainer.innerHTML = `<div class="p-4 rounded-md bg-red-100 text-red-700">Please enter a valid 6-digit pincode.</div>`;
+        return;
+    }
+
+    calculateBtn.innerText = 'Calculating...';
+    calculateBtn.disabled = true;
+    resetShippingState(); // Clear previous state before new calculation
+
+    // ✅ FIXED: Sending data as JSON to match the backend view
     fetch("{% url 'ajax_calculate_shipping' %}", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken,
       },
-      body: `pincode=${pincode}&payment_method=${paymentMethod}`
+      body: JSON.stringify({
+        pincode: pincode,
+        payment_method: paymentMethod
+      })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error || 'Server error'); });
+        }
+        return response.json();
+    })
     .then(data => {
-      if (data.error) { throw new Error(data.error); }
+      const shippingCharge = parseFloat(data.shipping_charge);
+      const grandTotal = parseFloat(data.grand_total);
       
-      document.getElementById('summary-shipping').innerText = `₹${Math.round(data.shipping_charge)}`;
-      document.getElementById('summary-grand-total').innerText = `₹${Math.round(data.grand_total)}`;
+      summaryShippingEl.innerText = `₹${Math.round(shippingCharge)}`;
+      summaryShippingEl.classList.remove('text-gray-500');
+      summaryGrandTotalEl.innerText = `₹${Math.round(grandTotal)}`;
       
+      let amountToPay = grandTotal;
+
       if (paymentMethod === 'COD') {
-        amountToPayContainer.innerHTML = `<div class="flex justify-between"><span>Amount to Pay Now</span><span>₹${Math.round(data.shipping_charge)}</span></div>`;
-        amountToPayContainer.classList.remove('hidden');
+        amountToPay = shippingCharge;
+        codNoteContainer.classList.remove('hidden');
+        payBtn.innerText = `Pay Shipping ₹${Math.round(amountToPay)}`;
+      } else {
+        payBtn.innerText = `Pay ₹${Math.round(amountToPay)}`;
       }
 
       payBtn.disabled = false;
@@ -163,30 +211,48 @@
     })
     .catch(error => {
       messageContainer.innerHTML = `<div class="p-4 rounded-md bg-red-100 text-red-700">${error.message}</div>`;
-      payBtn.disabled = true;
+      resetShippingState();
     })
     .finally(() => {
-      this.innerText = 'Calculate Shipping';
-      this.disabled = false;
+      calculateBtn.innerText = 'Calculate Shipping';
+      calculateBtn.disabled = false;
     });
-  });
+  }
 
-  // (The Razorpay script is the same as before)
+  // --- Razorpay Handler ---
   {% if razorpay_order %}
   var options = {
-      "key": "{{ razorpay_key }}", "amount": "{{ amount_to_pay_now }}", "currency": "INR",
-      "name": "Clauch Factory", "description": "Order Payment", "order_id": "{{ razorpay_order.id }}",
+      "key": "{{ razorpay_key }}",
+      "amount": "{{ amount_to_pay_now }}",
+      "currency": "INR",
+      "name": "Your Store Name",
+      "description": "Order Payment",
+      "order_id": "{{ razorpay_order.id }}",
       "handler": function (response){
           document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
           document.getElementById('checkout-form').submit();
       },
-      "prefill": { "name": "{{ order.full_name }}", "email": "{{ order.email }}", "contact": "{{ order.phone }}" },
+      "prefill": {
+          "name": "{{ order.full_name }}",
+          "email": "{{ order.email }}",
+          "contact": "{{ order.phone }}"
+      },
       "theme": { "color": "#000000" }
   };
   var rzp1 = new Razorpay(options);
+  
+  // Handle payment failure
+  rzp1.on('payment.failed', function (response){
+      messageContainer.innerHTML = `<div class="p-4 rounded-md bg-red-100 text-red-700">Payment failed: ${response.error.description}. Please try again.</div>`;
+      // Re-enable the form fields if needed
+  });
+  
   rzp1.open();
+
+  // Visually indicate payment is in progress
   document.getElementById('pay-now-btn').disabled = true;
   document.getElementById('pay-now-btn').innerText = 'Processing Payment...';
   {% endif %}
+});
 </script>
 {% endblock %}
