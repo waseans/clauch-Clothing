@@ -23,26 +23,32 @@ class CartItem(models.Model):
         return f"{self.product.name}{color_info} x{self.quantity} packs"
 
 
-# --------------------------------------------------------------------------
-# Order Model (Updated with Shipping Fields and Defaults)
-# --------------------------------------------------------------------------
-# order/models.py
-
 class Order(models.Model):
+    # --- New, More Specific Status Choices ---
+    PAYMENT_STATUS_CHOICES = (
+        ('UNPAID', 'Unpaid'),
+        ('PAID', 'Paid'),
+        ('SHIPPING_FEE_PAID', 'Shipping Fee Paid'), # Specific to your COD flow
+        ('FAILED', 'Failed'),
+        ('REFUNDED', 'Refunded'),
+    )
+
+    SHIPPING_STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('READY_TO_SHIP', 'Ready to Ship'),
+        ('SHIPPED', 'Shipped'),
+        ('DELIVERED', 'Delivered'),
+        ('CANCELLED', 'Cancelled'),
+        ('SHIPMENT_FAILED', 'Shipment Failed'),
+        ('RETURNED', 'Returned'),
+    )
+
     PAYMENT_CHOICES = (
         ('COD', 'Cash on Delivery'),
         ('RZP', 'Razorpay'),
     )
-    STATUS_CHOICES = (
-        ('PENDING', 'Pending'),
-        ('PAID', 'Paid'),
-        ('SHIPMENT_FAILED', 'Shipment Failed'), # <-- NEW STATUS ADDED
-        ('SHIPPED', 'Shipped'),
-        ('DELIVERED', 'Delivered'),
-        ('CANCELLED', 'Cancelled'),
-    )
 
-    # --- Customer and Address Info ---
+    # --- Customer and Address Info (Unchanged) ---
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
@@ -52,11 +58,14 @@ class Order(models.Model):
     state = models.CharField(max_length=100)
     pincode = models.CharField(max_length=10)
 
-    # --- Payment & Pricing Info ---
+    # --- Payment & Pricing Info (Updated) ---
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
     payment_id = models.CharField(max_length=100, blank=True, null=True, help_text="The Razorpay Payment ID (pay_...)")
     razorpay_order_id = models.CharField(max_length=100, blank=True, null=True, help_text="The Razorpay Order ID (order_...)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    
+    # ✅ REPLACED the old 'status' field with these two new fields
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='UNPAID')
+    shipping_status = models.CharField(max_length=20, choices=SHIPPING_STATUS_CHOICES, default='PENDING')
     
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Total price of products before discount and shipping.")
     shipping_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -64,7 +73,7 @@ class Order(models.Model):
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     grand_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="The final amount paid by the customer.")
 
-    # 🚚 Shipping & Tracking Information
+    # 🚚 Shipping & Tracking Information (Unchanged)
     shipping_service_name = models.CharField(max_length=100, blank=True, null=True, default=None, help_text="e.g., Delhivery, XpressBees")
     tracking_id = models.CharField(max_length=100, blank=True, null=True, default=None, help_text="AWB Number from the courier")
     shipping_label_url = models.URLField(blank=True, null=True, default=None, help_text="URL to the shipping label PDF")
@@ -72,7 +81,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order #{self.id} by {self.user.phone_number}"
+        # ✅ Updated to show both new statuses for better admin visibility
+        return f"Order #{self.id} | Pay: {self.get_payment_status_display()} | Ship: {self.get_shipping_status_display()}"
 # --------------------------------------------------------------------------
 # OrderItem Model (Unchanged)
 # --------------------------------------------------------------------------

@@ -200,26 +200,6 @@ from .models import CartItem, Order, OrderItem, Coupon
 from .shiport_utils import get_cheapest_shipping_rate, create_shiport_shipment 
 
 # In order/views.py
-
-import json # <-- Add this import
-from django.http import JsonResponse # <-- Add this import
-from django.views.decorators.http import require_POST # <-- Add this import
-
-# Import BOTH shipping utility files
-from .shiport_utils import get_cheapest_shipping_rate as get_shiport_rate
-from .ithink_services import get_cheapest_rate as get_ithink_rate
-import json
-from decimal import Decimal
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
-from .models import CartItem
-
-# Import BOTH shipping utility files, including the NEW iThink function
-from .shiport_utils import get_cheapest_shipping_rate as get_shiport_rate
-from .ithink_services import get_rate_for_checkout as get_ithink_rate_for_checkout # ✅ UPDATED
-
 # In order/views.py
 
 # --- Cleaned up Imports ---
@@ -236,11 +216,12 @@ from .models import CartItem, Order, OrderItem
 from .shiport_utils import get_cheapest_shipping_rate as get_shiport_rate
 from .ithink_services import get_rate_for_checkout as get_ithink_rate_for_checkout
 
-# Your ajax_calculate_shipping view remains the same...
+
+# This view is already correct and does not need changes
 @login_required(login_url='login')
 @require_POST
 def ajax_calculate_shipping(request):
-    # ... (no changes needed here)
+    # ... (code is correct as is)
     data = json.loads(request.body)
     pincode = data.get('pincode')
     payment_method = data.get('payment_method', 'RZP') 
@@ -288,7 +269,7 @@ def ajax_calculate_shipping(request):
     })
 
 
-# --- CORRECTED checkout_view ---
+# --- UPDATED checkout_view ---
 @login_required(login_url='login')
 def checkout_view(request):
     user = request.user
@@ -301,11 +282,10 @@ def checkout_view(request):
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
     subtotal = Decimal(str(subtotal))
 
-    # ✅ BUG FIX: The line deleting session info has been moved from here.
-
     if request.method == 'POST':
         data = request.POST
         
+        # --- THIS BLOCK IS FOR AFTER PAYMENT IS COMPLETED ---
         if data.get("razorpay_payment_id"):
             order_id = request.session.get('order_id')
             if not order_id:
@@ -314,18 +294,24 @@ def checkout_view(request):
 
             order = get_object_or_404(Order, id=order_id, user=user)
             order.payment_id = data.get("razorpay_payment_id")
-            order.status = "PAID"
+
+            # ✅ UPDATED: Conditional status logic
+            if order.payment_method == 'RZP':
+                order.payment_status = 'PAID'
+            elif order.payment_method == 'COD':
+                order.payment_status = 'SHIPPING_FEE_PAID'
+            
+            order.shipping_status = 'READY_TO_SHIP'
             order.save()
 
             cart_items.delete()
             
-            # ✅ MOVED HERE: Clean up the session only AFTER successful payment.
             if 'order_id' in request.session: del request.session['order_id']
             if 'shipping_info' in request.session: del request.session['shipping_info']
             
             return redirect('order_success', order_id=order.id)
 
-        # The rest of the POST logic is correct
+        # --- THIS BLOCK IS FOR CREATING THE ORDER BEFORE PAYMENT ---
         shipping_info = request.session.get('shipping_info')
         if not shipping_info:
             messages.error(request, "Please calculate shipping before proceeding to pay.")
@@ -342,9 +328,14 @@ def checkout_view(request):
         order = Order.objects.create(
             user=user, full_name=data['full_name'], phone=data['phone'], email=data.get('email', ''),
             address=data['address'], city=data['city'], state=data['state'], pincode=data['pincode'],
-            payment_method=payment_method, subtotal=subtotal, 
-            shipping_charge=shipping_charge, grand_total=grand_total,
-            shipping_service_name=shipping_service['service_name'], status="PENDING",
+            payment_method=payment_method, 
+            subtotal=subtotal, 
+            shipping_charge=shipping_charge, 
+            grand_total=grand_total,
+            shipping_service_name=shipping_service['service_name'],
+            # ✅ UPDATED: Set correct initial statuses
+            payment_status='UNPAID',
+            shipping_status='PENDING',
         )
         for item in cart_items:
             order.items.create(
@@ -358,7 +349,6 @@ def checkout_view(request):
         request.session['order_id'] = order.id
 
         try:
-            # You need to initialize the razorpay_client
             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
             razorpay_order = razorpay_client.order.create({
                 "amount": razorpay_amount, "currency": "INR", "payment_capture": 1, "notes": {"order_id": order.id}
@@ -385,10 +375,13 @@ def checkout_view(request):
             return render(request, 'order/checkout.html', context)
         except Exception as e:
             messages.error(request, f"Could not create payment order: {e}")
-            order.status = "CANCELLED"; order.save()
+            # ✅ UPDATED: Set correct failure statuses
+            order.payment_status = 'FAILED'
+            order.shipping_status = 'CANCELLED'
+            order.save()
             return redirect('checkout')
 
-    # GET Request logic is correct
+    # --- GET Request logic (no changes needed) ---
     processed_cart_items = []
     for item in cart_items:
         price = item.discount_price or item.actual_price
@@ -535,26 +528,39 @@ from django.db.models import Q
 
 # ... (all your existing views like checkout_view, etc.)
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.db.models import Q
+from .models import Order
+from .shiport_shipment_task import process_shipment_for_order
+from . import ithink_services
 
-# --- ADD THIS NEW VIEW FOR THE ADMIN DASHBOARD ---
-# order/views.py
-# order/views.py
-# order/views.py
-# order/views.py
+# ---------------------------------------------------------------------
+# PREPAID (Shiport) SHIPMENT DASHBOARD
+# ---------------------------------------------------------------------
 
 @staff_member_required
 def admin_shipment_dashboard(request, status_filter='pending'):
-    # Base queryset now ALSO filters for Prepaid (RZP) orders only
-    base_query = Order.objects.filter(payment_method='RZP').exclude(
-        status__in=['PENDING', 'CANCELLED', 'DELIVERED']
+    """Dashboard for PREPAID (Shiport) orders."""
+    # Base queryset filters for Prepaid (RZP) orders only
+    base_query = Order.objects.filter(payment_method='RZP')
+
+    # ✅ UPDATED: Use the new shipping_status field
+    base_query = base_query.exclude(
+        shipping_status__in=['PENDING', 'CANCELLED', 'DELIVERED']
     )
 
-    # Apply status filter based on the URL parameter
     if status_filter == 'pending':
-        orders_to_display = base_query.filter(Q(status='PAID') | Q(status='SHIPMENT_FAILED'))
+        # A pending shipment is one where payment is 'PAID' and shipping is 'READY_TO_SHIP' or 'SHIPMENT_FAILED'
+        orders_to_display = base_query.filter(
+            payment_status='PAID',
+            shipping_status__in=['READY_TO_SHIP', 'SHIPMENT_FAILED']
+        )
         active_tab = 'pending'
     elif status_filter == 'shipped':
-        orders_to_display = base_query.filter(status='SHIPPED')
+        # ✅ UPDATED: Use the new shipping_status field
+        orders_to_display = base_query.filter(shipping_status='SHIPPED')
         active_tab = 'shipped'
     else: # 'all'
         orders_to_display = base_query
@@ -564,8 +570,7 @@ def admin_shipment_dashboard(request, status_filter='pending'):
 
     processed_orders = []
     for order in orders_to_display:
-        total_weight = sum([item.product.weight * item.quantity for item in order.items.all()])
-        # The COD calculation is no longer needed and has been removed
+        total_weight = sum([item.product.weight * item.quantity for item in order.items.all() if item.product])
         processed_orders.append({
             'order': order,
             'total_weight': total_weight,
@@ -577,124 +582,103 @@ def admin_shipment_dashboard(request, status_filter='pending'):
     }
     return render(request, 'order/admin_shipments.html', context)
 
-# ... (all your existing views)
 
-
-# Add this import at the top of your views.py
-from .shiport_shipment_task import process_shipment_for_order
-
-# ...
-
-# --- REPLACE your old function with this one ---
 @staff_member_required
 def create_shipment_for_order(request, order_id):
-    # Call the new task function to do all the work
+    """Triggers the shipment creation task for a PREPAID order."""
+    # This view delegates the work, so it doesn't need changes.
+    # We assume 'process_shipment_for_order' is also updated to use the new statuses.
     success, message = process_shipment_for_order(order_id)
 
-    # Show a success or error message to the admin
     if success:
         messages.success(request, message)
     else:
         messages.error(request, message)
     
-    # Redirect back to the dashboard
-    # At the end of the function
     return redirect('admin_shipment_dashboard_default')
 
 
-
-# your other imports like render, staff_member_required, Q, Order...
+# ---------------------------------------------------------------------
+# COD (iThink) SHIPMENT DASHBOARD
+# ---------------------------------------------------------------------
+# In your views.py
 
 @staff_member_required
 def admin_ithink_dashboard(request, status_filter='pending'):
-    """
-    Dashboard to display and manage COD orders for shipment via iThink Logistics.
-    """
-    # Base queryset now filters for COD orders only
-    base_query = Order.objects.filter(payment_method='COD').exclude(
-        status__in=['CANCELLED', 'DELIVERED'] # Exclude irrelevant orders
+    """Dashboard for COD (iThink) orders."""
+    # Base queryset filters for COD orders only
+    base_query = Order.objects.filter(payment_method='COD')
+    
+    base_query = base_query.exclude(
+        shipping_status__in=['CANCELLED', 'DELIVERED']
     )
 
-    # Apply status filter based on the URL parameter
     if status_filter == 'pending':
-        # For COD, the initial state is 'PENDING', not 'PAID'
-        orders_to_display = base_query.filter(Q(status='PENDING') | Q(status='SHIPMENT_FAILED'))
+        orders_to_display = base_query.filter(
+            payment_status='SHIPPING_FEE_PAID',
+            shipping_status__in=['READY_TO_SHIP', 'SHIPMENT_FAILED']
+        )
         active_tab = 'pending'
     elif status_filter == 'shipped':
-        orders_to_display = base_query.filter(status='SHIPPED')
+        orders_to_display = base_query.filter(shipping_status='SHIPPED')
         active_tab = 'shipped'
     else: # 'all'
         orders_to_display = base_query
         active_tab = 'all'
 
+    # Use prefetch_related for better performance
     orders_to_display = orders_to_display.prefetch_related('items__product').order_by('-created_at')
 
     processed_orders = []
     for order in orders_to_display:
-        # Calculate total weight based on the weight in the Product model
-        # Ensure your Product model has a 'weight' field (in kg)
-        total_weight = sum([item.product.weight * item.quantity for item in order.items.all() if item.product])
-        
+        # ✅ UPDATED: Use the same weight calculation as the API call for consistency
+        representative_item = order.items.first()
+        display_weight = 0
+        if representative_item and representative_item.product:
+            display_weight = representative_item.product.weight
+            
         processed_orders.append({
             'order': order,
-            'total_weight': total_weight,
+            'total_weight': display_weight, # Use the consistent weight
         })
 
     context = {
         'orders': processed_orders,
         'active_tab': active_tab,
     }
-    # Render the new template we are about to create
     return render(request, 'order/admin_ithink.html', context)
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib import messages
-from django.db.models import Q
-from .models import Order
-from . import ithink_services # <-- IMPORT THE NEW SERVICE FILE
-
-# This is your existing admin_ithink_dashboard view...
 
 @staff_member_required
 def create_ithink_shipment(request, order_id):
-    """
-    Handles the 'Create Shipment' button click.
-    1. Gets cheapest rate from iThink.
-    2. Creates the shipment with iThink.
-    3. Updates the order in the database.
-    """
+    """Handles the 'Create Shipment' button click for a COD order."""
     order = get_object_or_404(Order, id=order_id, payment_method='COD')
 
-    # Step 1: Get the cheapest shipping rate
     rate_response = ithink_services.get_cheapest_rate(order)
 
     if rate_response['status'] == 'error':
-        order.status = 'SHIPMENT_FAILED'
+        # ✅ UPDATED: Set shipping_status on failure
+        order.shipping_status = 'SHIPMENT_FAILED'
         order.save()
         messages.error(request, f"Order #{order.id} Failed: Could not get shipping rates. Reason: {rate_response['message']}")
         return redirect('admin_ithink_dashboard_default')
 
     cheapest_courier = rate_response['courier_name']
-    shipping_rate = rate_response['rate']
-    messages.info(request, f"Found cheapest courier for Order #{order.id}: {cheapest_courier} at ₹{shipping_rate:.2f}. Now creating shipment...")
+    shipping_rate = Decimal(rate_response['rate'])
 
-    # Step 2: Create the shipment with the chosen courier
     shipment_response = ithink_services.create_ithink_order(order, cheapest_courier)
 
     if shipment_response['status'] == 'error':
-        order.status = 'SHIPMENT_FAILED'
+        # ✅ UPDATED: Set shipping_status on failure
+        order.shipping_status = 'SHIPMENT_FAILED'
         order.save()
         messages.error(request, f"Order #{order.id} Failed: Could not create shipment. Reason: {shipment_response['message']}")
         return redirect('admin_ithink_dashboard_default')
 
-    # Step 3: Success! Update the order and save it.
+    # ✅ UPDATED: Set shipping_status on success
     order.tracking_id = shipment_response['waybill']
     order.shipping_service_name = shipment_response['courier']
-    order.shipping_charge = shipping_rate # Update the actual shipping charge
-    order.status = 'SHIPPED'
+    order.shipping_charge = shipping_rate
+    order.shipping_status = 'SHIPPED'
     order.save()
 
     messages.success(request, f"Successfully created shipment for Order #{order.id}! AWB: {order.tracking_id}")

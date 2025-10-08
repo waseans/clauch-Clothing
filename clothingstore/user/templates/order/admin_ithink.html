@@ -6,7 +6,6 @@
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
       <h1 class="text-3xl font-bold text-gray-900">🚚 iThink Logistics (COD)</h1>
       
-      <!-- IMPORTANT: Updated URL names for tabs -->
       <div class="mt-4 sm:mt-0 flex items-center border border-gray-200 rounded-lg p-1 bg-white shadow-sm">
         <a href="{% url 'admin_ithink_dashboard' status_filter='pending' %}" 
            class="px-4 py-1.5 text-sm font-medium rounded-md transition {% if active_tab == 'pending' %}bg-black text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
@@ -26,7 +25,7 @@
     {% if messages %}
       <div class="mb-6">
         {% for message in messages %}
-          <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}" role="alert">
+          <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}" role="alert">
             {{ message }}
           </div>
         {% endfor %}
@@ -67,29 +66,42 @@
                 <p class="text-xs font-bold mt-2 pt-2 border-t">{{ data.total_weight|floatformat:2 }} kg</p>
             </td>
             <td class="px-6 py-4 text-xs">
-                <p>
-                    <span class="font-semibold">Total:</span> ₹{{ data.order.grand_total|floatformat:0 }}
-                </p>
-                <p>
-                    <span class="font-semibold">Method:</span> {{ data.order.get_payment_method_display }}
-                </p>
+                <p><span class="font-semibold">Total:</span> ₹{{ data.order.grand_total|floatformat:0 }}</p>
+                <p><span class="font-semibold">Method:</span> {{ data.order.get_payment_method_display }}</p>
             </td>
-            <td class="px-6 py-4">
-              {% if data.order.status == 'SHIPMENT_FAILED' %}
-                <span class="px-2 py-1 font-semibold text-xs leading-tight text-red-700 bg-red-100 rounded-full">Failed</span>
-              {% elif data.order.status == 'PENDING' %} <!-- Changed from PAID to PENDING -->
-                <span class="px-2 py-1 font-semibold text-xs leading-tight text-green-700 bg-green-100 rounded-full">Ready</span>
-              {% elif data.order.status == 'SHIPPED' %}
-                <span class="px-2 py-1 font-semibold text-xs leading-tight text-blue-700 bg-blue-100 rounded-full">Shipped</span>
-              {% endif %}
+            <td class="px-6 py-4 text-xs space-y-1">
+              <div class="flex items-center">
+                  <span class="font-semibold mr-1">Payment:</span>
+                  {% if data.order.payment_status == 'SHIPPING_FEE_PAID' %}
+                    <span class="px-2 py-0.5 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">Shipping Paid</span>
+                  {% else %}
+                    <span class="px-2 py-0.5 font-semibold leading-tight text-yellow-700 bg-yellow-100 rounded-full">{{ data.order.get_payment_status_display }}</span>
+                  {% endif %}
+              </div>
+              <div class="flex items-center">
+                  <span class="font-semibold mr-1">Shipping:</span>
+                  {% if data.order.shipping_status == 'SHIPMENT_FAILED' %}
+                    <span class="px-2 py-0.5 font-semibold leading-tight text-red-700 bg-red-100 rounded-full">Failed</span>
+                  {% elif data.order.shipping_status == 'READY_TO_SHIP' %}
+                    <span class="px-2 py-0.5 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full">Ready to Ship</span>
+                  {% elif data.order.shipping_status == 'SHIPPED' %}
+                    <span class="px-2 py-0.5 font-semibold leading-tight text-purple-700 bg-purple-100 rounded-full">Shipped</span>
+                  {% else %}
+                     <span class="px-2 py-0.5 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">{{ data.order.get_shipping_status_display }}</span>
+                  {% endif %}
+              </div>
             </td>
+            
             <td class="px-6 py-4 text-xs">
-              <!-- IMPORTANT: This button needs a new URL and view which we will create next -->
-              {% if data.order.status == 'PENDING' or data.order.status == 'SHIPMENT_FAILED' %}
-                <a href="{% url 'create_ithink_shipment' data.order.id %}" class="font-medium text-white bg-black hover:bg-gray-800 py-2 px-4 rounded-lg whitespace-nowrap">
-                  Create Shipment
-                </a>
-              {% elif data.order.status == 'SHIPPED' %}
+              {% if data.order.payment_status == 'SHIPPING_FEE_PAID' %}
+                {% if data.order.shipping_status == 'READY_TO_SHIP' or data.order.shipping_status == 'SHIPMENT_FAILED' %}
+                  <a href="{% url 'create_ithink_shipment' data.order.id %}" class="font-medium text-white bg-black hover:bg-gray-800 py-2 px-4 rounded-lg whitespace-nowrap">
+                    Create Shipment
+                  </a>
+                {% endif %}
+              {% endif %}
+
+              {% if data.order.shipping_status == 'SHIPPED' %}
                 <div class="space-y-1">
                   <p class="font-semibold text-gray-800">{{ data.order.tracking_id }}</p>
                   <p class="text-gray-500">{{ data.order.shipping_service_name }}</p>

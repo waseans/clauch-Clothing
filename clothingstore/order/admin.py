@@ -1,6 +1,9 @@
-from django.contrib import admin
-from .models import CartItem, Order, OrderItem, Coupon # Ensure all models are imported
+# In order/admin.py
 
+from django.contrib import admin
+from .models import CartItem, Order, OrderItem, Coupon
+
+# ... (CartItemAdmin class is fine) ...
 @admin.register(CartItem)
 class CartItemAdmin(admin.ModelAdmin):
     list_display = ['user', 'product_name', 'color', 'quantity', 'added_at', 'get_product_pack_composition']
@@ -12,42 +15,41 @@ class CartItemAdmin(admin.ModelAdmin):
     get_product_pack_composition.short_description = 'Pack Composition'
 
 
-# This class allows you to see and edit order items directly within an order
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    extra = 0 # Prevents showing extra, empty forms
+    extra = 0
     readonly_fields = [
         'product', 'color', 'product_name', 'quantity', 
         'actual_price', 'discount_price', 
         'price_per_piece_at_purchase', 'total_pieces_in_set_at_purchase'
     ]
-
-    def has_add_permission(self, request, obj=None):
-        return False # Disables adding new order items from the admin
-
-    def has_delete_permission(self, request, obj=None):
-        return False # Disables deleting order items from the admin
+    def has_add_permission(self, request, obj=None): return False
+    def has_delete_permission(self, request, obj=None): return False
 
 
+# ✅ UPDATED OrderAdmin CLASS
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    # Updated list_display to use new fields and remove 'total_amount'
-    list_display = ['id', 'full_name', 'status', 'grand_total', 'shipping_charge', 'tracking_id', 'created_at']
+    # Replaced 'status' with the two new status fields
+    list_display = ['id', 'full_name', 'payment_status', 'shipping_status', 'grand_total', 'tracking_id', 'created_at']
     
-    list_filter = ['status', 'payment_method', 'created_at']
+    # Replaced 'status' with the two new status fields for filtering
+    list_filter = ['payment_status', 'shipping_status', 'payment_method', 'created_at']
     
-    # Added 'tracking_id' to search fields for easy lookup
     search_fields = ['user__phone_number', 'full_name', 'tracking_id']
     
+    # Added the new status fields to readonly_fields as well
     readonly_fields = [
-        'user', 'payment_id', 'created_at', 'subtotal', 
+        'user', 'payment_id', 'razorpay_order_id', 'created_at', 'subtotal', 
         'shipping_charge', 'discount_amount', 'grand_total',
-        'shipping_service_name', 'tracking_id', 'shipping_label_url'
+        'shipping_service_name', 'tracking_id', 'shipping_label_url',
+        'payment_status', 'shipping_status' # Add them here
     ]
     
-    inlines = [OrderItemInline] # Adds the OrderItem view to the Order page
+    inlines = [OrderItemInline]
 
 
+# ... (OrderItemAdmin and CouponAdmin classes are fine) ...
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ['order', 'product_name', 'color', 'quantity', 'get_product_pack_composition']
