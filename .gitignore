@@ -39,3 +39,4 @@ npm-debug.log
 
 # __EXCEPT__ the database
 # (don’t ignore your database file like `db.sqlite3` unless you add it manually)
+db.sqlite3

@@ -141,35 +141,32 @@
 </div>
 
 <!-- 📱 Fixed Mobile Top Navigation -->
-<div class="fixed top-5 left-0 w-full bg-white border-b z-40 md:hidden flex flex-col items-center px-4 py-2 space-y-2">
-  
-  <!-- Upper Row - Logo/Heading (Clickable to Home) -->
-  <div class="w-full">
-    <div class="text-[20px] font-bold text-black font-montserrat text-center">
-      <a href="{% url 'home' %}" class="hover:text-gray-700 transition">
-        ClauchFactory
-      </a>
-    </div>
-    <!-- Thin grey line below heading -->
-    <div class="w-full border-b border-gray-300 border-[0.5px] mt-1"></div>
+<!-- 📱 Fixed Mobile Top Navigation -->
+<div class="fixed top-5 left-0 w-full bg-white border-b z-40 md:hidden flex items-center justify-between px-4 py-2">
+  <!-- Left - Logo/Text -->
+  <div class="text-[16px] font-semibold text-black font-montserrat">
+    <a href="{% url 'home' %}" class="hover:text-gray-700 transition">
+      Clauch
+    </a>
   </div>
 
-  <!-- Lower Row - Text Links (Smaller & Lighter) -->
-  <div class="flex space-x-4 mt-2">
-    <a href="{% url 'new' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
+  <!-- Right - Text Links Only -->
+  <div class="flex space-x-4">
+    <a href="{% url 'new' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Shop
     </a>
-    <a href="{% url 'showroom' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
+    <a href="{% url 'showroom' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Showroom
     </a>
-    <a href="{% url 'blogs' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
+    <a href="{% url 'blogs' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Blogs
     </a>
-    <a href="{% url 'course_list' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
+    <a href="{% url 'course_list' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Courses
     </a>
   </div>
 </div>
+
 
 
 
