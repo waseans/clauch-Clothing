@@ -530,11 +530,11 @@ def send_otp(request):
 
         try:
             client.messages.create(
-                to=f"whatsapp:+91{phone}",
-                from_=os.getenv("TWILIO_WHATSAPP_FROM"),
-                content_sid="HX82e5aa4c5b2e9c33c875742e453cdea9",  # ✅ Approved template SID
-                content_variables=json.dumps({"1": code})  # ✅ JSON string for template
+                body=f"Your OTP for ClauchFactory is {code}. It will expire in 5 minutes. Happy Shopping with Clauch! ",
+                from_="+19377162669",  # same number as WhatsApp FROM
+                to=f"+91{phone}"
             )
+
             messages.success(request, "OTP sent successfully!")
         except Exception as e:
             messages.error(request, "Failed to send OTP. Please try again.")
