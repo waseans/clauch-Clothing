@@ -73,7 +73,7 @@
     "@type": "Organization",
     "name": "Clauch Factory",
     "url": "https://clauchfactory.com/",
-    "logo": "https://clauchfactory.com/static/images/logo.png",
+    "logo": "https://clauchfactory.com/static/images/clauch-logo.jpg",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+91-9021275825",
@@ -141,21 +141,31 @@
 </div>
 
 <!-- 📱 Fixed Mobile Top Navigation -->
-<div class="fixed top-5 left-0 w-full bg-white border-b z-40 md:hidden flex items-center justify-between px-4 py-2">
-  <!-- Left - Logo/Text -->
-  <div class="text-[16px] font-semibold text-black font-montserrat">
-    Clauch
+<div class="fixed top-5 left-0 w-full bg-white border-b z-40 md:hidden flex flex-col items-center px-4 py-2 space-y-2">
+  
+  <!-- Upper Row - Logo/Heading (Clickable to Home) -->
+  <div class="w-full">
+    <div class="text-[20px] font-bold text-black font-montserrat text-center">
+      <a href="{% url 'home' %}" class="hover:text-gray-700 transition">
+        ClauchFactory
+      </a>
+    </div>
+    <!-- Thin grey line below heading -->
+    <div class="w-full border-b border-gray-300 border-[0.5px] mt-1"></div>
   </div>
 
-  <!-- Right - Text Links Only -->
-  <div class="flex space-x-4">
-    <a href="{% url 'new' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
-      B2B Collection
+  <!-- Lower Row - Text Links (Smaller & Lighter) -->
+  <div class="flex space-x-4 mt-2">
+    <a href="{% url 'new' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
+      Shop
     </a>
-    <a href="{% url 'showroom' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+    <a href="{% url 'showroom' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
       Showroom
     </a>
-    <a href="{% url 'course_list' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+    <a href="{% url 'blogs' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
+      Blogs
+    </a>
+    <a href="{% url 'course_list' %}" class="text-[10px] text-gray-600 hover:text-gray-700 transition font-montserrat">
       Courses
     </a>
   </div>
@@ -279,9 +289,9 @@
     <div>
       <h3 class="text-base font-semibold mb-3 text-white">Clauch</h3>
       <ul class="space-y-1 text-gray-300 text-sm">
-        <li>At Chhatrapti Shivaji Maharaj Chowk,</li>
-        <li>Near Gurudev Hotel,</li>
-        <li>Kalyan West</li>
+        <li>Clauch, Near LCC, Supreme Hotel,</li>
+        <li>Near Dhamankarnaka,</li>
+        <li>Bhiwandi 421302</li>
       </ul>
     </div>
 
@@ -291,7 +301,7 @@
       <ul class="space-y-1 text-gray-300 text-sm">
         <li><a href="{% url 'shipping_return' %}" class="hover:text-white transition">Shipping & Return</a></li>
         <li><a href="{% url 'faq' %}" class="hover:text-white transition">FAQs</a></li>
-        <li><a href="{% url 'contact' %}" class="hover:text-white transition">Contact</a></li>
+        <li><a href="{% url 'showroom' %}" class="hover:text-white transition">Contact</a></li>
         <li><a href="{% url 'showroom' %}" class="hover:text-white transition">Showroom</a></li>
       </ul>
     </div>
@@ -302,7 +312,6 @@
       <ul class="space-y-1 text-gray-300 text-sm">
         <li><a href="#" class="hover:text-white transition">About Us</a></li>
         <li><a href="{% url 'course_list' %}" class="hover:text-white transition">Courses</a></li>
-        <li><a href="#" class="hover:text-white transition">Careers</a></li>
         <li><a href="{% url 'privacy_policy' %}" class="hover:text-white transition">Privacy Policy</a></li>
         <li><a href="{% url 'terms_and_condition' %}" class="hover:text-white transition">Terms & Conditions</a></li>
       </ul>

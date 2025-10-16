@@ -2,33 +2,59 @@
 {% load static %}
 
 {% block content %}
+<style>
+  /* --- STYLES FOR PROFESSIONAL TOAST NOTIFICATION --- */
+  .toast-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150%);
+    z-index: 1050;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    min-width: 300px;
+    max-width: 90%;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .toast-notification.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+  .toast-notification.success { background-color: #1f2937; }
+  .toast-notification.error { background-color: #dc2626; }
+  .toast-notification .icon { flex-shrink: 0; width: 20px; height: 20px; }
+</style>
+
 <div class="bg-gray-50 min-h-screen py-10 px-4 sm:px-8 lg:px-20 font-[Montserrat]">
   <h1 class="text-2xl font-semibold mb-8 text-gray-900">🧾 Checkout</h1>
-  
-  <div id="message-container" class="mb-6"></div>
 
   <div class="grid lg:grid-cols-3 gap-10">
 
-    <div class="bg-white p-6 rounded-xl shadow-sm text-sm order-1 lg:order-last lg:sticky lg:top-20 h-fit">
+    <div class="bg-white p-6 rounded-xl shadow-sm text-sm order-1 lg:order-last lg:sticky lg:top-20 h-fit hidden lg:block">
       <h3 class="text-lg font-semibold mb-4 text-gray-900">Order Summary</h3>
       <div class="space-y-4 max-h-[400px] overflow-y-auto pr-1">
-        
         {% for item in cart_items %}
         <div class="flex gap-4 border-b pb-4">
           <img src="{{ item.product.primary_image.url }}" class="w-16 h-16 rounded object-cover border">
           <div class="flex-1">
             <p class="font-medium text-gray-900">{{ item.product.name }}</p>
-            <p class="text-gray-500">Size: {{ item.product.sizes }} | Color: {{ item.color.name }}</p>
-            <p class="text-gray-500">Qty: {{ item.quantity }} sets</p>
+            <p class="text-gray-500 text-xs">Size: {{ item.product.sizes }} | Color: {{ item.color.name }}</p>
+            <p class="text-gray-500 text-xs">Qty: {{ item.quantity }} sets</p>
             <p class="font-semibold text-gray-800 mt-1">Total: ₹{{ item.total_price|floatformat:0 }}</p>
           </div>
         </div>
         {% endfor %}
       </div>
-      <div class="mt-6 text-sm space-y-2">
+      <div id="desktop-totals-container" class="mt-6 text-sm space-y-2">
         <div class="flex justify-between text-gray-700">
           <span>Subtotal</span>
-          <span id="summary-subtotal">₹{{ subtotal|floatformat:0 }}</span>
+          <span>₹{{ subtotal|floatformat:0 }}</span>
         </div>
         <div class="flex justify-between">
           <span>Shipping</span>
@@ -40,88 +66,114 @@
           <span id="summary-grand-total">₹{{ subtotal|floatformat:0 }}</span>
         </div>
         <div id="cod-note-container" class="hidden text-xs text-gray-600 bg-gray-100 p-2 rounded-md mt-2">
-          You are paying the shipping fee now. The remaining amount of 
+          You are paying the shipping fee now. The remaining amount of
           <strong class="text-gray-800">₹{{ subtotal|floatformat:0 }}</strong> is to be paid on delivery.
         </div>
       </div>
     </div>
 
-    <form method="POST" class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm space-y-6 order-last lg:order-1" id="checkout-form">
+    <form method="POST" class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm space-y-8 order-last lg:order-1" id="checkout-form">
       {% csrf_token %}
       <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
 
-      <div class="grid md:grid-cols-2 gap-4 text-sm">
-        <div>
-          <label class="text-gray-600">Full Name *</label>
-          <input name="full_name" type="text" value="{{ form_data.full_name|default:user.full_name|default:'' }}" required
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+      <div class="lg:hidden space-y-4 border-b pb-6">
+        <h3 class="text-lg font-semibold text-gray-900">Your Order</h3>
+        {% for item in cart_items %}
+        <div class="flex gap-4">
+          <img src="{{ item.product.primary_image.url }}" class="w-16 h-16 rounded object-cover border">
+          <div class="flex-1 text-sm">
+            <p class="font-medium text-gray-900">{{ item.product.name }}</p>
+            <p class="text-gray-500 text-xs">Qty: {{ item.quantity }} sets | Color: {{ item.color.name }}</p>
+            <p class="font-semibold text-gray-800 mt-1">Total: ₹{{ item.total_price|floatformat:0 }}</p>
+          </div>
         </div>
-        <div>
-          <label class="text-gray-600">Phone *</label>
-          <input name="phone" type="text" value="{{ form_data.phone|default:user.phone_number|default:'' }}" required
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
-        </div>
-        <div>
-          <label class="text-gray-600">Email</label>
-          <input name="email" type="email" value="{{ form_data.email|default:user.email|default:'' }}"
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
-        </div>
-        <div>
-          <label class="text-gray-600">Pincode *</label>
-          <input name="pincode" id="pincode-input" type="text" value="{{ form_data.pincode|default:'' }}" required
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
-        </div>
-        <div class="md:col-span-2">
-          <label class="text-gray-600">Address *</label>
-          <textarea name="address" required
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">{{ form_data.address|default:'' }}</textarea>
-        </div>
-        <div>
-          <label class="text-gray-600">City *</label>
-          <input name="city" type="text" value="{{ form_data.city|default:'' }}" required
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
-        </div>
-        <div>
-          <label class="text-gray-600">State *</label>
-          <input name="state" type="text" value="{{ form_data.state|default:'' }}" required
-            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+        {% endfor %}
+      </div>
+      
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-gray-900">Shipping Details</h3>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+              <label class="text-gray-600">Full Name *</label>
+              <input name="full_name" type="text" value="{{ form_data.full_name|default:user.full_name|default:'' }}" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+          </div>
+          <div>
+              <label class="text-gray-600">Phone *</label>
+              <input name="phone" type="tel" value="{{ form_data.phone|default:user.phone_number|default:'' }}" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+          </div>
+          <div>
+              <label class="text-gray-600">Email</label>
+              <input name="email" type="email" value="{{ form_data.email|default:user.email|default:'' }}" class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+          </div>
+          <div>
+              <label class="text-gray-600">Pincode *</label>
+              <input name="pincode" id="pincode-input" type="tel" value="{{ form_data.pincode|default:'' }}" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+          </div>
+          <div class="md:col-span-2">
+              <label class="text-gray-600">Address *</label>
+              <textarea name="address" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">{{ form_data.address|default:'' }}</textarea>
+          </div>
+          <div>
+              <label class="text-gray-600">City *</label>
+              <input name="city" type="text" value="{{ form_data.city|default:'' }}" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+          </div>
+          <div>
+              <label class="text-gray-600">State *</label>
+              <input name="state" type="text" value="{{ form_data.state|default:'' }}" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+          </div>
         </div>
       </div>
       
       <div>
-        <label class="text-sm font-medium text-gray-900">Payment Method</label>
+        <h3 class="text-lg font-semibold mb-4 text-gray-900">Payment Method</h3>
         <div class="mt-2 grid sm:grid-cols-2 gap-4">
           <label class="flex items-center p-4 border rounded-lg cursor-pointer has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
             <input type="radio" name="payment_method" value="RZP" class="form-radio h-4 w-4" checked>
-            <div class="ml-3 text-sm">
-              <p class="font-semibold">Prepaid</p>
-              <p class="text-xs">Pay full amount now</p>
-            </div>
+            <div class="ml-3 text-sm"><p class="font-semibold">Prepaid</p><p class="text-xs opacity-80">Pay full amount now</p></div>
           </label>
           <label class="flex items-center p-4 border rounded-lg cursor-pointer has-[:checked]:bg-black has-[:checked]:text-white has-[:checked]:border-black">
             <input type="radio" name="payment_method" value="COD" class="form-radio h-4 w-4">
-            <div class="ml-3 text-sm">
-              <p class="font-semibold">Cash on Delivery</p>
-              <p class="text-xs">Pay only shipping fee now</p>
-            </div>
+            <div class="ml-3 text-sm"><p class="font-semibold">Cash on Delivery</p><p class="text-xs opacity-80">Pay only shipping fee now</p></div>
           </label>
         </div>
       </div>
 
-      <div>
-        <button type="button" id="calculate-shipping-btn" class="w-full mt-4 py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+      <div class="border-t pt-6 space-y-4">
+        <button type="button" id="calculate-shipping-btn" class="w-full py-2.5 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black">
           Calculate Shipping
         </button>
-      </div>
-
-      <div>
-        <button type="submit" id="pay-now-btn" disabled
-          class="mt-6 w-full py-3 bg-black text-white rounded font-semibold transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
-          Proceed to Pay
+        
+        <div id="dynamic-totals-container" class="hidden text-sm space-y-2 pt-2">
+            <div class="flex justify-between text-gray-700">
+                <span>Subtotal</span>
+                <span>₹{{ subtotal|floatformat:0 }}</span>
+            </div>
+            <div class="flex justify-between text-gray-700">
+                <span>Shipping Fee</span>
+                <span id="dynamic-shipping" class="font-medium"></span>
+            </div>
+            <hr>
+            <div class="flex justify-between font-bold text-lg text-gray-900">
+                <span>Grand Total</span>
+                <span id="dynamic-grand-total"></span>
+            </div>
+            <div id="dynamic-cod-note-container" class="hidden text-xs text-gray-600 bg-gray-100 p-2 rounded-md mt-2">
+                You are paying the shipping fee now. The remaining amount of
+                <strong class="text-gray-800">₹{{ subtotal|floatformat:0 }}</strong> is to be paid on delivery.
+            </div>
+        </div>
+        
+        <button type="submit" id="pay-now-btn" disabled class="w-full py-3 bg-black text-white rounded-lg font-semibold transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
+          Calculate Shipping to Proceed
         </button>
       </div>
     </form>
   </div>
+</div>
+
+<div id="toast-notification" class="toast-notification">
+  <div id="toast-icon" class="icon"></div>
+  <span id="toast-message"></span>
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -131,24 +183,53 @@ document.addEventListener('DOMContentLoaded', function() {
   const pincodeInput = document.getElementById('pincode-input');
   const calculateBtn = document.getElementById('calculate-shipping-btn');
   const payBtn = document.getElementById('pay-now-btn');
-  const messageContainer = document.getElementById('message-container');
   const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const subtotal = parseFloat("{{ subtotal }}");
 
+  // Desktop Summary Elements
   const summaryShippingEl = document.getElementById('summary-shipping');
   const summaryGrandTotalEl = document.getElementById('summary-grand-total');
   const codNoteContainer = document.getElementById('cod-note-container');
+  
+  // Dynamic Totals (Mobile-first, but used for logic)
+  const dynamicTotalsContainer = document.getElementById('dynamic-totals-container');
+  const dynamicShippingEl = document.getElementById('dynamic-shipping');
+  const dynamicGrandTotalEl = document.getElementById('dynamic-grand-total');
+  const dynamicCodNoteContainer = document.getElementById('dynamic-cod-note-container');
+
+  // --- Toast Notification ---
+  const toast = document.getElementById('toast-notification');
+  const toastIcon = document.getElementById('toast-icon');
+  const toastMessage = document.getElementById('toast-message');
+  let toastTimeout;
+  const successIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+  const errorIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+
+  function showToast(message, type = 'success') {
+      clearTimeout(toastTimeout);
+      toast.classList.remove('success', 'error', 'show');
+      toast.classList.add(type);
+      toastMessage.textContent = message;
+      toastIcon.innerHTML = type === 'success' ? successIconSVG : errorIconSVG;
+      setTimeout(() => toast.classList.add('show'), 50);
+      toastTimeout = setTimeout(() => toast.classList.remove('show'), 4000);
+  }
 
   // --- State Reset Function ---
   function resetShippingState() {
     payBtn.disabled = true;
-    payBtn.innerText = 'Proceed to Pay';
+    payBtn.innerText = 'Calculate Shipping to Proceed';
+    
+    // Hide dynamic totals section
+    dynamicTotalsContainer.classList.add('hidden');
+    dynamicCodNoteContainer.classList.add('hidden');
+    
+    // Reset desktop summary
     summaryShippingEl.classList.add('text-gray-500');
     summaryShippingEl.innerText = 'Enter pincode to calculate';
     summaryGrandTotalEl.innerText = `₹${Math.round(subtotal)}`;
     codNoteContainer.classList.add('hidden');
-    messageContainer.innerHTML = '';
   }
 
   // --- Event Listeners ---
@@ -162,55 +243,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
 
     if (pincode.length !== 6 || !/^\d+$/.test(pincode)) {
-        messageContainer.innerHTML = `<div class="p-4 rounded-md bg-red-100 text-red-700">Please enter a valid 6-digit pincode.</div>`;
+        showToast('Please enter a valid 6-digit pincode.', 'error');
         return;
     }
 
     calculateBtn.innerText = 'Calculating...';
     calculateBtn.disabled = true;
-    resetShippingState(); // Clear previous state before new calculation
+    resetShippingState();
 
-    // ✅ FIXED: Sending data as JSON to match the backend view
     fetch("{% url 'ajax_calculate_shipping' %}", {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-      body: JSON.stringify({
-        pincode: pincode,
-        payment_method: paymentMethod
-      })
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+      body: JSON.stringify({ pincode: pincode, payment_method: paymentMethod })
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => { throw new Error(err.error || 'Server error'); });
-        }
-        return response.json();
-    })
+    .then(response => response.ok ? response.json() : response.json().then(err => Promise.reject(err)))
     .then(data => {
       const shippingCharge = parseFloat(data.shipping_charge);
       const grandTotal = parseFloat(data.grand_total);
       
+      // Update ALL relevant summary elements
       summaryShippingEl.innerText = `₹${Math.round(shippingCharge)}`;
-      summaryShippingEl.classList.remove('text-gray-500');
       summaryGrandTotalEl.innerText = `₹${Math.round(grandTotal)}`;
+      summaryShippingEl.classList.remove('text-gray-500');
+      
+      dynamicShippingEl.innerText = `₹${Math.round(shippingCharge)}`;
+      dynamicGrandTotalEl.innerText = `₹${Math.round(grandTotal)}`;
       
       let amountToPay = grandTotal;
 
       if (paymentMethod === 'COD') {
         amountToPay = shippingCharge;
         codNoteContainer.classList.remove('hidden');
-        payBtn.innerText = `Pay Shipping ₹${Math.round(amountToPay)}`;
+        dynamicCodNoteContainer.classList.remove('hidden');
+        payBtn.innerText = `Pay Shipping Fee: ₹${Math.round(amountToPay)}`;
       } else {
-        payBtn.innerText = `Pay ₹${Math.round(amountToPay)}`;
+        payBtn.innerText = `Pay Total: ₹${Math.round(amountToPay)}`;
       }
-
+      
+      dynamicTotalsContainer.classList.remove('hidden'); // Show the totals block
       payBtn.disabled = false;
-      messageContainer.innerHTML = `<div class="p-4 rounded-md bg-green-100 text-green-700">Shipping calculated. You can now proceed to pay.</div>`;
+      showToast('Shipping calculated. Please proceed to pay.');
     })
     .catch(error => {
-      messageContainer.innerHTML = `<div class="p-4 rounded-md bg-red-100 text-red-700">${error.message}</div>`;
+      showToast(error.error || 'Could not calculate shipping.', 'error');
       resetShippingState();
     })
     .finally(() => {
@@ -222,36 +297,28 @@ document.addEventListener('DOMContentLoaded', function() {
   // --- Razorpay Handler ---
   {% if razorpay_order %}
   var options = {
-      "key": "{{ razorpay_key }}",
-      "amount": "{{ amount_to_pay_now }}",
-      "currency": "INR",
-      "name": "Your Store Name",
-      "description": "Order Payment",
-      "order_id": "{{ razorpay_order.id }}",
+      "key": "{{ razorpay_key }}", "amount": "{{ amount_to_pay_now }}", "currency": "INR",
+      "name": "Clauch", "description": "Order Payment", "order_id": "{{ razorpay_order.id }}",
       "handler": function (response){
           document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
           document.getElementById('checkout-form').submit();
       },
       "prefill": {
-          "name": "{{ order.full_name }}",
-          "email": "{{ order.email }}",
-          "contact": "{{ order.phone }}"
+          "name": "{{ order.full_name }}", "email": "{{ order.email }}", "contact": "{{ order.phone }}"
       },
-      "theme": { "color": "#000000" }
+      "theme": { "color": "#111827" }
   };
   var rzp1 = new Razorpay(options);
   
-  // Handle payment failure
   rzp1.on('payment.failed', function (response){
-      messageContainer.innerHTML = `<div class="p-4 rounded-md bg-red-100 text-red-700">Payment failed: ${response.error.description}. Please try again.</div>`;
-      // Re-enable the form fields if needed
+      showToast(`Payment failed: ${response.error.description}.`, 'error');
+      payBtn.disabled = false;
+      payBtn.innerText = 'Try Payment Again';
   });
   
   rzp1.open();
-
-  // Visually indicate payment is in progress
-  document.getElementById('pay-now-btn').disabled = true;
-  document.getElementById('pay-now-btn').innerText = 'Processing Payment...';
+  payBtn.disabled = true;
+  payBtn.innerText = 'Processing Payment...';
   {% endif %}
 });
 </script>

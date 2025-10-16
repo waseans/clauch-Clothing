@@ -44,80 +44,90 @@
     background-color: #111827 !important;
   }
 
-  /* NEW STYLES FOR THE CART NOTIFICATION */
+  /* --- REFINED STYLES FOR THE CART NOTIFICATION --- */
+.cart-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-150%); /* Start off-screen for animation */
+  z-index: 1050;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb; /* Subtle border */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Professional shadow */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  min-width: 320px;
+  max-width: 90%;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.cart-notification.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0); /* Animate into view */
+}
+
+/* Icon wrapper styling */
+.cart-notification .icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+/* Success State: Green icon */
+.cart-notification.success .icon svg {
+  color: #16a34a; /* Modern green */
+}
+
+/* Error State: Red icon */
+.cart-notification.error .icon svg {
+  color: #dc2626; /* Strong red */
+}
+
+.cart-notification .message {
+  flex-grow: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.cart-notification .cart-link {
+  white-space: nowrap;
+  padding: 0.5rem 1rem;
+  background-color: #111827; /* Match main "Add to Cart" button */
+  color: white;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.cart-notification .cart-link:hover {
+  background-color: #374151;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
   .cart-notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    padding: 1rem 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out, transform 0.4s ease-in-out;
-    min-width: 300px;
-    justify-content: space-between;
+    bottom: 20px;
+    top: auto;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    transform: translateX(0) translateY(150%); /* Animate from bottom */
+    max-width: calc(100% - 2rem);
   }
-
   .cart-notification.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(0) translateY(0);
   }
-
-  .cart-notification.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  .cart-notification.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-
-  .cart-notification .icon {
-    font-size: 1.8rem;
-    line-height: 1;
-  }
-
-  .cart-notification .message {
-    flex-grow: 1;
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-
-  .cart-notification .cart-link {
-    white-space: nowrap;
-    padding: 0.5rem 1rem;
-    background-color: #374151;
-    color: white;
-    border-radius: 0.375rem;
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: background-color 0.2s ease;
-  }
-
-  .cart-notification .cart-link:hover {
-    background-color: #1f2937;
-  }
-
-  @media (max-width: 768px) {
-    .cart-notification {
-      bottom: 20px;
-      top: auto;
-      transform: translateX(-50%) translateY(50px);
-    }
-    .cart-notification.show {
-      transform: translateX(-50%) translateY(0);
-    }
-  }
+}
 
   /* NEW STYLES FOR GET QUOTE MODAL */
   .modal-overlay {
@@ -444,7 +454,7 @@
 
 {% if related_products %}
   <section class="mt-12">
-    <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-6 px-1">You May Also Be Interested In</h2>
+    <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-6 px-1">Shop Similar</h2>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {% for product in related_products %}
         <div class="w-full">
@@ -575,46 +585,50 @@
 
 
   // --- Cart Notification Functions ---
-  const cartNotification = document.getElementById('cart-notification');
-  const notificationIcon = document.getElementById('notification-icon');
-  const notificationMessage = document.getElementById('notification-message');
-  const notificationCartLink = document.getElementById('notification-cart-link');
-  let notificationTimeout;
+  // --- Cart Notification Functions ---
+const cartNotification = document.getElementById('cart-notification');
+const notificationIcon = document.getElementById('notification-icon');
+const notificationMessage = document.getElementById('notification-message');
+const notificationCartLink = document.getElementById('notification-cart-link');
+let notificationTimeout;
 
-  function showNotification(message, type, cartUrl = '') {
-    clearTimeout(notificationTimeout);
+// Define professional SVG icons
+const successIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+const errorIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
 
-    cartNotification.classList.remove('success', 'error', 'show');
-    cartNotification.classList.add('hidden');
+function showNotification(message, type, cartUrl = '') {
+  clearTimeout(notificationTimeout);
 
-    cartNotification.classList.add(type);
-    notificationMessage.textContent = message;
+  // Reset classes first
+  cartNotification.classList.remove('success', 'error', 'show');
+  
+  // Set the type and message
+  cartNotification.classList.add(type);
+  notificationMessage.textContent = message;
 
-    if (type === 'success') {
-      notificationIcon.innerHTML = '&#10004;'; // Checkmark Unicode
-      notificationCartLink.href = cartUrl;
-      notificationCartLink.classList.remove('hidden');
-    } else {
-      notificationIcon.innerHTML = '&#10060;'; // Cross mark Unicode
-      notificationCartLink.classList.add('hidden');
-    }
-
-    setTimeout(() => {
-        cartNotification.classList.remove('hidden');
-        cartNotification.classList.add('show');
-    }, 50);
-
-    notificationTimeout = setTimeout(() => {
-      hideNotification();
-    }, 5000);
+  if (type === 'success') {
+    notificationIcon.innerHTML = successIconSVG;
+    notificationCartLink.href = cartUrl;
+    notificationCartLink.classList.remove('hidden');
+  } else {
+    notificationIcon.innerHTML = errorIconSVG;
+    notificationCartLink.classList.add('hidden');
   }
 
-  function hideNotification() {
-    cartNotification.classList.remove('show');
-    setTimeout(() => {
-      cartNotification.classList.add('hidden');
-    }, 400);
-  }
+  // Use a tiny timeout to allow the browser to apply styles before animating
+  setTimeout(() => {
+    cartNotification.classList.add('show');
+  }, 50);
+
+  // Set a timer to automatically hide the notification
+  notificationTimeout = setTimeout(() => {
+    hideNotification();
+  }, 5000);
+}
+
+function hideNotification() {
+  cartNotification.classList.remove('show');
+}
 
 // --- AJAX Form Submission Handlers ---
 document.getElementById("add-to-cart-form-desktop").addEventListener("submit", handleAddToCart);

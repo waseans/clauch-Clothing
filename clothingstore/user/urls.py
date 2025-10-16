@@ -13,6 +13,9 @@ urlpatterns = [
     path('ajax/get-color-images/<int:color_id>/', views.get_color_images, name='get_color_images'),
     path('cart/', views.cart_view, name='cart'),
     path('showroom/', views.showroom_view, name='showroom'),
+    # urls.py
+    path('blogs/', views.blogs_view, name='blogs'),
+
     path('faq/', views.faq_view, name='faq'),
     path('shipping-return/', views.shipping_return_view, name='shipping_return'),
     path('contact/', views.contact_view, name='contact'),
