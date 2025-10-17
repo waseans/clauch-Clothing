@@ -141,12 +141,27 @@ class Product(models.Model):
 # -----------------------------
 # Product Color Variant Model
 # -----------------------------
+# -----------------------------
+# Product Color Variant Model
+# -----------------------------
+from django.db import models
+from django.utils.text import slugify
+from django.db.models import CheckConstraint, Q, F # <-- Import CheckConstraint, Q, and F
+
+# -----------------------------
+# Product Color Variant Model
+# -----------------------------
 class ProductColor(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='colors')
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=60, blank=True)  # Unique slug per color
+    slug = models.SlugField(max_length=60, blank=True)
     hex_code = models.CharField(max_length=7, help_text="Hex color code like #ffffff")
     is_primary = models.BooleanField(default=False)
+
+    stock = models.PositiveIntegerField(
+        default=0, 
+        help_text="Number of available SETS for this color."
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -167,11 +182,23 @@ class ProductColor(models.Model):
 
     class Meta:
         unique_together = ('product', 'slug')
+        
+        # --- THIS IS THE NEWLY ADDED CONSTRAINT ---
+        constraints = [
+            CheckConstraint(
+                check=Q(stock__gte=0),
+                name='stock_must_be_positive'
+            )
+        ]
+        # ------------------------------------------
 
     def __str__(self):
-        return f"{self.product.name} - {self.name}"
-
-
+        return f"{self.product.name} - {self.name} ({self.stock} sets left)"
+    
+    @property
+    def is_in_stock(self):
+        """Simple helper to check if stock is greater than 0."""
+        return self.stock > 0
 # -----------------------------
 # Product Images (Per Color)
 # -----------------------------

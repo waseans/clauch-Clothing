@@ -295,6 +295,24 @@
         {% endfor %}
       </div>
     </div>
+    <div class="mb-4">
+      {% if primary_color.is_in_stock %}
+        {% if primary_color.stock <= 10 %}
+          <p class="text-sm font-medium text-red-600 animate-pulse">
+            Only {{ primary_color.stock }} sets left! Order soon.
+          </p>
+        {% else %}
+          <p class="text-sm font-medium text-green-700">
+            {{ primary_color.stock }} sets in stock
+          </p>
+        {% endif %}
+      {% else %}
+        <p class="text-sm font-semibold text-red-700">
+          This color is Out of Stock
+        </p>
+      {% endif %}
+    </div>
+
 
     <div class="mb-4">
       <div class="flex justify-between items-center">
@@ -332,13 +350,38 @@
         {% csrf_token %}
         <input type="hidden" name="product_id" value="{{ product.id }}">
         <input type="hidden" name="color_id" id="selected_color_id_desktop" value="{{ primary_color.id }}">
-        <button type="submit" class="w-full py-3 bg-black text-white font-semibold text-sm rounded-lg mb-2">
-          Add to Cart
+        <button type="submit" 
+            class="w-full py-3 text-white font-semibold text-sm rounded-lg mb-2 transition-colors
+                   {% if primary_color.is_in_stock %}
+                       bg-black hover:bg-gray-900
+                   {% else %}
+                       bg-gray-400 cursor-not-allowed
+                   {% endif %}"
+            {% if not primary_color.is_in_stock %}disabled{% endif %}>
+          
+          {% if primary_color.is_in_stock %}
+            Add to Cart
+          {% else %}
+            Out of Stock
+          {% endif %}
         </button>
+
       </form>
-      <button type="button" id="add-to-quote-btn-desktop" class="w-full py-3 border border-gray-300 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
-        Get Quote
-      </button>
+      <button type="submit"
+            class="w-full text-white py-3 rounded font-semibold transition-colors
+                   {% if primary_color.is_in_stock %}
+                       bg-black hover:bg-gray-900
+                   {% else %}
+                       bg-gray-400 cursor-not-allowed
+                   {% endif %}"
+            {% if not primary_color.is_in_stock %}disabled{% endif %}>
+            
+            {% if primary_color.is_in_stock %}
+              Add to Cart
+            {% else %}
+              Out of Stock
+            {% endif %}
+          </button>
     </div>
 
     <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 md:hidden">

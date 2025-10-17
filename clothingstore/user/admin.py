@@ -23,7 +23,8 @@ class ProductImageInline(admin.TabularInline):
 class ProductColorInline(admin.TabularInline):
     model = ProductColor
     extra = 1
-    fields = ('name', 'hex_code', 'is_primary', 'color_box')
+    # ✅ ADDED 'stock' HERE
+    fields = ('name', 'hex_code', 'is_primary', 'stock', 'color_box')
     readonly_fields = ('color_box',)
     show_change_link = True
 
@@ -33,9 +34,6 @@ class ProductColorInline(admin.TabularInline):
         return "-"
     color_box.short_description = "Color"
 
-# -------------------------------------------
-# Admin: Product
-# -------------------------------------------
 # -------------------------------------------
 # Admin: Product
 # -------------------------------------------
@@ -83,10 +81,14 @@ class ProductAdmin(admin.ModelAdmin):
 # Admin: ProductColor
 # -------------------------------------------
 class ProductColorAdmin(admin.ModelAdmin):
-    list_display = ('product', 'name', 'hex_code', 'is_primary', 'color_box')
+    # ✅ ADDED 'stock' HERE
+    list_display = ('product', 'name', 'hex_code', 'is_primary', 'stock', 'color_box')
     list_filter = ('product', 'is_primary')
     search_fields = ('product__name', 'name')
     inlines = [ProductImageInline]
+    
+    # Make stock editable directly from the list view
+    list_editable = ('stock',)
 
     def color_box(self, obj):
         if obj.hex_code:
@@ -115,7 +117,7 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductColor, ProductColorAdmin)
 
 
-from django.contrib import admin
+# --- User Admin (Unchanged) ---
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import CustomUser
 
@@ -142,10 +144,8 @@ class CustomUserAdmin(BaseUserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
-
-from django.contrib import admin
+# --- Course Admin (Unchanged) ---
 from .models import Course, CourseVideo, CoursePDF, CourseEnrollment
-
 
 class CourseVideoInline(admin.TabularInline):
     model = CourseVideo
