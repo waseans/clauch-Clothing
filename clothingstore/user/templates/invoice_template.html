@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        /* Professional invoice styles optimized for xhtml2pdf */
+        @page {
+            size: a4 portrait;
+            @frame content_frame {
+                left: 50pt; right: 50pt; top: 50pt; bottom: 50pt;
+            }
+            @frame footer_frame {
+                -pdf-frame-content: footer_content;
+                left: 50pt; right: 50pt; bottom: 30pt; height: 20pt;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .invoice-header {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .invoice-header td {
+            vertical-align: top;
+        }
+        .company-details {
+            text-align: left;
+        }
+        .invoice-details {
+            text-align: right;
+        }
+        .invoice-details h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #000;
+        }
+
+        .customer-info-table {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .customer-info-table td {
+            width: 50%;
+            vertical-align: top;
+        }
+        .customer-info-table h2 {
+            font-size: 14px;
+            margin: 0 0 5px 0;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .items-table th, .items-table td {
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            text-align: left;
+        }
+        .items-table th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+            color: #000;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+        .items-table .text-right {
+            text-align: right;
+        }
+        .items-table .item-name {
+            font-weight: bold;
+        }
+        .items-table .item-meta {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .summary-table {
+            width: 50%;
+            margin-left: auto;
+            border-collapse: collapse;
+        }
+        .summary-table td {
+            padding: 8px;
+        }
+        .summary-table .label {
+            text-align: right;
+            color: #555;
+        }
+        .summary-table .value {
+            text-align: right;
+            font-weight: bold;
+        }
+        .summary-table .grand-total .label,
+        .summary-table .grand-total .value {
+            font-size: 16px;
+            padding-top: 10px;
+            border-top: 2px solid #000;
+            color: #000;
+        }
+
+        #footer_content {
+            text-align: center;
+            font-size: 10px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Footer Content (for @page rule) -->
+    <div id="footer_content">
+        Thank you for your business! | CLAUCH
+    </div>
+
+
+    <!-- Main Invoice Content -->
+    <table class="invoice-header">
+        <tr>
+            <td class="company-details">
+                <!-- ✅ UPDATED with your company details -->
+                <h2 style="margin:0; font-size: 18px; font-weight: bold;">CLAUCH</h2>
+                <p style="margin: 2px 0;">Near LCC, Supreme Hotel,</p>
+                <p style="margin: 2px 0;">Near Dhamankarnaka,</p>
+                <p style="margin: 2px 0;">Bhiwandi - 421302</p>
+            </td>
+            <td class="invoice-details">
+                <h1>INVOICE</h1>
+                <p style="margin:2px 0;"><strong>Invoice #:</strong> {{ order.id }}</p>
+                <p style="margin:2px 0;"><strong>Order #:</strong> {{ order.id }}</p>
+                <p style="margin:2px 0;"><strong>Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
+            </td>
+        </tr>
+    </table>
+
+    <table class="customer-info-table">
+        <tr>
+            <td>
+                <h2>Bill To:</h2>
+                <p style="margin:2px 0;">{{ order.full_name }}</p>
+                <p style="margin:2px 0;">{{ order.address }}</p>
+                <p style="margin:2px 0;">{{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
+                <p style="margin:2px 0;">{{ order.email }}</p>
+                <p style="margin:2px 0;">+91 {{ order.phone }}</p>
+            </td>
+        </tr>
+    </table>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Item Description</th>
+                <th class="text-right">Quantity (Packs)</th>
+                <th class="text-right">Unit Price (per pack)</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+            <tr>
+                <td>
+                    <div class="item-name">{{ item.product_name }}</div>
+                    <div class="item-meta">
+                        Color: {{ item.color.name|default:'N/A' }} | Pieces per Pack: {{ item.total_pieces_in_set_at_purchase }}
+                    </div>
+                </td>
+                <td class="text-right">{{ item.quantity }}</td>
+                <!-- The price_per_piece_at_purchase is actually the price per pack in your model -->
+                <td class="text-right">₹{{ item.price_per_piece_at_purchase|floatformat:2 }}</td>
+                <td class="text-right">₹{{ item.line_total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="summary-table">
+        <tr>
+            <td class="label">Subtotal</td>
+            <td class="value">₹{{ order.subtotal|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td class="label">Shipping</td>
+            <td class="value">₹{{ order.shipping_charge|floatformat:2 }}</td>
+        </tr>
+        {% if order.discount_amount > 0 %}
+        <tr>
+            <td class="label">Discount{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}</td>
+            <td class="value">- ₹{{ order.discount_amount|floatformat:2 }}</td>
+        </tr>
+        {% endif %}
+        <tr class="grand-total">
+            <td class="label">Grand Total</td>
+            <td class="value">₹{{ order.grand_total|floatformat:2 }}</td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 40px;">
+        <h3 style="font-size: 13px;">Payment Information</h3>
+        <p style="font-size: 12px; margin: 2px 0;"><strong>Payment Method:</strong> {{ order.get_payment_method_display }}</p>
+        <p style="font-size: 12px; margin: 2px 0;"><strong>Status:</strong> {{ order.get_payment_status_display }}</p>
+    </div>
+
+</body>
+</html>
+

@@ -35,6 +35,7 @@ urlpatterns = [
 
      path('admin/ithink/', views.admin_ithink_dashboard, name='admin_ithink_dashboard_default'),
     path('admin/ithink/<str:status_filter>/', views.admin_ithink_dashboard, name='admin_ithink_dashboard'),
+    path('order/invoice/<int:order_id>/', views.download_invoice, name='download_invoice'),
 
 ]
 

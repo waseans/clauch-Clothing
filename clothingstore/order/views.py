@@ -683,3 +683,36 @@ def create_ithink_shipment(request, order_id):
 
     messages.success(request, f"Successfully created shipment for Order #{order.id}! AWB: {order.tracking_id}")
     return redirect('admin_ithink_dashboard_default')
+
+
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa  # You'd need to 'pip install xhtml2pdf'
+from .models import Order
+
+def download_invoice(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    # You would create a new, simpler template just for the PDF
+    template_path = 'invoice_template.html' 
+    context = {'order': order}
+
+    # Create a Django response object, and set the PDF content type
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="invoice_#{order.id}.pdf"'
+
+    # Find the template and render it
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # Create a PDF
+    pisa_status = pisa.CreatePDF(
+       html,                # the HTML to convert
+       dest=response        # file-like object to receive result
+    )
+
+    # If error, return an error
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
