@@ -45,89 +45,89 @@
   }
 
   /* --- REFINED STYLES FOR THE CART NOTIFICATION --- */
-.cart-notification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-150%); /* Start off-screen for animation */
-  z-index: 1050;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #e5e7eb; /* Subtle border */
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Professional shadow */
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  min-width: 320px;
-  max-width: 90%;
-  background-color: #ffffff;
-  color: #111827;
-}
-
-.cart-notification.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0); /* Animate into view */
-}
-
-/* Icon wrapper styling */
-.cart-notification .icon {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-}
-
-/* Success State: Green icon */
-.cart-notification.success .icon svg {
-  color: #16a34a; /* Modern green */
-}
-
-/* Error State: Red icon */
-.cart-notification.error .icon svg {
-  color: #dc2626; /* Strong red */
-}
-
-.cart-notification .message {
-  flex-grow: 1;
-  font-size: 0.9rem;
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-.cart-notification .cart-link {
-  white-space: nowrap;
-  padding: 0.5rem 1rem;
-  background-color: #111827; /* Match main "Add to Cart" button */
-  color: white;
-  border-radius: 0.375rem;
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
-}
-
-.cart-notification .cart-link:hover {
-  background-color: #374151;
-}
-
-/* Responsive adjustments for mobile */
-@media (max-width: 768px) {
   .cart-notification {
-    bottom: 20px;
-    top: auto;
-    left: 1rem;
-    right: 1rem;
-    width: auto;
-    transform: translateX(0) translateY(150%); /* Animate from bottom */
-    max-width: calc(100% - 2rem);
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-150%); /* Start off-screen for animation */
+    z-index: 1050;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb; /* Subtle border */
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Professional shadow */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    min-width: 320px;
+    max-width: 90%;
+    background-color: #ffffff;
+    color: #111827;
   }
+
   .cart-notification.show {
-    transform: translateX(0) translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* Animate into view */
   }
-}
+
+  /* Icon wrapper styling */
+  .cart-notification .icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Success State: Green icon */
+  .cart-notification.success .icon svg {
+    color: #16a34a; /* Modern green */
+  }
+
+  /* Error State: Red icon */
+  .cart-notification.error .icon svg {
+    color: #dc2626; /* Strong red */
+  }
+
+  .cart-notification .message {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .cart-notification .cart-link {
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+    background-color: #111827; /* Match main "Add to Cart" button */
+    color: white;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+
+  .cart-notification .cart-link:hover {
+    background-color: #374151;
+  }
+
+  /* Responsive adjustments for mobile */
+  @media (max-width: 768px) {
+    .cart-notification {
+      bottom: 20px;
+      top: auto;
+      left: 1rem;
+      right: 1rem;
+      width: auto;
+      transform: translateX(0) translateY(150%); /* Animate from bottom */
+      max-width: calc(100% - 2rem);
+    }
+    .cart-notification.show {
+      transform: translateX(0) translateY(0);
+    }
+  }
 
   /* NEW STYLES FOR GET QUOTE MODAL */
   .modal-overlay {
@@ -269,15 +269,27 @@
   <div class="md:w-1/2">
     <div class="flex justify-between items-start mb-4">
       <h1 class="text-xl md:text-2xl font-semibold text-gray-900 w-2/3 leading-snug">{{ product.name }}</h1>
-      <div class="text-right">
+      
+      <div class="text-right flex-shrink-0">
+        <span class="text-sm text-gray-600">Price per Piece:</span>
         {% if product.discount_price %}
-          <div class="text-lg font-bold text-black">Rs {{ product.get_current_price_per_piece|floatformat:2 }}</div>
-          <div class="text-sm line-through text-gray-400">Rs {{ product.get_original_price_per_piece|floatformat:2 }}</div>
+          <div class="flex items-baseline justify-end gap-2">
+            <span class="text-2xl md:text-3xl font-bold text-gray-900">
+              <span class="text-lg md:text-xl align-baseline">₹</span>{{ product.get_current_price_per_piece|floatformat:0 }}
+            </span>
+            <span class="text-base text-gray-400 line-through">
+              ₹{{ product.get_original_price_per_piece|floatformat:0 }}
+            </span>
+          </div>
         {% else %}
-          <div class="text-lg font-bold text-black">Rs {{ product.get_current_price_per_piece|floatformat:2 }}</div>
+          <div class="flex items-baseline justify-end">
+            <span class="text-2xl md:text-3xl font-bold text-gray-900">
+              <span class="text-lg md:text-xl align-baseline">₹</span>{{ product.get_current_price_per_piece|floatformat:0 }}
+            </span>
+          </div>
         {% endif %}
       </div>
-    </div>
+      </div>
 
     <div class="mb-4">
       <h3 class="text-sm font-medium mb-1">Color</h3>
@@ -326,18 +338,18 @@
       </p>
 
       {% if product.get_total_pieces_in_set > 0 %}
-        <p class="text-gray-700 text-sm mt-1">
-            Total price for one set:
-            <span class="font-bold text-black">
+        <div class="text-gray-800 text-sm mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+            Total Price for 1 Set ({{ product.get_total_pieces_in_set }} pieces):
+            <span class="text-lg font-bold text-black block mt-1">
                 {% if product.discount_price %}
-                    Rs {{ product.discount_price }}
-                    <span class="line-through text-gray-400 text-xs">Rs {{ product.price }}</span>
+                    ₹{{ product.discount_price|floatformat:0 }}
+                    <span class="text-sm font-normal line-through text-gray-400 ml-2">₹{{ product.price|floatformat:0 }}</span>
                 {% else %}
-                    Rs {{ product.price }}
+                    ₹{{ product.price|floatformat:0 }}
                 {% endif %}
             </span>
-        </p>
-      {% endif %}
+        </div>
+        {% endif %}
 
        <div class="mt-4">
           <label for="set_quantity" class="text-sm font-medium mb-1 block">Quantity of Sets <span class="text-red-500">*</span> (Minimum: 1 Set)</label>
@@ -345,13 +357,19 @@
                  class="w-24 px-3 py-1 border rounded-md text-sm text-center">
        </div>
     </div>
-    <div class="mt-6 hidden md:block sticky bottom-4">
-      <form id="add-to-cart-form-desktop" action="{% url 'add_to_cart' %}" method="POST">
+
+    <div class="mt-6 hidden md:flex gap-3 sticky bottom-4 bg-white py-2">
+      <button type="button" id="add-to-quote-btn-desktop" 
+              class="flex-1 py-3 border border-gray-400 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
+        Get Quote
+      </button>
+
+      <form id="add-to-cart-form-desktop" action="{% url 'add_to_cart' %}" method="POST" class="flex-1">
         {% csrf_token %}
         <input type="hidden" name="product_id" value="{{ product.id }}">
         <input type="hidden" name="color_id" id="selected_color_id_desktop" value="{{ primary_color.id }}">
         <button type="submit" 
-            class="w-full py-3 text-white font-semibold text-sm rounded-lg mb-2 transition-colors
+            class="w-full py-3 text-white font-semibold text-sm rounded-lg transition-colors
                    {% if primary_color.is_in_stock %}
                        bg-black hover:bg-gray-900
                    {% else %}
@@ -365,10 +383,19 @@
             Out of Stock
           {% endif %}
         </button>
-
       </form>
-      <button type="submit"
-            class="w-full text-white py-3 rounded font-semibold transition-colors
+    </div>
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 md:hidden">
+      <div class="flex gap-2 p-4">
+        <button type="button" id="add-to-quote-btn-mobile" class="flex-1 py-3 border border-gray-300 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
+          Get Quote
+        </button>
+        <form id="add-to-cart-form-mobile" action="{% url 'add_to_cart' %}" method="POST" class="flex-1">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <input type="hidden" name="color_id" id="selected_color_id_mobile" value="{{ primary_color.id }}">
+          <button type="submit"
+            class="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-900 transition
                    {% if primary_color.is_in_stock %}
                        bg-black hover:bg-gray-900
                    {% else %}
@@ -382,26 +409,11 @@
               Out of Stock
             {% endif %}
           </button>
-    </div>
-
-    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 md:hidden">
-      <div class="flex gap-2 p-4">
-        <button type="button" id="add-to-quote-btn-mobile" class="flex-1 py-3 border border-gray-300 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
-          Get Quote
-        </button>
-        <form id="add-to-cart-form-mobile" action="{% url 'add_to_cart' %}" method="POST" class="flex-1">
-          {% csrf_token %}
-          <input type="hidden" name="product_id" value="{{ product.id }}">
-          <input type="hidden" name="color_id" id="selected_color_id_mobile" value="{{ primary_color.id }}">
-          <button type="submit"
-            class="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-900 transition">
-            Add to Cart
-          </button>
         </form>
       </div>
     </div>
 
-    <div class="mb-4 text-sm text-gray-700 font-[Montserrat]">
+    <div class="mb-4 text-sm text-gray-700 font-[Montserrat] mt-6 md:mt-4">
       {{ product.description }}
     </div>
 
@@ -477,16 +489,16 @@
 
 {% if recommended_products %}
 <div class="max-w-6xl mx-auto px-4 md:px-0 mb-24">
-  <h3 class="text-sm font-semibold mb-2">You may also like</h3>
+  <h3 class="text-lg sm:text-xl font-semibold mb-4">You may also like</h3>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
     {% for rec in recommended_products %}
     <div>
       <a href="{% url 'product_detail' rec.slug %}">
         <img src="{{ rec.primary_image.url }}" class="w-full h-40 object-cover rounded" />
         <p class="text-xs mt-1 truncate">{{ rec.name }}</p>
-        <p class="text-xs font-medium text-black">Rs {{ rec.get_current_price_per_piece|floatformat:2 }}</p>
+        <p class="text-xs font-medium text-black">₹{{ rec.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span></p>
         {% if rec.get_total_pieces_in_set > 0 %}
-            <p class="text-xs text-gray-700">Set: Rs {{ rec.discount_price|default:rec.price }}</p>
+            <p class="text-xs text-gray-700">Set: ₹{{ rec.discount_price|default:rec.price|floatformat:0 }}</p>
         {% endif %}
       </a>
     </div>
@@ -496,47 +508,47 @@
 {% endif %}
 
 {% if related_products %}
-  <section class="mt-12">
-    <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-6 px-1">Shop Similar</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-      {% for product in related_products %}
-        <div class="w-full">
-          <div class="relative bg-white rounded-md overflow-hidden border border-gray-200">
-            <a href="{% url 'product_detail' product.slug %}">
-              <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-contain aspect-square p-2">
-            </a>
-            <button class="absolute top-2 right-2 bg-black text-white text-xs px-3 py-1 rounded shadow-md hover:shadow-lg transition-all">
-              ADD
-            </button>
-          </div>
-          <div class="pt-2 px-1 pb-2"> {# Added pb-2 for better spacing below prices #}
-            <p class="text-xs sm:text-sm text-gray-900 leading-tight truncate">{{ product.name }}</p>
-
-            {# Price per Piece - Main and larger #}
-            <div class="text-base font-bold text-gray-900 mt-1"> {# Increased size and bold #}
-              ₹{{ product.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span>
+  <div class="max-w-6xl mx-auto px-4 md:px-0 mb-24">
+    <section class="mt-12">
+      <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-6">Shop Similar</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {% for product in related_products %}
+          <div class="w-full">
+            <div class="relative bg-white rounded-md overflow-hidden border border-gray-200">
+              <a href="{% url 'product_detail' product.slug %}">
+                <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-contain aspect-square p-2">
+              </a>
+              <button class="absolute top-2 right-2 bg-black text-white text-xs px-3 py-1 rounded shadow-md hover:shadow-lg transition-all">
+                ADD
+              </button>
             </div>
+            <div class="pt-2 px-1 pb-2">
+              <p class="text-xs sm:text-sm text-gray-900 leading-tight truncate">{{ product.name }}</p>
 
-            {# Price per Set - Smaller and less prominent #}
-            {% if product.get_total_pieces_in_set > 0 %}
-                <p class="text-xs text-gray-500 mt-0.5"> {# Smaller text and lighter color #}
-                    Set: ₹{{ product.discount_price|default:product.price|floatformat:0 }}
-                </p>
-            {% endif %}
+              <div class="text-base font-bold text-gray-900 mt-1">
+                ₹{{ product.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span>
+              </div>
+
+              {% if product.get_total_pieces_in_set > 0 %}
+                  <p class="text-xs text-gray-500 mt-0.5">
+                      Set: ₹{{ product.discount_price|default:product.price|floatformat:0 }}
+                  </p>
+              {% endif %}
+            </div>
           </div>
-        </div>
-      {% endfor %}
-    </div>
-  </section>
-{% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+  {% endif %}
 
-<div id="cart-notification" class="cart-notification hidden">
+<div id="cart-notification" class="cart-notification">
   <span class="icon" id="notification-icon"></span>
   <div class="message" id="notification-message"></div>
   <a id="notification-cart-link" href="#" class="cart-link">View Cart</a>
 </div>
 
-<div id="quote-modal-overlay" class="modal-overlay hidden">
+<div id="quote-modal-overlay" class="modal-overlay">
   <div class="modal-content">
     <span class="modal-close" onclick="closeQuoteModal()">&times;</span>
     <h2 class="text-xl font-semibold mb-6 text-gray-900">Request a Quote for this Product</h2>
@@ -549,8 +561,8 @@
           ({{ product.get_total_pieces_in_set }} pieces total)
         {% endif %}
       </p>
-      <p>Price per Piece: <strong>Rs {{ product.get_current_price_per_piece|floatformat:2 }}</strong></p>
-      <p>Price per Set: <strong>Rs {{ product.discount_price|default:product.price }}</strong></p>
+      <p>Price per Piece: <strong>₹{{ product.get_current_price_per_piece|floatformat:0 }}</strong></p>
+      <p>Price per Set: <strong>₹{{ product.discount_price|default:product.price|floatformat:0 }}</strong></p>
       <p id="quote-warning" class="text-sm text-red-600 mt-2 hidden">
         Please select a color before requesting a quote.
       </p>
@@ -628,124 +640,121 @@
 
 
   // --- Cart Notification Functions ---
-  // --- Cart Notification Functions ---
-const cartNotification = document.getElementById('cart-notification');
-const notificationIcon = document.getElementById('notification-icon');
-const notificationMessage = document.getElementById('notification-message');
-const notificationCartLink = document.getElementById('notification-cart-link');
-let notificationTimeout;
+  const cartNotification = document.getElementById('cart-notification');
+  const notificationIcon = document.getElementById('notification-icon');
+  const notificationMessage = document.getElementById('notification-message');
+  const notificationCartLink = document.getElementById('notification-cart-link');
+  let notificationTimeout;
 
-// Define professional SVG icons
-const successIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
-const errorIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+  // Define professional SVG icons
+  const successIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+  const errorIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
 
-function showNotification(message, type, cartUrl = '') {
-  clearTimeout(notificationTimeout);
+  function showNotification(message, type, cartUrl = '') {
+    clearTimeout(notificationTimeout);
 
-  // Reset classes first
-  cartNotification.classList.remove('success', 'error', 'show');
-  
-  // Set the type and message
-  cartNotification.classList.add(type);
-  notificationMessage.textContent = message;
+    // Reset classes first
+    cartNotification.classList.remove('success', 'error', 'show');
+    cartNotification.classList.add(type);
+    notificationMessage.textContent = message;
 
-  if (type === 'success') {
-    notificationIcon.innerHTML = successIconSVG;
-    notificationCartLink.href = cartUrl;
-    notificationCartLink.classList.remove('hidden');
-  } else {
-    notificationIcon.innerHTML = errorIconSVG;
-    notificationCartLink.classList.add('hidden');
+    if (type === 'success') {
+      notificationIcon.innerHTML = successIconSVG;
+      if (cartUrl) {
+        notificationCartLink.href = cartUrl;
+        notificationCartLink.classList.remove('hidden');
+      } else {
+         notificationCartLink.classList.add('hidden');
+      }
+    } else {
+      notificationIcon.innerHTML = errorIconSVG;
+      notificationCartLink.classList.add('hidden');
+    }
+
+    // Use a tiny timeout to allow the browser to apply styles before animating
+    setTimeout(() => {
+      cartNotification.classList.add('show');
+    }, 50);
+
+    // Set a timer to automatically hide the notification
+    notificationTimeout = setTimeout(() => {
+      hideNotification();
+    }, 5000);
   }
 
-  // Use a tiny timeout to allow the browser to apply styles before animating
-  setTimeout(() => {
-    cartNotification.classList.add('show');
-  }, 50);
+  function hideNotification() {
+    cartNotification.classList.remove('show');
+  }
 
-  // Set a timer to automatically hide the notification
-  notificationTimeout = setTimeout(() => {
-    hideNotification();
-  }, 5000);
-}
+  // --- AJAX Form Submission Handlers ---
+  document.getElementById("add-to-cart-form-desktop").addEventListener("submit", handleAddToCart);
+  document.getElementById("add-to-cart-form-mobile").addEventListener("submit", handleAddToCart);
 
-function hideNotification() {
-  cartNotification.classList.remove('show');
-}
+  async function handleAddToCart(event) {
+      event.preventDefault(); // Prevent default form submission
 
-// --- AJAX Form Submission Handlers ---
-document.getElementById("add-to-cart-form-desktop").addEventListener("submit", handleAddToCart);
-document.getElementById("add-to-cart-form-mobile").addEventListener("submit", handleAddToCart);
+      const form = event.target;
+      const colorId = document.getElementById('selected_color_id_desktop').value; // or mobile, they sync
+      const setQuantityInput = document.getElementById('set_quantity');
+      const setQuantity = parseInt(setQuantityInput.value);
 
-async function handleAddToCart(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    const form = event.target;
-    const colorId = document.getElementById('selected_color_id_desktop').value; // or mobile, they sync
-    const setQuantityInput = document.getElementById('set_quantity');
-    const setQuantity = parseInt(setQuantityInput.value);
-
-    // --- Client-side validation ---
-    if (!colorId) {
-      showNotification("Please select a color for the product.", "error");
-      return;
-    }
-
-    if (isNaN(setQuantity) || setQuantity < 1) {
-        showNotification("Quantity of sets must be at least 1 to add to cart.", "error");
-        setQuantityInput.style.border = '1px solid red';
+      // --- Client-side validation ---
+      if (!colorId) {
+        showNotification("Please select a color for the product.", "error");
         return;
-    } else {
-        setQuantityInput.style.border = '';
-    }
+      }
 
-    const formData = new FormData(form);
-    formData.append('set_quantity', setQuantity);
+      if (isNaN(setQuantity) || setQuantity < 1) {
+          showNotification("Quantity of sets must be at least 1 to add to cart.", "error");
+          setQuantityInput.style.border = '1px solid red';
+          return;
+      } else {
+          setQuantityInput.style.border = '';
+      }
 
-    try {
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-            },
-            // Important: Set 'redirect' to 'manual' to inspect 302 responses
-            // However, for login_required, fetch will *not* automatically follow 302 for POST.
-            // It will resolve with a redirected property.
-            redirect: 'follow' // 'follow' is default, and will make fetch follow the redirect if possible for GET requests.
-                               // For POST with a 302, it won't follow, but `response.redirected` will be true.
-        });
+      const formData = new FormData(form);
+      formData.append('set_quantity', setQuantity); // Ensure set_quantity is in the form data
 
-        // If the request was redirected (e.g., by @login_required), handle it
-        if (response.redirected) {
-            window.location.href = response.url; // Redirect the browser to the login page
-            return; // Stop further execution
-        }
+      try {
+          const response = await fetch(form.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                  'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+              },
+              redirect: 'follow'
+          });
 
-        // Only try to parse JSON if the response is okay and not a redirect
-        if (response.ok) {
-            const data = await response.json();
-            if (data.status === 'success') {
-                showNotification(data.message, 'success', data.cart_url);
-            } else {
-                showNotification(data.message, 'error');
-            }
-        } else {
-            // Attempt to parse JSON for more specific error messages from the server
-            // If it's not JSON, fall back to a generic message
-            try {
-                const errorData = await response.json();
-                showNotification(errorData.message || 'An error occurred while adding to cart.', 'error');
-            } catch (jsonError) {
-                showNotification('An unexpected server error occurred.', 'error');
-                console.error('Server responded with non-JSON error:', response.status, response.statusText);
-            }
-        }
-    } catch (error) {
-        console.error('Fetch error:', error);
-        showNotification('Network error. Please try again.', 'error');
-    }
-}
+          if (response.redirected) {
+              window.location.href = response.url; // Redirect to login page if required
+              return;
+          }
+
+          if (response.ok) {
+              const data = await response.json();
+              if (data.status === 'success') {
+                  showNotification(data.message, 'success', data.cart_url);
+                  // Optionally update cart count in header
+                  // if (data.cart_count) {
+                  //    document.getElementById('cart-count-display').textContent = data.cart_count;
+                  // }
+              } else {
+                  showNotification(data.message, 'error');
+              }
+          } else {
+              try {
+                  const errorData = await response.json();
+                  showNotification(errorData.message || 'An error occurred while adding to cart.', 'error');
+              } catch (jsonError) {
+                  showNotification('An unexpected server error occurred.', 'error');
+                  console.error('Server responded with non-JSON error:', response.status, response.statusText);
+              }
+          }
+      } catch (error) {
+          console.error('Fetch error:', error);
+          showNotification('Network error. Please try again.', 'error');
+      }
+  }
 
 
   // --- Get Quote Modal Logic ---
@@ -755,7 +764,9 @@ async function handleAddToCart(event) {
   const quoteColorDisplay = document.getElementById('quote-color-display');
   const quoteProductNameDisplay = document.getElementById('quote-product-name');
   const quoteSetQuantityInput = document.getElementById('quote-set-quantity');
-  const whatsappNumber = '917028885969'; // Your target WhatsApp number
+  
+  // === UPDATED WHATSAPP NUMBER ===
+  const whatsappNumber = '917888111768'; // Country code + number
 
   function openQuoteModal() {
     const colorId = document.getElementById('selected_color_id_desktop').value;
@@ -767,10 +778,10 @@ async function handleAddToCart(event) {
     }
 
     quoteColorDisplay.textContent = selectedColorName || 'Not Selected';
-    quoteProductNameDisplay.textContent = "{{ product.name }}"; // Ensure product name is always displayed
+    quoteProductNameDisplay.textContent = "{{ product.name }}";
 
-    quoteSetQuantityInput.value = document.getElementById('set_quantity').value || 1; // Pre-fill with current quantity or default to 1
-    quoteSetQuantityInput.min = "1"; // Ensure min is set to 1 for the quote modal input
+    quoteSetQuantityInput.value = document.getElementById('set_quantity').value || 1;
+    quoteSetQuantityInput.min = "1";
 
     quoteModalOverlay.classList.remove('hidden');
     setTimeout(() => {
@@ -786,7 +797,7 @@ async function handleAddToCart(event) {
     }, 300);
   }
 
-  // Event listener for Add to Quote buttons
+  // === UPDATED: Event listener for BOTH Desktop and Mobile Quote buttons ===
   document.getElementById('add-to-quote-btn-desktop').addEventListener('click', openQuoteModal);
   document.getElementById('add-to-quote-btn-mobile').addEventListener('click', openQuoteModal);
 
@@ -801,9 +812,8 @@ async function handleAddToCart(event) {
     const setQuantity = parseInt(quoteSetQuantityInput.value);
     const notes = document.getElementById('quote-notes').value;
 
-    // Basic validation
-    if (!name || !email || !phone || isNaN(setQuantity) || setQuantity < 1) { // Changed from 10 to 1
-        alert("Please fill in all required fields (Name, Work Email, Phone Number) and ensure Quantity of Sets is at least 1."); // Updated message
+    if (!name || !email || !phone || isNaN(setQuantity) || setQuantity < 1) {
+        alert("Please fill in all required fields (Name, Work Email, Phone Number) and ensure Quantity of Sets is at least 1.");
         return;
     }
     if (!/^\d{10}$/.test(phone)) {
@@ -816,17 +826,17 @@ async function handleAddToCart(event) {
     const selectedProductColor = selectedColorName;
     const setComposition = "{{ product.sizes|escapejs }}";
 
-    // Get prices from the Django context directly
-    const pricePerSet = "{{ product.discount_price|default:product.price|floatformat:2 }}";
-    const pricePerPiece = "{{ product.get_current_price_per_piece|floatformat:2 }}";
+    // Get prices from the Django context directly (using floatformat:0 for consistency)
+    const pricePerSet = "{{ product.discount_price|default:product.price|floatformat:0 }}";
+    const pricePerPiece = "{{ product.get_current_price_per_piece|floatformat:0 }}";
     const totalPiecesInSet = "{{ product.get_total_pieces_in_set }}";
 
 
     let whatsappMessage = `*New B2B Quote Request - Website Inquiry*\n\n`;
     whatsappMessage += `*Product Name:* ${productName}\n`;
     whatsappMessage += `*Product URL:* ${productUrl}\n`;
-    whatsappMessage += `*Price per Set:* Rs ${pricePerSet}\n`;
-    whatsappMessage += `*Price per Piece:* Rs ${pricePerPiece} (for ${totalPiecesInSet} pieces)\n`; // Include total pieces
+    whatsappMessage += `*Price per Set:* ₹${pricePerSet}\n`; // Using ₹
+    whatsappMessage += `*Price per Piece:* ₹${pricePerPiece} (for ${totalPiecesInSet} pieces)\n`; // Using ₹
     whatsappMessage += `*Selected Color:* ${selectedProductColor}\n`;
     whatsappMessage += `*Set Composition:* ${setComposition}\n`;
     whatsappMessage += `*Quantity of Sets Requested:* ${setQuantity}\n\n`;
@@ -842,7 +852,8 @@ async function handleAddToCart(event) {
     window.open(whatsappLink, '_blank');
 
     closeQuoteModal();
-    showNotification("Your quote request has been sent! Please check WhatsApp to finalize.", "success");
+    // Show a success notification without the cart link
+    showNotification("Your quote request has been prepared! Please confirm in WhatsApp.", "success");
   });
 
 
