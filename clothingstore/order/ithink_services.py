@@ -7,16 +7,15 @@ from django.conf import settings
 # ---------------------------------------------------------------------
 # CONFIGURATION (No changes here)
 # ---------------------------------------------------------------------
-ACCESS_TOKEN = getattr(settings, 'ITHINK_ACCESS_TOKEN', '5a7b40197cd919337501dd6e9a3aad9a')
-SECRET_KEY = getattr(settings, 'ITHINK_SECRET_KEY', '2b54c373427be180d1899400eeb21aab')
-PICKUP_ADDRESS_ID = getattr(settings, 'ITHINK_WAREHOUSE_ID', '1293')
-STORE_ID = getattr(settings, 'ITHINK_STORE_ID', '24543')
+ACCESS_TOKEN = getattr(settings, 'ITHINK_ACCESS_TOKEN', '51a908dc57d0246eb1a99926feccec20')
+SECRET_KEY = getattr(settings, 'ITHINK_SECRET_KEY', '626c25081cbeeead0a6bbd1a395b0546')
+PICKUP_ADDRESS_ID = getattr(settings, 'ITHINK_WAREHOUSE_ID', '91710')
+STORE_ID = getattr(settings, 'ITHINK_STORE_ID', '23633')
 FROM_PINCODE = getattr(settings, 'WAREHOUSE_PINCODE', '421302')
 IS_STAGING = getattr(settings, 'ITHINK_IS_STAGING', True)
 
 API_BASE_URL = (
-    "https://pre-alpha.ithinklogistics.com/api_v3" if IS_STAGING
-    else "https://my.ithinklogistics.com/api_v3"
+    "https://my.ithinklogistics.com/api_v3"
 )
 
 # ---------------------------------------------------------------------
