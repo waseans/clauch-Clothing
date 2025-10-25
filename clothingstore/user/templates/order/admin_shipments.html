@@ -15,12 +15,16 @@
            class="px-4 py-1.5 text-sm font-medium rounded-md transition {% if active_tab == 'shipped' %}bg-black text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
            Shipped
         </a>
+        <a href="{% url 'admin_shipment_dashboard' status_filter='delivered' %}" 
+           class="px-4 py-1.5 text-sm font-medium rounded-md transition {% if active_tab == 'delivered' %}bg-black text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+           Delivered
+        </a>
         <a href="{% url 'admin_shipment_dashboard' status_filter='all' %}" 
            class="px-4 py-1.5 text-sm font-medium rounded-md transition {% if active_tab == 'all' %}bg-black text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
            All
         </a>
       </div>
-    </div>
+      </div>
 
     {% if messages %}
       <div class="mb-6">
@@ -83,18 +87,20 @@
                     <span class="px-2 py-0.5 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full">Ready to Ship</span>
                   {% elif data.order.shipping_status == 'SHIPPED' %}
                     <span class="px-2 py-0.5 font-semibold leading-tight text-purple-700 bg-purple-100 rounded-full">Shipped</span>
+                  {% elif data.order.shipping_status == 'DELIVERED' %}
+                    <span class="px-2 py-0.5 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">Delivered</span>
                   {% else %}
                      <span class="px-2 py-0.5 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">{{ data.order.get_shipping_status_display }}</span>
                   {% endif %}
               </div>
             </td>
-            
             <td class="px-6 py-4 text-xs">
               {% if data.order.shipping_status == 'READY_TO_SHIP' or data.order.shipping_status == 'SHIPMENT_FAILED' %}
                 <a href="{% url 'create_shipment_for_order' data.order.id %}" class="font-medium text-white bg-black hover:bg-gray-800 py-2 px-4 rounded-lg whitespace-nowrap">
                   Create Shipment
                 </a>
-              {% elif data.order.shipping_status == 'SHIPPED' %}
+              
+              {% elif data.order.shipping_status == 'SHIPPED' or data.order.shipping_status == 'DELIVERED' %}
                 <div class="space-y-1">
                   <p class="font-semibold text-gray-800">{{ data.order.tracking_id }}</p>
                   <p class="text-gray-500">{{ data.order.shipping_service_name }}</p>
@@ -104,12 +110,24 @@
                     </a>
                   {% endif %}
                 </div>
+                
+                {% if data.order.shipping_status == 'SHIPPED' %}
+                  <form method="POST" action="{% url 'admin_shipment_mark_as_delivered' data.order.id %}" class="mt-2">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="font-medium text-white bg-green-600 hover:bg-green-700 py-1.5 px-3 rounded-lg whitespace-nowrap text-xs"
+                            onclick="return confirm('Are you sure you want to mark this order as DELIVERED?');">
+                      Mark as Delivered
+                    </button>
+                  </form>
+                {% endif %}
+              
               {% endif %}
             </td>
-          </tr>
+            </tr>
           {% empty %}
           <tr>
-            <td colspan="5" class="text-center py-10 text-gray-500">
+            <td colspan="5" class="text-center py-10 text-gray-50Music00">
               No prepaid orders found for this filter.
             </td>
           </tr>

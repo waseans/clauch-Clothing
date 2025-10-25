@@ -30,11 +30,14 @@ urlpatterns = [
      path('admin/shipments/<str:status_filter>/', views.admin_shipment_dashboard, name='admin_shipment_dashboard'), # Filtered view
     
      path('admin/create-shipment/<int:order_id>/', views.create_shipment_for_order, name='create_shipment_for_order'),
+     path('admin/shipments/mark-as-delivered/<int:order_id>/', views.admin_shipment_mark_as_delivered, name='admin_shipment_mark_as_delivered'),
 
      path('admin/ithink/create-shipment/<int:order_id>/', views.create_ithink_shipment, name='create_ithink_shipment'),
 
      path('admin/ithink/', views.admin_ithink_dashboard, name='admin_ithink_dashboard_default'),
     path('admin/ithink/<str:status_filter>/', views.admin_ithink_dashboard, name='admin_ithink_dashboard'),
+
+    path('admin/ithink/mark-as-delivered/<int:order_id>/', views.admin_mark_as_delivered, name='admin_mark_as_delivered'),
     path('order/invoice/<int:order_id>/', views.download_invoice, name='download_invoice'),
 
 ]

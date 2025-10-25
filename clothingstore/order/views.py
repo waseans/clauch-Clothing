@@ -14,6 +14,8 @@ import hashlib
 import json
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
+from django import forms
+from django.views.decorators.http import require_POST
 
 # --- Stock Management Imports ---
 from django.db import transaction, IntegrityError
@@ -575,12 +577,16 @@ def update_profile(request):
     return redirect("account")
 
 
+
+
+
+
 @staff_member_required
 def admin_shipment_dashboard(request, status_filter='pending'):
     """Dashboard for PREPAID (Shiport) orders."""
     base_query = Order.objects.filter(payment_method='RZP')
     base_query = base_query.exclude(
-        shipping_status__in=['PENDING', 'CANCELLED', 'DELIVERED']
+        shipping_status__in=['PENDING', 'CANCELLED'] # <--- MODIFIED: Removed 'DELIVERED'
     )
 
     if status_filter == 'pending':
@@ -592,8 +598,14 @@ def admin_shipment_dashboard(request, status_filter='pending'):
     elif status_filter == 'shipped':
         orders_to_display = base_query.filter(shipping_status='SHIPPED')
         active_tab = 'shipped'
+    
+    # --- ADDED THIS BLOCK ---
+    elif status_filter == 'delivered':
+        orders_to_display = base_query.filter(shipping_status='DELIVERED')
+        active_tab = 'delivered'
+        
     else: # 'all'
-        orders_to_display = base_query
+        orders_to_display = base_query # 'all' now includes delivered
         active_tab = 'all'
 
     orders_to_display = orders_to_display.prefetch_related('items__product').order_by('-created_at')
@@ -613,6 +625,25 @@ def admin_shipment_dashboard(request, status_filter='pending'):
     return render(request, 'order/admin_shipments.html', context)
 
 
+# --- ADD THIS NEW VIEW ---
+@staff_member_required
+@require_POST  # Ensures this view can only be accessed via POST
+def admin_shipment_mark_as_delivered(request, order_id):
+    """Allows admin to manually mark a SHIPPED prepaid order as DELIVERED."""
+    # Ensure we only modify RZP (Prepaid) orders here
+    order = get_object_or_404(Order, id=order_id, payment_method='RZP')
+
+    if order.shipping_status == 'SHIPPED':
+        order.shipping_status = 'DELIVERED'
+        order.save()
+        messages.success(request, f"Order #{order.id} has been manually marked as DELIVERED.")
+    else:
+        messages.warning(request, f"Order #{order.id} was not in 'SHIPPED' state. No change made.")
+    
+    # Redirect back to the shipped tab of the prepaid dashboard
+    return redirect('admin_shipment_dashboard', status_filter='shipped')
+
+
 @staff_member_required
 def create_shipment_for_order(request, order_id):
     """Triggers the shipment creation task for a PREPAID order."""
@@ -623,13 +654,12 @@ def create_shipment_for_order(request, order_id):
         messages.error(request, message)
     return redirect('admin_shipment_dashboard_default')
 
-
 @staff_member_required
 def admin_ithink_dashboard(request, status_filter='pending'):
     """Dashboard for COD (iThink) orders."""
     base_query = Order.objects.filter(payment_method='COD')
     base_query = base_query.exclude(
-        shipping_status__in=['CANCELLED', 'DELIVERED']
+        shipping_status__in=['CANCELLED']  # <--- MODIFIED: Only exclude CANCELLED
     )
 
     if status_filter == 'pending':
@@ -641,8 +671,14 @@ def admin_ithink_dashboard(request, status_filter='pending'):
     elif status_filter == 'shipped':
         orders_to_display = base_query.filter(shipping_status='SHIPPED')
         active_tab = 'shipped'
+    
+    # --- ADDED THIS BLOCK ---
+    elif status_filter == 'delivered':
+        orders_to_display = base_query.filter(shipping_status='DELIVERED')
+        active_tab = 'delivered'
+    
     else: # 'all'
-        orders_to_display = base_query
+        orders_to_display = base_query # 'all' will now include pending, shipped, and delivered
         active_tab = 'all'
 
     orders_to_display = orders_to_display.prefetch_related('items__product').order_by('-created_at')
@@ -664,7 +700,6 @@ def admin_ithink_dashboard(request, status_filter='pending'):
         'active_tab': active_tab,
     }
     return render(request, 'order/admin_ithink.html', context)
-
 
 @staff_member_required
 def create_ithink_shipment(request, order_id):
@@ -714,3 +749,21 @@ def download_invoice(request, order_id):
     if pisa_status.err:
        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
+
+
+# --- ADD THIS NEW VIEW ---
+@staff_member_required
+@require_POST  # Ensures this view can only be accessed via POST
+def admin_mark_as_delivered(request, order_id):
+    """Allows admin to manually mark a SHIPPED order as DELIVERED."""
+    order = get_object_or_404(Order, id=order_id, payment_method='COD')
+
+    if order.shipping_status == 'SHIPPED':
+        order.shipping_status = 'DELIVERED'
+        order.save()
+        messages.success(request, f"Order #{order.id} has been manually marked as DELIVERED.")
+    else:
+        messages.warning(request, f"Order #{order.id} was not in 'SHIPPED' state. No change made.")
+    
+    # Redirect back to the shipped tab, where the user just was
+    return redirect('admin_ithink_dashboard', status_filter='shipped')
