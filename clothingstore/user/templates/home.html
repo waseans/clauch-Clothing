@@ -182,9 +182,11 @@
         <div class="relative group transform-style preserve-3d transition-transform duration-500 hover:rotate-y-[8deg] hover:-rotate-x-[5deg]">
           <img src="{{ category.image.url }}" alt="{{ category.name }}" loading="lazy"
             class="w-full aspect-[2.5/4] object-cover shadow-md group-hover:scale-105 transition duration-300" />
-          <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[11px] md:text-sm font-montserrat font-semibold tracking-wide text-white drop-shadow">
-            {{ category.name }}
-          </div>
+          <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[11px] md:text-sm 
+     font-montserrat font-semibold tracking-wide text-gray-800 drop-shadow">
+  {{ category.name }}
+</div>
+
         </div>
       </a>
     {% endfor %}
