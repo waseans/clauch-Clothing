@@ -17,6 +17,8 @@
   <meta name="twitter:title" content="{{ product.name }} | Clauch">
   <meta name="twitter:description" content="{{ product.description|truncatechars:150 }}">
   <meta name="twitter:image" content="{{ product.primary_image.url }}">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 {% endblock %}
 
 
@@ -42,6 +44,11 @@
 
   .swiper-pagination-bullet-active {
     background-color: #111827 !important;
+  }
+
+  /* --- NEW: Global Montserrat Font Application --- */
+  #product-page-container {
+      font-family: 'Montserrat', sans-serif;
   }
 
   /* --- REFINED STYLES FOR THE CART NOTIFICATION --- */
@@ -241,7 +248,7 @@
   </a>
 </div>
 
-<div class="max-w-6xl mx-auto px-4 pt-4 pb-32 md:flex md:gap-8">
+<div id="product-page-container" class="max-w-6xl mx-auto px-4 pt-4 pb-10 md:flex md:gap-8">
   <div class="md:w-1/2">
     <div class="relative w-full h-[65vh] md:h-[75vh] overflow-hidden">
       <div class="swiper swiper-container h-full">
@@ -413,11 +420,11 @@
       </div>
     </div>
 
-    <div class="mb-4 text-sm text-gray-700 font-[Montserrat] mt-6 md:mt-4">
+    <div class="mb-4 text-sm text-gray-700 mt-6 md:mt-4">
       {{ product.description }}
     </div>
 
-    <div class="space-y-4 font-[Montserrat] text-sm text-gray-800">
+    <div class="space-y-4 text-sm text-gray-800">
 
       <div class="border-b pb-2">
         <button onclick="toggleSection('offers')" class="w-full flex justify-between items-center font-semibold">
@@ -487,46 +494,34 @@
   </div>
 </div>
 
-{% if recommended_products %}
-<div class="max-w-6xl mx-auto px-4 md:px-0 mb-24">
-  <h3 class="text-lg sm:text-xl font-semibold mb-4">You may also like</h3>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    {% for rec in recommended_products %}
-    <div>
-      <a href="{% url 'product_detail' rec.slug %}">
-        <img src="{{ rec.primary_image.url }}" class="w-full h-40 object-cover rounded" />
-        <p class="text-xs mt-1 truncate">{{ rec.name }}</p>
-        <p class="text-xs font-medium text-black">₹{{ rec.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span></p>
-        {% if rec.get_total_pieces_in_set > 0 %}
-            <p class="text-xs text-gray-700">Set: ₹{{ rec.discount_price|default:rec.price|floatformat:0 }}</p>
-        {% endif %}
-      </a>
-    </div>
-    {% endfor %}
-  </div>
-</div>
-{% endif %}
 
 {% if related_products %}
-  <div class="max-w-6xl mx-auto px-4 md:px-0 mb-24">
-    <section class="mt-12">
+  <div class="max-w-6xl mx-auto px-4 md:px-0 mb-5 font-montserrat">
       <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-6">Shop Similar</h2>
+      
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {% for product in related_products %}
           <div class="w-full">
-            <div class="relative bg-white rounded-md overflow-hidden border border-gray-200">
+            <div class="relative">
               <a href="{% url 'product_detail' product.slug %}">
-                <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-contain aspect-square p-2">
+                <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-contain bg-white">
               </a>
-              <button class="absolute top-2 right-2 bg-black text-white text-xs px-3 py-1 rounded shadow-md hover:shadow-lg transition-all">
-                ADD
-              </button>
+
+              <a href="{% url 'product_detail' product.slug %}">
+                <button class="absolute top-2 right-2 bg-black text-white text-xs px-4 py-2 rounded shadow-md hover:shadow-lg transition-all font-montserrat">
+                  ADD
+                </button>
+              </a>
             </div>
-            <div class="pt-2 px-1 pb-2">
-              <p class="text-xs sm:text-sm text-gray-900 leading-tight truncate">{{ product.name }}</p>
+
+            <div class="pt-2 px-1 pb-2 font-montserrat">
+              <p class="text-xs sm:text-sm text-gray-900 leading-tight truncate">
+                {{ product.name }}
+              </p>
 
               <div class="text-base font-bold text-gray-900 mt-1">
-                ₹{{ product.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span>
+                ₹{{ product.get_current_price_per_piece|floatformat:0 }} 
+                <span class="text-xs font-normal text-gray-600">/ Piece</span>
               </div>
 
               {% if product.get_total_pieces_in_set > 0 %}
@@ -538,9 +533,9 @@
           </div>
         {% endfor %}
       </div>
-    </section>
   </div>
-  {% endif %}
+{% endif %}
+
 
 <div id="cart-notification" class="cart-notification">
   <span class="icon" id="notification-icon"></span>
@@ -870,13 +865,8 @@
   document.addEventListener("DOMContentLoaded", () => {
     initSwiper();
 
-    const initialColorBtn = document.querySelector('[id^="color-btn-"].ring-2');
-    if (initialColorBtn) {
-        const initialColorId = initialColorBtn.id.replace('color-btn-', '');
-        document.getElementById('selected_color_id_desktop').value = initialColorId;
-        document.getElementById('selected_color_id_mobile').value = initialColorId;
-        selectedColorName = initialColorBtn.getAttribute('data-color-name') || "{{ primary_color.name }}";
-    }
+    const activeColorBtn = document.getElementById(`color-btn-{{ primary_color.id }}`);
+    if(activeColorBtn) activeColorBtn.classList.add('ring-2', 'ring-black');
   });
 </script>
 
