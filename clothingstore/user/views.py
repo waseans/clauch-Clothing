@@ -144,9 +144,7 @@ def cart_view(request):
 def showroom_view(request):
     return render(request, "showroom.html")
 
-# views.py
-def blogs_view(request):
-    return render(request, "blogs.html")
+
 
 
 from django.shortcuts import render

@@ -35,7 +35,7 @@ urlpatterns = [
     # Main project URLs
     path('admin/', admin.site.urls),
     path('', include('user.urls')),      # Main customer views
-    path('owner/', include('owner.urls')),  # Owner dashboard
+    path("", include("owner.urls")),
     path('order/', include('order.urls')),
     
     # Add the URL patterns for robots.txt and sitemap.xml

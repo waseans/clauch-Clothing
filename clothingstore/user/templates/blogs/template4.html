@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="max-w-6xl mx-auto px-4 py-10">
+
+  <!-- TITLE + SUBTITLE -->
+  <header class="mb-12">
+    <h1 class="text-4xl font-bold tracking-tight">{{ blog.title }}</h1>
+    {% if blog.subtitle_1 %}
+      <p class="text-gray-500 text-lg mt-3">{{ blog.subtitle_1 }}</p>
+    {% endif %}
+  </header>
+
+  <!-- HORIZONTAL IMAGE STRIP -->
+  <section class="overflow-x-auto -mx-4 px-4 py-3 mb-12">
+    <div class="flex gap-5">
+
+      {% for img in blog.image_1|default_if_none:"", blog.image_2|default_if_none:"", blog.image_3|default_if_none:"", blog.image_4|default_if_none:"", blog.image_5|default_if_none:"" %}
+        {% if img %}
+          <div class="min-w-[280px] h-44 rounded-xl overflow-hidden shadow-md bg-white group">
+            <img src="{{ img.url }}"
+                 class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110">
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {% if not blog.image_1 and not blog.image_2 and not blog.image_3 and not blog.image_4 and not blog.image_5 %}
+        <div class="min-w-[280px] h-44 flex items-center justify-center bg-gray-50 rounded-xl border border-dashed text-gray-400">
+          Optional Images
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <!-- 3-SECTION CONTENT GRID -->
+  <section class="grid md:grid-cols-3 gap-10">
+
+    <!-- Column 1 -->
+    <div class="space-y-4 text-gray-700 leading-relaxed text-lg">
+      {% if blog.paragraph_1 %}
+        <p class="whitespace-pre-line">{{ blog.paragraph_1 }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Column 2 -->
+    <div class="space-y-4 text-gray-700 leading-relaxed text-lg">
+      {% if blog.subtitle_2 %}
+        <h3 class="text-xl font-semibold tracking-tight">{{ blog.subtitle_2 }}</h3>
+      {% endif %}
+      {% if blog.paragraph_2 %}
+        <p class="whitespace-pre-line">{{ blog.paragraph_2 }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Column 3 -->
+    <div class="space-y-4 text-gray-700 leading-relaxed text-lg">
+      <p class="text-sm text-gray-500">
+        Published: <span class="font-medium">{{ blog.created_at|date:"M d, Y" }}</span>
+      </p>
+
+      {% if blog.paragraph_3 %}
+        <p class="whitespace-pre-line mt-2">{{ blog.paragraph_3 }}</p>
+      {% endif %}
+    </div>
+
+  </section>
+
+</main>
+{% endblock %}

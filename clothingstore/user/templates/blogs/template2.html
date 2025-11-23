@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ blog.title }} | Clauch{% endblock %}
+
+{% block content %}
+
+<div class="w-full bg-white">
+
+  <!-- HEADER -->
+  <section class="max-w-4xl mx-auto px-6 pt-14 text-center">
+      <h1 class="text-4xl font-semibold text-gray-900 font-montserrat">
+          {{ blog.title }}
+      </h1>
+
+      {% if blog.subtitle_1 %}
+      <p class="mt-4 text-gray-600 text-lg font-montserrat">{{ blog.subtitle_1 }}</p>
+      {% endif %}
+
+      {% if blog.subtitle_2 %}
+      <p class="mt-1 text-gray-500 text-base font-montserrat">{{ blog.subtitle_2 }}</p>
+      {% endif %}
+
+      <div class="w-16 h-[2px] bg-black mx-auto mt-6 mb-10"></div>
+  </section>
+
+
+
+  <!-- FEATURE GRID (3 Premium Cards) -->
+  <section class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 mt-4 mb-12">
+
+      <!-- CARD 1 -->
+      <div class="rounded-3xl overflow-hidden shadow-lg bg-white border border-gray-100">
+          {% if blog.image_1 %}
+          <img src="{{ blog.image_1.url }}" class="w-full h-56 object-cover">
+          {% else %}
+          <div class="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
+              Optional Image
+          </div>
+          {% endif %}
+
+          <div class="p-5 font-montserrat">
+              {% if blog.paragraph_1 %}
+              <p class="text-gray-700 text-[15px] leading-relaxed">
+                  {{ blog.paragraph_1|truncatechars:180 }}
+              </p>
+              {% else %}
+              <p class="text-gray-400 text-sm">No content provided.</p>
+              {% endif %}
+          </div>
+      </div>
+
+
+      <!-- CARD 2 -->
+      <div class="rounded-3xl overflow-hidden shadow-lg bg-white border border-gray-100">
+          {% if blog.image_2 %}
+          <img src="{{ blog.image_2.url }}" class="w-full h-56 object-cover">
+          {% else %}
+          <div class="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
+              Optional Image
+          </div>
+          {% endif %}
+
+          <div class="p-5 font-montserrat">
+              {% if blog.paragraph_2 %}
+              <p class="text-gray-700 text-[15px] leading-relaxed">
+                  {{ blog.paragraph_2|truncatechars:180 }}
+              </p>
+              {% else %}
+              <p class="text-gray-400 text-sm">No content provided.</p>
+              {% endif %}
+          </div>
+      </div>
+
+
+      <!-- CARD 3 -->
+      <div class="rounded-3xl overflow-hidden shadow-lg bg-white border border-gray-100">
+          {% if blog.image_3 %}
+          <img src="{{ blog.image_3.url }}" class="w-full h-56 object-cover">
+          {% else %}
+          <div class="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
+              Optional Image
+          </div>
+          {% endif %}
+
+          <div class="p-5 font-montserrat">
+              <p class="text-gray-700 text-[15px] leading-relaxed">
+                  {{ blog.subtitle_1|default:"Featured Highlight" }}
+              </p>
+          </div>
+      </div>
+
+  </section>
+
+
+
+
+  <!-- FULL ARTICLE BODY -->
+  <section class="max-w-4xl mx-auto px-6 mb-24 font-montserrat">
+
+      <!-- MAIN IMAGE -->
+      {% if blog.main_image %}
+      <div class="rounded-3xl overflow-hidden shadow-xl bg-[#f5f5f5] p-3 mb-10">
+          <img src="{{ blog.main_image.url }}"
+               class="rounded-3xl w-full h-[420px] object-cover border-[6px] border-white shadow-lg">
+      </div>
+      {% endif %}
+
+      <!-- PARAGRAPH 1 -->
+      {% if blog.paragraph_1 %}
+      <p class="text-gray-800 leading-relaxed text-[17px] whitespace-pre-line mb-10">
+          {{ blog.paragraph_1 }}
+      </p>
+      {% endif %}
+
+      <!-- EXTRA IMAGES -->
+      {% for img in [blog.image_4, blog.image_5] %}
+          {% if img %}
+          <div class="rounded-3xl overflow-hidden shadow-xl bg-[#f5f5f5] p-3 mb-10">
+              <img src="{{ img.url }}" class="rounded-3xl w-full h-[420px] object-cover border-[6px] border-white shadow-lg">
+          </div>
+          {% endif %}
+      {% endfor %}
+
+  </section>
+
+</div>
+
+{% endblock %}

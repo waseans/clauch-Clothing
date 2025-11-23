@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="max-w-5xl mx-auto px-4 py-10">
+
+  <!-- HERO MAIN IMAGE -->
+  {% if blog.main_image %}
+    <div class="overflow-hidden rounded-2xl shadow-lg mb-10 group">
+      <img src="{{ blog.main_image.url }}" alt="{{ blog.title }}"
+           class="w-full h-[420px] object-cover transition-all duration-500 group-hover:scale-105">
+    </div>
+  {% endif %}
+
+  <!-- TITLE + SUBTITLE -->
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold tracking-tight">{{ blog.title }}</h1>
+    {% if blog.subtitle_1 %}
+      <p class="text-gray-500 text-lg mt-3">{{ blog.subtitle_1 }}</p>
+    {% endif %}
+  </div>
+
+  <!-- MAIN CONTENT + SIDE IMAGES -->
+  <section class="grid lg:grid-cols-3 gap-10 items-start">
+
+    <!-- LEFT: MAIN PARAGRAPHS -->
+    <div class="lg:col-span-2 space-y-6 text-gray-700 leading-relaxed text-lg">
+      {% if blog.paragraph_1 %}
+        <p class="whitespace-pre-line">{{ blog.paragraph_1 }}</p>
+      {% endif %}
+
+      {% if blog.paragraph_2 %}
+        <p class="whitespace-pre-line">{{ blog.paragraph_2 }}</p>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT: STACKED IMAGES -->
+    <div class="space-y-6">
+      {% if blog.image_1 %}
+        <div class="rounded-xl shadow overflow-hidden group">
+          <img src="{{ blog.image_1.url }}" class="w-full h-56 object-cover 
+               transition-all duration-500 group-hover:scale-105">
+        </div>
+      {% endif %}
+
+      {% if blog.image_2 %}
+        <div class="rounded-xl shadow overflow-hidden group">
+          <img src="{{ blog.image_2.url }}" class="w-full h-56 object-cover 
+               transition-all duration-500 group-hover:scale-105">
+        </div>
+      {% endif %}
+
+      {% if not blog.image_1 and not blog.image_2 %}
+        <div class="h-56 bg-gray-50 rounded-xl flex items-center justify-center 
+                    text-gray-300 border border-dashed">
+          Optional Images Section
+        </div>
+      {% endif %}
+    </div>
+
+  </section>
+
+</main>
+{% endblock %}

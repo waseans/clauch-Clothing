@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ blog.title }} | Clauch{% endblock %}
+
+{% block content %}
+<div class="w-full bg-white pb-24 pt-10">
+
+    <!-- MAIN HERO IMAGE -->
+    {% if blog.main_image %}
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="relative w-full bg-[#EAEAEA] rounded-3xl overflow-hidden shadow-xl">
+            <img src="{{ blog.main_image.url }}"
+                 class="w-full h-[450px] md:h-[550px] object-cover rounded-3xl border-[8px] border-white shadow-xl" />
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- TITLE + SUBTITLES -->
+    <div class="max-w-4xl mx-auto text-center px-6 mt-12">
+        <h1 class="text-4xl md:text-5xl font-semibold text-gray-900 font-montserrat leading-tight">
+            {{ blog.title }}
+        </h1>
+
+        {% if blog.subtitle_1 %}
+        <p class="mt-4 text-gray-600 text-lg font-montserrat">
+            {{ blog.subtitle_1 }}
+        </p>
+        {% endif %}
+
+        {% if blog.subtitle_2 %}
+        <p class="mt-2 text-gray-500 text-base font-montserrat">
+            {{ blog.subtitle_2 }}
+        </p>
+        {% endif %}
+
+        <p class="mt-4 text-xs text-gray-500 font-montserrat tracking-wide">
+            {{ blog.created_at|date:"F d, Y" }}
+        </p>
+
+        <div class="w-16 h-[2px] bg-black mx-auto mt-6"></div>
+    </div>
+
+
+    <!-- CONTENT SECTIONS -->
+    <div class="max-w-4xl mx-auto px-6 mt-12 space-y-16 font-montserrat">
+
+        <!-- PARAGRAPH 1 -->
+        {% if blog.paragraph_1 %}
+        <div>
+            <p class="text-gray-700 leading-relaxed text-[17px] whitespace-pre-line">
+                {{ blog.paragraph_1 }}
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- IMAGE 1 -->
+        {% if blog.image_1 %}
+        <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
+            <img src="{{ blog.image_1.url }}"
+                 class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+        </div>
+        {% endif %}
+
+        <!-- PARAGRAPH 2 -->
+        {% if blog.paragraph_2 %}
+        <div>
+            <p class="text-gray-700 leading-relaxed text-[17px] whitespace-pre-line">
+                {{ blog.paragraph_2 }}
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- OPTIONAL EXTRA IMAGES (FIXED → NO LOOP) -->
+        {% if blog.image_2 %}
+        <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
+            <img src="{{ blog.image_2.url }}"
+                 class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+        </div>
+        {% endif %}
+
+        {% if blog.image_3 %}
+        <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
+            <img src="{{ blog.image_3.url }}"
+                 class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+        </div>
+        {% endif %}
+
+        {% if blog.image_4 %}
+        <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
+            <img src="{{ blog.image_4.url }}"
+                 class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+        </div>
+        {% endif %}
+
+        {% if blog.image_5 %}
+        <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
+            <img src="{{ blog.image_5.url }}"
+                 class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}
