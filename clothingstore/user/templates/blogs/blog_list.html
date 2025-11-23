@@ -27,11 +27,11 @@
             <!-- IMAGE WRAPPER -->
             <div class="relative w-full h-64 bg-[#EAEAEA] rounded-2xl overflow-hidden shadow-md">
 
-                {% if blog.cover_image %}
-                <img src="{{ blog.cover_image.url }}"
+                {% if blog.thumbnail %}
+                <img src="{{ blog.thumbnail.url }}"
                      class="w-full h-full object-cover rounded-2xl border-[6px] border-white shadow-xl group-hover:scale-105 transition-all duration-500" />
                 {% else %}
-                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                <div class="w-full h-full flex items-center justify-center text-gray-400 font-montserrat">
                     No Image
                 </div>
                 {% endif %}
@@ -43,9 +43,9 @@
                     {{ blog.title }}
                 </h2>
 
-                {% if blog.subtitle %}
+                {% if blog.subtitle_1 %}
                 <p class="mt-2 text-gray-600 font-montserrat text-sm">
-                    {{ blog.subtitle|truncatechars:100 }}
+                    {{ blog.subtitle_1|truncatechars:100 }}
                 </p>
                 {% endif %}
 
