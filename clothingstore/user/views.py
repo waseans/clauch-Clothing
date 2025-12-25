@@ -9,6 +9,23 @@ from .models import Category
 from django.shortcuts import render
 from .models import Category, Product  # or your item model
 
+import json
+import os
+import firebase_admin # type: ignore
+from firebase_admin import credentials, auth as firebase_auth # type: ignore
+from firebase_admin.auth import InvalidIdTokenError # type: ignore
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import get_user_model, login, logout
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.conf import settings
+
 def home_view(request):
     categories = Category.objects.all()
     query = request.GET.get('q')
@@ -473,118 +490,79 @@ def search_suggestions(request):
     return JsonResponse(data)
 
 
-# views.py
-
 import os
+import json
+
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.contrib.auth import get_user_model, login, logout
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 from django.conf import settings
-from twilio.rest import Client
-from .models import OTP
-import random
+
+# This correctly gets your CustomUser model
 User = get_user_model()
 
-client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
+# --- Initialize Firebase Admin ---
+cred_path = os.path.join(settings.BASE_DIR, "user/serviceAccountKey.json")
 
-TWILIO_TEMPLATE_SID = "HX82e5aa4c5b2e9c33c875742e453cdea9"  # Your approved template SID
+if not firebase_admin._apps:
+    try:
+        if os.path.exists(cred_path):
+            cred = credentials.Certificate(cred_path)
+            firebase_admin.initialize_app(cred)
+        else:
+            print(f"CRITICAL: Service account file not found at {cred_path}")
+    except Exception as e:
+        print(f"Firebase Init Error: {e}")
 
 def login_view(request):
-    context = {
-        'show_otp': request.session.get('phone_number') is not None
-    }
-    return render(request, "login.html", context)
+    """Renders the Clauch Partner Login page."""
+    return render(request, "login.html")
 
-import os
-import random
-import json
-from django.shortcuts import redirect
-from django.contrib import messages
-from .models import OTP
-from twilio.rest import Client
+@csrf_exempt
+@require_POST
+def verify_otp_firebase(request):
+    """
+    Verifies the Firebase ID Token and logs the user into the B2B site.
+    """
+    try:
+        data = json.loads(request.body)
+        id_token = data.get("token")
+        
+        if not id_token:
+            return JsonResponse({"status": "error", "message": "Token missing."}, status=400)
 
-import os
-import json
-import random
-from django.shortcuts import redirect
-from django.contrib import messages
-from .models import OTP
-from twilio.rest import Client
+        # 1. Verify the token with Google/Firebase
+        decoded_token = firebase_auth.verify_id_token(id_token)
+        phone_number = decoded_token.get("phone_number") 
+        
+        if not phone_number:
+            return JsonResponse({"status": "error", "message": "Phone number missing in Firebase token."}, status=400)
 
-# Twilio setup
-client = Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_AUTH_TOKEN"))
-
-def send_otp(request):
-    if request.method == "POST":
-        phone = request.POST.get("phone_number")
-        if not phone:
-            messages.error(request, "Phone number is required.")
-            return redirect("login")
-
-        code = str(random.randint(100000, 999999))
-
-        # Save OTP in DB
-        OTP.objects.create(phone_number=phone, code=code)
-
-        # Save phone in session
-        request.session['phone_number'] = phone
-
-        try:
-            client.messages.create(
-                body=f"Your OTP for ClauchFactory is {code}. It will expire in 5 minutes. Happy Shopping with Clauch! ",
-                from_="+19377162669",  # same number as WhatsApp FROM
-                to=f"+91{phone}"
-            )
-
-            messages.success(request, "OTP sent successfully!")
-        except Exception as e:
-            messages.error(request, "Failed to send OTP. Please try again.")
-            print("Twilio error:", e)
-
-    return redirect("login")
-
-def verify_otp(request):
-    if request.method == "POST":
-        phone = request.session.get('phone_number')
-        otp_input = request.POST.get("otp")
-
-        if not phone or not otp_input:
-            messages.error(request, "Missing phone number or OTP.")
-            return redirect("login")
-
-        # Get latest OTP for phone
-        otp_obj = OTP.objects.filter(phone_number=phone).order_by('-created_at').first()
-
-        if not otp_obj or otp_obj.is_expired() or otp_obj.code != otp_input:
-            messages.error(request, "Invalid or expired OTP.")
-            return redirect("login")
-
-        # OTP valid - login user
-        user, created = User.objects.get_or_create(phone_number=phone)
+        # 2. Get or Create User (FIXED: Used Uppercase 'User')
+        user, created = User.objects.get_or_create(
+            phone_number=phone_number,
+            defaults={'is_active': True}
+        )
+        
+        # 3. Log the user into Django session
         login(request, user)
+        
+        return JsonResponse({"status": "success", "redirect": "/"}, status=200)
 
-        # Clean up session and redirect
-        del request.session['phone_number']
-        messages.success(request, "Login successful!")
-        return redirect("home")  # Change to your homepage
-
-    return redirect("login")
-
-
-def change_number(request):
-    request.session.pop('phone_number', None)
-    return redirect('login')
-
-
-from django.contrib.auth import logout
+    except InvalidIdTokenError:
+        return JsonResponse({"status": "error", "message": "Invalid or expired token."}, status=401)
+    except Exception as e:
+        # Logging the error to terminal for you to see
+        print(f"Verification Error: {e}")
+        return JsonResponse({"status": "error", "message": f"Server error: {str(e)}"}, status=500)
 
 def logout_view(request):
     logout(request)
     messages.success(request, "Logged out successfully.")
     return redirect("login")
-
-
 
 
 from django.shortcuts import render, get_object_or_404, redirect

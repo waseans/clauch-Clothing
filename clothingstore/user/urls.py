@@ -25,10 +25,7 @@ urlpatterns = [
     path("ajax/filter-popular-products/", views.filter_popular_products, name="filter_popular_products"),
 
     path('login/', views.login_view, name='login'),
-    path('send-otp/', views.send_otp, name='send_otp'),
-    path('verify-otp/', views.verify_otp, name='verify_otp'),
-    path('resend-otp/', views.send_otp, name='resend_otp'),
-    path('change-number/', views.change_number, name='change_number'),
+    path('verify-otp/', views.verify_otp_firebase, name='verify_otp'),
     path('logout/', views.logout_view, name='logout'),
     
     # Add this line to handle the robots.txt file

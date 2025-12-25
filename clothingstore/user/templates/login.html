@@ -8,21 +8,19 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-  <!-- Open Graph for social sharing -->
   <meta property="og:title" content="Clauch Partner Login - B2B Dashboard">
   <meta property="og:description" content="Access your Clauch B2B wholesale dashboard. Secure login via OTP to manage your clothing business effortlessly.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
   <meta property="og:site_name" content="Clauch">
-  <meta property="og:image" content="{% static 'images/og-partner-login.jpg' %}">  {# replace with a real image path #}
+  <meta property="og:image" content="{% static 'images/og-partner-login.jpg' %}">
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-white text-gray-900 font-montserrat flex items-center justify-center px-4">
+<div class="min-h-screen bg-white text-gray-900 font-montserrat flex items-center justify-center px-4 py-12">
   <div class="w-full max-w-md">
 
-    <!-- Brand & Heading -->
-    <div class="text-center pt-8">
+    <div class="text-center">
       <h1 class="text-3xl sm:text-4xl font-bold tracking-wide text-gray-900">
         Clauch Partner Login
       </h1>
@@ -31,7 +29,6 @@
       </p>
     </div>
 
-    <!-- Video Preview or Business Visual -->
     <div class="w-full mt-6">
       <video autoplay muted loop playsinline class="w-full h-64 object-cover rounded shadow">
         <source src="{% static 'videos/login-vid.mov' %}" type="video/mp4" />
@@ -39,64 +36,161 @@
       </video>
     </div>
 
-    <!-- Phone/OTP Form -->
-    <div class="mt-8 bg-white px-6 py-6 shadow-md rounded-lg space-y-6">
+    <div class="mt-8 bg-white px-6 py-8 shadow-md rounded-lg space-y-6 border border-gray-100">
+      
+      <div id="status-message-container" class="min-h-8"></div>
 
-      {% if not request.session.phone_number %}
-      <!-- Phone Number Input -->
-      <form method="POST" action="{% url 'send_otp' %}">
-        {% csrf_token %}
-        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-        <input type="tel" name="phone_number" maxlength="10" required
-               placeholder="Enter your business phone"
-               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black" />
-        <button type="submit"
-                class="w-full mt-4 py-3 text-sm font-semibold text-white bg-black hover:bg-gray-800 transition rounded">
-          Send OTP
+      <div id="step-phone" class="space-y-4">
+        <label class="block text-sm font-semibold text-gray-700 uppercase">Business Phone Number</label>
+        <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">+91</span>
+            <input type="tel" id="phone" maxlength="10" placeholder="10-digit number"
+                   class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black" />
+        </div>
+        
+        <div id="recaptcha-container" class="mt-2"></div>
+        
+        <button type="button" id="send-otp-btn"
+                class="w-full py-3 text-sm font-semibold text-white bg-black hover:bg-gray-800 transition rounded uppercase flex items-center justify-center">
+          <span id="send-otp-text">Send OTP</span>
+          <svg id="send-otp-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
         </button>
-      </form>
-      {% endif %}
-
-      {% if request.session.phone_number %}
-      <!-- OTP Verification -->
-      <form method="POST" action="{% url 'verify_otp' %}">
-        {% csrf_token %}
-        <label class="block text-sm font-medium text-gray-700 mb-2">Enter OTP</label>
-        <input type="text" name="otp" maxlength="6" pattern="[0-9]*" required
-               placeholder="6-digit code"
-               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black" />
-        <button type="submit"
-                class="w-full mt-4 py-3 text-sm font-semibold text-white bg-black hover:bg-gray-800 transition rounded">
-          Verify & Continue
-        </button>
-      </form>
-
-      <!-- Resend / Change -->
-      <div class="text-center mt-4 space-y-2">
-        <form method="POST" action="{% url 'resend_otp' %}">
-          {% csrf_token %}
-          <button type="submit" class="text-sm text-blue-600 hover:underline">Resend OTP</button>
-        </form>
-
-        <form method="POST" action="{% url 'change_number' %}">
-          {% csrf_token %}
-          <button type="submit" class="text-xs text-red-600 hover:underline">Entered wrong number? Change</button>
-        </form>
       </div>
 
-      <!-- Display Phone -->
-      <div class="text-xs text-gray-500 text-center mt-2">
-        Logging in as: +91{{ request.session.phone_number }}
+      <div id="step-otp" class="space-y-4 hidden">
+        <label class="block text-sm font-semibold text-gray-700 uppercase">Enter 6-Digit Code</label>
+        <input type="text" id="otp" maxlength="6" pattern="[0-9]*" placeholder="000000"
+               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black text-center tracking-widest text-xl" />
+        
+        <button type="button" id="verify-otp-btn"
+                class="w-full py-3 text-sm font-semibold text-white bg-black hover:bg-gray-800 transition rounded uppercase flex items-center justify-center">
+          <span id="verify-otp-text">Verify & Dashboard</span>
+          <svg id="verify-otp-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </button>
+
+        <button type="button" onclick="window.location.reload()" class="w-full text-xs text-red-600 hover:underline text-center block mt-2">
+            Wrong number? Change
+        </button>
       </div>
-      {% endif %}
 
     </div>
 
-    <!-- Terms -->
     <div class="text-center text-xs text-gray-500 mt-6 px-6 pb-6">
       By continuing, you agree to our <a href="#" class="underline">Terms</a> and <a href="#" class="underline">Privacy Policy</a>.
     </div>
 
   </div>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<script>
+// --- YOUR FIREBASE CONFIG ---
+const firebaseConfig = {
+  apiKey: "AIzaSyAuRum1FKrUFp98HHVzyQNH7WswBGMl4Cs",
+  authDomain: "sms-otp-waseans.firebaseapp.com",
+  projectId: "sms-otp-waseans",
+  storageBucket: "sms-otp-waseans.appspot.com",
+  messagingSenderId: "427631142892",
+  appId: "1:427631142892:web:fe0bea97a308c7e96842c9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// UI Elements
+const statusContainer = document.getElementById("status-message-container");
+const sendOtpBtn = document.getElementById("send-otp-btn");
+const sendOtpText = document.getElementById("send-otp-text");
+const sendOtpSpinner = document.getElementById("send-otp-spinner");
+const verifyOtpBtn = document.getElementById("verify-otp-btn");
+const verifyOtpText = document.getElementById("verify-otp-text");
+const verifyOtpSpinner = document.getElementById("verify-otp-spinner");
+
+function showMessage(message, isError = false) {
+    const classes = isError ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600';
+    statusContainer.innerHTML = `<div class="text-sm text-center py-2 px-3 rounded ${classes}">${message}</div>`;
+}
+
+// Init Recaptcha
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+
+// SEND OTP
+sendOtpBtn.onclick = function() {
+    const phone = document.getElementById("phone").value.trim();
+    if (phone.length !== 10) {
+        showMessage("Please enter a valid 10-digit number.", true);
+        return;
+    }
+
+    sendOtpBtn.disabled = true;
+    sendOtpText.classList.add('hidden');
+    sendOtpSpinner.classList.remove('hidden');
+
+    const fullPhone = "+91" + phone;
+
+    auth.signInWithPhoneNumber(fullPhone, window.recaptchaVerifier)
+    .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        showMessage("OTP Sent to your business phone.");
+        document.getElementById("step-phone").classList.add("hidden");
+        document.getElementById("step-otp").classList.remove("hidden");
+    }).catch(err => {
+        console.error(err);
+        showMessage("Failed to send OTP. Try again.", true);
+        sendOtpBtn.disabled = false;
+        sendOtpText.classList.remove('hidden');
+        sendOtpSpinner.classList.add('hidden');
+    });
+};
+
+// VERIFY OTP
+verifyOtpBtn.onclick = async function() {
+    const otp = document.getElementById("otp").value.trim();
+    if (otp.length !== 6) {
+        showMessage("Enter the 6-digit code.", true);
+        return;
+    }
+
+    verifyOtpBtn.disabled = true;
+    verifyOtpText.classList.add('hidden');
+    verifyOtpSpinner.classList.remove('hidden');
+
+    try {
+        const result = await window.confirmationResult.confirm(otp);
+        const idToken = await result.user.getIdToken();
+
+        const res = await fetch("{% url 'verify_otp' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ token: idToken })
+        });
+
+        const data = await res.json();
+        if (data.status === "success") {
+            window.location.href = data.redirect;
+        } else {
+            showMessage(data.message, true);
+            verifyOtpBtn.disabled = false;
+            verifyOtpText.classList.remove('hidden');
+            verifyOtpSpinner.classList.add('hidden');
+        }
+    } catch (err) {
+        showMessage("Invalid OTP code.", true);
+        verifyOtpBtn.disabled = false;
+        verifyOtpText.classList.remove('hidden');
+        verifyOtpSpinner.classList.add('hidden');
+    }
+};
+</script>
 {% endblock %}
