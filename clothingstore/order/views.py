@@ -241,11 +241,13 @@ def update_cart_quantity(request):
 @login_required(login_url='login')
 @require_POST
 def ajax_calculate_shipping(request):
-    # ... (This view is unchanged as it only calculates price, not stock)
     data = json.loads(request.body)
     pincode = data.get('pincode')
-    payment_method = data.get('payment_method', 'RZP') 
+    # Map 'RZP' (Razorpay) to 'Prepaid' for iThink compatibility
+    raw_method = data.get('payment_method', 'RZP') 
+    payment_method = "Prepaid" if raw_method == "RZP" else "COD"
     
+    # 1. Validation
     if not pincode or not pincode.isdigit() or len(pincode) != 6:
         return JsonResponse({'error': 'Please enter a valid 6-digit pincode.'}, status=400)
 
@@ -253,41 +255,39 @@ def ajax_calculate_shipping(request):
     if not cart_items.exists():
         return JsonResponse({'error': 'Your cart is empty.'}, status=400)
 
+    # 2. Calculate Subtotal
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
-    shipping_service = None
 
-    if payment_method == "RZP":
-        rep_item = cart_items.first()
-        if not (rep_item and rep_item.product):
-            return JsonResponse({'error': 'Cart contains an invalid item.'}, status=400)
-        shipping_service = get_shiport_rate(
-            to_pincode=pincode, total_weight=rep_item.product.weight, length=rep_item.product.length,
-            width=rep_item.product.width, height=rep_item.product.height, payment_mode="prepaid"
-        )
-    elif payment_method == "COD":
-        ithink_result = get_ithink_rate_for_checkout(
-            pincode=pincode, subtotal=subtotal, cart_items=cart_items
-        )
-        if ithink_result.get('status') == 'success':
-            shipping_service = ithink_result 
-        else:
-            return JsonResponse({'error': ithink_result.get('message', 'Could not calculate COD shipping.')}, status=400)
+    # 3. Calculate Shipping using iThink for BOTH methods
+    # We pass the payment_method ("Prepaid" or "COD") directly to the iThink wrapper
+    ithink_result = get_ithink_rate_for_checkout(
+        pincode=pincode, 
+        subtotal=subtotal, 
+        cart_items=cart_items,
+        payment_method=payment_method  # Ensure your helper accepts this
+    )
 
-    if not shipping_service:
-        return JsonResponse({'error': 'Sorry, we do not ship to this pincode.'}, status=400)
+    if ithink_result.get('status') != 'success':
+        error_msg = ithink_result.get('message', f'Could not calculate {payment_method} shipping.')
+        return JsonResponse({'error': error_msg}, status=400)
 
+    # 4. Process Charges
+    shipping_service = ithink_result
     shipping_charge = Decimal(shipping_service['total_charges'])
+    
+    # Store in session for the final checkout/place order step
     request.session['shipping_info'] = {
         'charge': str(shipping_charge),
-        'service': shipping_service
+        'service': shipping_service,
+        'method': payment_method
     }
+    
     grand_total = subtotal + shipping_charge
 
     return JsonResponse({
         'shipping_charge': f"{shipping_charge:.2f}",
         'grand_total': f"{grand_total:.2f}",
     })
-
 
 @login_required(login_url='login')
 def checkout_view(request):

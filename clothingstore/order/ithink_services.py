@@ -201,11 +201,9 @@ def create_ithink_order(order, courier_name):
         return {"status": "error", "message": f"API request failed: {e}"}
     
 
-
-def get_rate_for_checkout(pincode, subtotal, cart_items):
+def get_rate_for_checkout(pincode, subtotal, cart_items, payment_method="Prepaid"):
     """
-    (For Customer Checkout) Fetch cheapest COD rate using raw cart data.
-    This function is safe to use before an order is created.
+    Fetch cheapest rate using raw cart data for both COD and Prepaid.
     """
     url = f"{API_BASE_URL}/rate/check.json"
 
@@ -218,7 +216,6 @@ def get_rate_for_checkout(pincode, subtotal, cart_items):
     if not product:
         return {"status": "error", "message": "Cart contains an invalid item."}
 
-    # Use details from the first product for the entire shipment
     shipping_weight = product.weight
     shipping_length = product.length
     shipping_width = product.width
@@ -228,7 +225,8 @@ def get_rate_for_checkout(pincode, subtotal, cart_items):
         "from_pincode": FROM_PINCODE,
         "to_pincode": pincode,
         "shipping_weight_kg": safe_amount(shipping_weight),
-        "payment_method": "COD", # This function is specifically for COD checkout
+        # Use the variable instead of the hardcoded "COD"
+        "payment_method": payment_method, 
         "product_mrp": safe_amount(subtotal),
         "access_token": ACCESS_TOKEN,
         "secret_key": SECRET_KEY,
@@ -244,12 +242,12 @@ def get_rate_for_checkout(pincode, subtotal, cart_items):
         api_response = response.json()
 
         if api_response.get("status") == "success" and api_response.get("data"):
+            # iThink returns a list of courier options in 'data'
             valid_options = [opt for opt in api_response["data"] if Decimal(opt.get('rate', '0')) > 0]
             if not valid_options:
-                return {"status": "error", "message": "No courier services found for this COD pincode."}
+                return {"status": "error", "message": f"No courier services found for {payment_method} to this pincode."}
 
             cheapest_option = min(valid_options, key=lambda x: Decimal(x['rate']))
-            # Return a standardized dictionary that the AJAX view can use
             return {
                 "status": "success",
                 "service_name": cheapest_option['logistic_name'],
