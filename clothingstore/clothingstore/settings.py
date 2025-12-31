@@ -101,8 +101,12 @@ WSGI_APPLICATION = 'clothingstore.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'clauch_clothing_db', # The new DB we created earlier
+        'USER': 'postgres',           # Use the master user
+        'PASSWORD': '1234',           # Your known password
+        'HOST': '127.0.0.1',          # Using IP is more stable than 'localhost'
+        'PORT': '5432',
     }
 }
 
