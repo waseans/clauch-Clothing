@@ -14,8 +14,8 @@
       {% for entry in cart_items %}
       <div class="bg-white rounded-xl shadow-sm flex items-start gap-3 p-3 text-sm hover:shadow-md transition">
 
-        <img src="{{ entry.item.color.images.first.image.url }}" alt="{{ entry.item.product.name }}"
-             class="w-20 h-20 object-cover rounded border" />
+        <img src="{{ entry.item.product.primary_image.url }}" alt="{{ entry.item.product.name }}"
+     class="w-20 h-20 object-cover rounded border" />
 
         <div class="flex-1">
           <h2 class="font-medium text-gray-800 text-sm leading-snug">{{ entry.item.product.name }}</h2>
