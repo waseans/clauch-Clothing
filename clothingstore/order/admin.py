@@ -38,12 +38,10 @@ class OrderAdmin(admin.ModelAdmin):
     
     search_fields = ['user__phone_number', 'full_name', 'tracking_id']
     
-    # Added the new status fields to readonly_fields as well
+    # Removed shipping_service_name, tracking_id, payment_status, and shipping_status from here
     readonly_fields = [
         'user', 'payment_id', 'razorpay_order_id', 'created_at', 'subtotal', 
-        'shipping_charge', 'discount_amount', 'grand_total',
-        'shipping_service_name', 'tracking_id', 'shipping_label_url',
-        'payment_status', 'shipping_status' # Add them here
+        'shipping_charge', 'discount_amount', 'grand_total', 'shipping_label_url'
     ]
     
     inlines = [OrderItemInline]
