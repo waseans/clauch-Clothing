@@ -42,16 +42,34 @@ def get_cheapest_rate(order):
     """Fetch cheapest courier rate from iThink Logistics."""
     url = f"{API_BASE_URL}/rate/check.json"
 
-    # --- ✅ UPDATED: Get shipping details from the FIRST product ---
-    representative_item = order.items.first()
-    if not (representative_item and representative_item.product):
+    # ✅ UPDATED: Aggregate shipping details across all items so shipping scales with quantity
+    items = [it for it in order.items.all() if it.product]
+    if not items:
         return {"status": "error", "message": "Order contains no valid items to calculate shipping."}
 
-    # Use values directly from this one product for the entire order
-    shipping_weight = representative_item.product.weight
-    shipping_length = representative_item.product.length
-    shipping_width = representative_item.product.width
-    shipping_height = representative_item.product.height
+    # Total weight should be sum(product.weight * quantity) across items
+    total_weight = sum((it.product.weight * it.quantity) for it in items)
+
+    # Compute volumetric weight: sum(volume) / volumetric_divisor
+    volumetric_divisor = 5000.0  # common divisor for cm to kg (can be tuned per carrier)
+    total_volume = sum((it.product.length * it.product.width * it.product.height) * it.quantity for it in items)
+    volumetric_weight = (total_volume / volumetric_divisor) if total_volume > 0 else 0
+
+    # Choose the greater of actual or volumetric weight (carrier uses the higher)
+    shipping_weight = max(total_weight, volumetric_weight)
+
+    # For parcel dimensions, we use a simple heuristic: keep max dimensions and
+    # scale one dimension proportionally to accommodate multiple items.
+    # NOTE: This is a heuristic; a more accurate packing algorithm may be desired.
+    shipping_length = max((it.product.length for it in items), default=0)
+    shipping_width = max((it.product.width for it in items), default=0)
+    # scale height by enough to roughly fit total volume
+    base_box_volume = shipping_length * shipping_width * max((it.product.height for it in items), default=0)
+    if base_box_volume > 0:
+        height_multiplier = max(1, (total_volume / base_box_volume))
+    else:
+        height_multiplier = 1
+    shipping_height = int(max((it.product.height for it in items), default=0) * height_multiplier)
     
     payload_data = {
         "from_pincode": FROM_PINCODE,
@@ -68,6 +86,10 @@ def get_cheapest_rate(order):
     }
 
     try:
+        # Debug: print payload and computed weights
+        print('\n[iThink-debug] get_cheapest_rate payload:', json.dumps(payload_data))
+        print('[iThink-debug] computed total_volume(cm3)=', total_volume, 'volumetric_weight(kg)=', round(volumetric_weight,3), 'final_shipping_weight(kg)=', round(float(safe_amount(shipping_weight)),3))
+
         response = requests.post(url, json={"data": payload_data})
         response.raise_for_status()
         api_response = response.json()
@@ -114,15 +136,25 @@ def create_ithink_order(order, courier_name):
         for item in order.items.all()
     ]
     
-    # --- ✅ UPDATED: Get shipping details from the FIRST product ---
-    representative_item = order.items.first()
-    if not (representative_item and representative_item.product):
+    # ✅ UPDATED: Aggregate shipping details across all items for accurate shipment creation
+    items = [it for it in order.items.all() if it.product]
+    if not items:
         return {"status": "error", "message": "Order contains no valid items to create shipment."}
-        
-    shipping_weight = representative_item.product.weight
-    shipping_length = representative_item.product.length
-    shipping_width = representative_item.product.width
-    shipping_height = representative_item.product.height
+
+    total_weight = sum((it.product.weight * it.quantity) for it in items)
+    volumetric_divisor = 5000.0
+    total_volume = sum((it.product.length * it.product.width * it.product.height) * it.quantity for it in items)
+    volumetric_weight = (total_volume / volumetric_divisor) if total_volume > 0 else 0
+    shipping_weight = max(total_weight, volumetric_weight)
+
+    shipping_length = max((it.product.length for it in items), default=0)
+    shipping_width = max((it.product.width for it in items), default=0)
+    base_box_volume = shipping_length * shipping_width * max((it.product.height for it in items), default=0)
+    if base_box_volume > 0:
+        height_multiplier = max(1, (total_volume / base_box_volume))
+    else:
+        height_multiplier = 1
+    shipping_height = int(max((it.product.height for it in items), default=0) * height_multiplier)
 
     # Total amount calculation is also correct
     total_amount_value = sum(
@@ -210,16 +242,25 @@ def get_rate_for_checkout(pincode, subtotal, cart_items, payment_method="Prepaid
     if not cart_items.exists():
         return {"status": "error", "message": "Cart is empty."}
     
-    representative_item = cart_items.first()
-    product = representative_item.product
-    
-    if not product:
+    # Aggregate cart items to compute total weight and dimensions
+    items = [it for it in cart_items if it.product]
+    if not items:
         return {"status": "error", "message": "Cart contains an invalid item."}
 
-    shipping_weight = product.weight
-    shipping_length = product.length
-    shipping_width = product.width
-    shipping_height = product.height
+    total_weight = sum((it.product.weight * it.quantity) for it in items)
+    volumetric_divisor = 5000.0
+    total_volume = sum((it.product.length * it.product.width * it.product.height) * it.quantity for it in items)
+    volumetric_weight = (total_volume / volumetric_divisor) if total_volume > 0 else 0
+    shipping_weight = max(total_weight, volumetric_weight)
+
+    shipping_length = max((it.product.length for it in items), default=0)
+    shipping_width = max((it.product.width for it in items), default=0)
+    base_box_volume = shipping_length * shipping_width * max((it.product.height for it in items), default=0)
+    if base_box_volume > 0:
+        height_multiplier = max(1, (total_volume / base_box_volume))
+    else:
+        height_multiplier = 1
+    shipping_height = int(max((it.product.height for it in items), default=0) * height_multiplier)
     
     payload_data = {
         "from_pincode": FROM_PINCODE,
@@ -237,6 +278,10 @@ def get_rate_for_checkout(pincode, subtotal, cart_items, payment_method="Prepaid
     }
 
     try:
+        # Debug: print payload and computed weights
+        print('\n[iThink-debug] get_rate_for_checkout payload:', json.dumps(payload_data))
+        print('[iThink-debug] computed total_volume(cm3)=', total_volume, 'volumetric_weight(kg)=', round(volumetric_weight,3), 'final_shipping_weight(kg)=', round(float(safe_amount(shipping_weight)),3))
+
         response = requests.post(url, json={"data": payload_data})
         response.raise_for_status()
         api_response = response.json()

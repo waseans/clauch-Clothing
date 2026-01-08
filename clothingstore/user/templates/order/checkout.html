@@ -152,6 +152,7 @@
                 <span>Shipping Fee</span>
                 <span id="dynamic-shipping" class="font-medium"></span>
             </div>
+
             <hr>
             <div class="flex justify-between font-bold text-lg text-gray-900">
                 <span>Grand Total</span>
@@ -268,6 +269,8 @@ document.addEventListener('DOMContentLoaded', function() {
       
       dynamicShippingEl.innerText = `₹${Math.round(shippingCharge)}`;
       dynamicGrandTotalEl.innerText = `₹${Math.round(grandTotal)}`;
+
+
       
       let amountToPay = grandTotal;
 

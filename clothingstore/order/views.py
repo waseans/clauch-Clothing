@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from decimal import Decimal
+import math
 import razorpay
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -258,6 +259,16 @@ def ajax_calculate_shipping(request):
     # 2. Calculate Subtotal
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
 
+    # Calculate total weight and max dimensions (for debugging & verification)
+    items = [item for item in cart_items if item.product]
+    total_weight = sum((item.product.weight * item.quantity) for item in items) if items else 0
+    max_length = max((item.product.length for item in items), default=0)
+    max_width = max((item.product.width for item in items), default=0)
+    max_height = max((item.product.height for item in items), default=0)
+
+    # Log the computed shipping parameters so we can verify them in logs
+    print(f"[shipping-debug] subtotal={subtotal}, total_weight={total_weight}, length={max_length}, width={max_width}, height={max_height}")
+
     # 3. Calculate Shipping using iThink for BOTH methods
     # We pass the payment_method ("Prepaid" or "COD") directly to the iThink wrapper
     ithink_result = get_ithink_rate_for_checkout(
@@ -274,19 +285,46 @@ def ajax_calculate_shipping(request):
     # 4. Process Charges
     shipping_service = ithink_result
     shipping_charge = Decimal(shipping_service['total_charges'])
-    
+
+    # --- Fallback shipping calculation (per-weight) ---
+    per_kg_rate = Decimal(str(getattr(settings, 'SHIPPING_PER_KG_RATE', 25)))
+    min_charge = Decimal(str(getattr(settings, 'SHIPPING_MIN_CHARGE', 40)))
+
+    # total_weight was computed above
+    fallback_charge = (Decimal(str(total_weight)) * per_kg_rate).quantize(Decimal('0.01'))
+    if fallback_charge < min_charge:
+        fallback_charge = min_charge
+
+    # Use whichever is higher: carrier quote or our fallback per-weight charge
+    final_shipping_charge = max(shipping_charge, fallback_charge)
+
+    # Log the decision
+    print(f"[shipping-debug] carrier_rate={shipping_charge}, fallback_rate={fallback_charge}, final_rate={final_shipping_charge}")
+
     # Store in session for the final checkout/place order step
     request.session['shipping_info'] = {
-        'charge': str(shipping_charge),
+        'charge': str(final_shipping_charge),
+        'carrier_charge': str(shipping_charge),
+        'fallback_charge': str(fallback_charge),
         'service': shipping_service,
         'method': payment_method
     }
     
-    grand_total = subtotal + shipping_charge
+    grand_total = subtotal + final_shipping_charge
 
     return JsonResponse({
-        'shipping_charge': f"{shipping_charge:.2f}",
+        # 'shipping_charge' is the FINAL applied charge (may be carrier rate or our fallback)
+        'shipping_charge': f"{final_shipping_charge:.2f}",
         'grand_total': f"{grand_total:.2f}",
+        'carrier_rate': f"{shipping_charge:.2f}",
+        'fallback_rate': f"{fallback_charge:.2f}",
+        # Expose computed shipping parameters for verification
+        'shipping_weight': f"{total_weight}",
+        'shipping_dimensions': {
+            'length': max_length,
+            'width': max_width,
+            'height': max_height,
+        }
     })
 
 @login_required(login_url='login')

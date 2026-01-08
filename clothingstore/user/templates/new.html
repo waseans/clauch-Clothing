@@ -33,7 +33,9 @@
       <div class="w-full">
           <div class="relative">
               <a href="{% url 'product_detail' product.slug %}">
-                  <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-contain bg-white">
+                  <div class="relative w-full img-3-4">
+                      <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover bg-white">
+                  </div>
               </a>
 
               <a href="{% url 'product_detail' product.slug %}">

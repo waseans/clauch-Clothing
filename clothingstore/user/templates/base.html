@@ -107,14 +107,36 @@
     gtag('js', new Date());
     gtag('config', 'G-XXXXXXXXXX');
   </script> -->
-</head>
 
-
-
-<body class="bg-[#FFFFFFFF] text-[#111] font-sans">
-
-<!-- 🔔 Slim Alert Bar -->
-<!-- 🔔 Ultra-Thin Alert Bar -->
+  <!-- 🔧 Force portrait 3:4 aspect ratio for product images -->
+  <style>
+    .img-3-4 {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: #fff;
+    }
+    .img-3-4 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Keep existing hover transform behavior but ensure smooth transitions */
+    .img-3-4 .primary-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      transition: transform .3s ease;
+    }
+    .img-3-4 .hover-img {
+      position: relative;
+      z-index: 0;
+      transition: transform .3s ease;
+    }
+  </style>
 <!-- 🔔 Fixed Alert Marquee Bar (Top) -->
 <div class="fixed top-0 left-0 w-full bg-black text-white h-5 z-50">
   <div class="whitespace-nowrap animate-marquee text-[10px] font-raleway font-medium tracking-wider leading-[1.2rem] px-4">

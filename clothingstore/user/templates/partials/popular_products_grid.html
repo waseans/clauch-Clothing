@@ -4,22 +4,22 @@
     <div class="relative overflow-hidden">
       <a href="{% url 'product_detail' product.slug %}">
         <!-- Image Wrapper for hover effect -->
-        <div class="relative w-full h-full">
+        <div class="relative w-full img-3-4">
           <!-- Primary Image -->
           <img src="{{ product.primary_image.url }}"
                alt="{{ product.name }}"
-               class="w-full h-auto object-contain bg-white transition-transform duration-300 group-hover:translate-x-full absolute top-0 left-0 z-10">
+               class="w-full h-full object-cover bg-white transition-transform duration-300 group-hover:translate-x-full absolute top-0 left-0 z-10 primary-img">
 
           {% if product.hover_image %}
           <!-- Hover Image -->
           <img src="{{ product.hover_image.url }}"
                alt="{{ product.name }} Hover"
-               class="w-full h-auto object-contain bg-white relative z-0">
+               class="w-full h-full object-cover bg-white relative z-0 hover-img">
           {% else %}
           <!-- Fallback: primary image again -->
           <img src="{{ product.primary_image.url }}"
                alt="{{ product.name }}"
-               class="w-full h-auto object-contain bg-white relative z-0">
+               class="w-full h-full object-cover bg-white relative z-0 hover-img">
           {% endif %}
         </div>
       </a>

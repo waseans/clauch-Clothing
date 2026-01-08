@@ -55,7 +55,7 @@
       {% for product in results %}
       <a href="{% url 'product_detail' slug=product.slug %}"
          class="group border border-gray-200 rounded-md shadow-sm hover:shadow-md transition overflow-hidden text-sm">
-        <div class="w-full h-64 overflow-hidden">
+        <div class="relative w-full img-3-4 overflow-hidden">
           <img src="{{ product.primary_image.url }}" alt="{{ product.name }}"
                class="w-full h-full object-cover transition group-hover:scale-105">
         </div>
@@ -122,7 +122,7 @@
       {% for product in popular_products %}
       <a href="{% url 'product_detail' slug=product.slug %}"
          class="group block border border-gray-200 rounded-md shadow-sm hover:shadow-md transition overflow-hidden text-sm">
-        <div class="w-full h-64 overflow-hidden">
+        <div class="relative w-full img-3-4 overflow-hidden">
           <img src="{{ product.primary_image.url }}" alt="{{ product.name }}"
                class="w-full h-full object-cover transition group-hover:scale-105">
         </div>
