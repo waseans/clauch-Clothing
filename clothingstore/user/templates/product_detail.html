@@ -275,7 +275,9 @@
 
   <div class="md:w-1/2">
     <div class="flex justify-between items-start mb-4">
-      <h1 class="text-xl md:text-2xl font-semibold text-gray-900 w-2/3 leading-snug">{{ product.name }}</h1>
+      <h1 id="product-name-full" class="text-xl md:text-2xl font-semibold text-gray-900 w-2/3 leading-snug">
+        <span id="product-name-text">{{ product.name }}</span><span id="product-color-text">{% if primary_color.name %} ({{ primary_color.name }}){% endif %}</span>
+      </h1>
       
       <div class="text-right flex-shrink-0">
         <span class="text-sm text-gray-600">Price per Piece:</span>
@@ -622,7 +624,13 @@
     // Update hidden input values for both desktop & mobile forms
     document.getElementById('selected_color_id_desktop').value = colorId;
     document.getElementById('selected_color_id_mobile').value = colorId;
-    selectedColorName = selected.getAttribute('data-color-name'); // Update selected color name
+    selectedColorName = selected.getAttribute('data-color-name') || ''; // Update selected color name
+
+    // Immediately update the product name display to include selected color
+    const colorTextEl = document.getElementById('product-color-text');
+    if (colorTextEl) {
+      colorTextEl.textContent = selectedColorName ? ` (${selectedColorName})` : '';
+    }
 
     const colorSlug = selected.getAttribute('data-color-slug');
     const productSlug = "{{ product.slug }}";
@@ -773,7 +781,8 @@
     }
 
     quoteColorDisplay.textContent = selectedColorName || 'Not Selected';
-    quoteProductNameDisplay.textContent = "{{ product.name }}";
+    // Use the current product name (including selected color) from the DOM
+    quoteProductNameDisplay.textContent = document.getElementById('product-name-full').textContent;
 
     quoteSetQuantityInput.value = document.getElementById('set_quantity').value || 1;
     quoteSetQuantityInput.min = "1";
