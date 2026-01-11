@@ -420,8 +420,8 @@
       </div>
     </div>
 
-    <div class="mb-4 text-sm text-gray-700 mt-6 md:mt-4 leading-relaxed">
-      {{ product.html_description|safe }}
+    <div class="mb-4 text-sm text-gray-700 mt-6 md:mt-4">
+      {{ product.description }}
     </div>
 
     <div class="space-y-4 text-sm text-gray-800">
@@ -504,9 +504,9 @@
           <div class="w-full">
             <div class="relative">
               <a href="{% url 'product_detail' product.slug %}">
-              <div class="relative w-full img-3-4">
-                <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover bg-white">
-              </div>
+                <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-auto object-contain bg-white">
+              </a>
+
               <a href="{% url 'product_detail' product.slug %}">
                 <button class="absolute top-2 right-2 bg-black text-white text-xs px-4 py-2 rounded shadow-md hover:shadow-lg transition-all font-montserrat">
                   ADD
