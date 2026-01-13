@@ -422,9 +422,10 @@
       </div>
     </div>
 
-    <div class="mb-4 text-sm text-gray-700 mt-6 md:mt-4">
-      {{ product.description }}
-    </div>
+    <div class="mb-4 text-sm text-gray-700 mt-6 md:mt-4 prose max-w-none">
+    {{ product.html_description|safe }}
+</div>
+
 
     <div class="space-y-4 text-sm text-gray-800">
 
