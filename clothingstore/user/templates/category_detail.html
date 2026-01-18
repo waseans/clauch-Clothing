@@ -72,7 +72,7 @@
 </div>
 
 <!-- Products -->
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 px-3 pt-4 pb-10">
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 px-3 pt-4 pb-16">
     {% for product in products %}
     <div class="w-full">
         <div class="relative">
@@ -105,8 +105,8 @@
     {% endfor %}
 </div>
 
-<!-- ✅ SEO CONTENT -->
-<div class="max-w-5xl mx-auto px-4 py-10 text-sm text-gray-700 leading-relaxed">
+<!-- ✅ SEO CONTENT (BOTTOM – CLEAN) -->
+<div class="max-w-5xl mx-auto px-4 py-12 mt-24 border-t border-gray-200 text-sm text-gray-700 leading-relaxed">
 
     <h2 class="text-lg font-semibold mb-3">
         {{ category.name }} Manufacturer in India
@@ -148,10 +148,7 @@
         </div>
 
         <div class="flex-1 overflow-y-auto px-4 pb-20 pt-2">
-
-            <!-- same filter code kept -->
-            {% comment %} unchanged filter UI {% endcomment %}
-
+            {% comment %} filter UI unchanged {% endcomment %}
         </div>
 
         <div class="absolute bottom-0 left-0 w-full bg-white px-4 py-3 border-t">
