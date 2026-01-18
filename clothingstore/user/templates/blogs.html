@@ -1,42 +1,71 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Blogs - Clauch{% endblock %}
+{% block title %}Journal & Insights - Clauch{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto py-8 px-4">
-  <!-- Page Heading -->
-  <h1 class="text-3xl font-bold mb-4 font-montserrat text-center">Clauch Blogs</h1>
-  <p class="text-gray-700 text-base mb-6">
-    Welcome to Clauch Blogs! Here you will find insights, tips, and updates related to our collections, showrooms, and courses. 
-    Our aim is to provide inspiration and useful information for our customers and partners.
-  </p>
+<div class="bg-white min-h-screen">
 
-  <!-- Dummy Blog Posts -->
-  <div class="space-y-6">
-    <div class="border-b border-gray-300 pb-4">
-      <h2 class="text-xl font-semibold mb-1 font-montserrat">Our Journey So Far</h2>
-      <p class="text-gray-600 text-sm">
-        Clauch started with a mission to bring high-quality products to our customers with exceptional service. 
-        Over the years, we’ve expanded our collections and launched exciting courses to share knowledge with our community.
-      </p>
-    </div>
+    <header class="py-20 bg-[#F9F9F9] border-b border-gray-100">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 font-montserrat tracking-tight text-[#1A1A1A]">Journal & Insights</h1>
+            <p class="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+                Exploring the intersection of quality design, craftsmanship, and professional growth. 
+                Welcome to the Clauch community archive.
+            </p>
+        </div>
+    </header>
 
-    <div class="border-b border-gray-300 pb-4">
-      <h2 class="text-xl font-semibold mb-1 font-montserrat">Why Choose Clauch?</h2>
-      <p class="text-gray-600 text-sm">
-        At Clauch, we focus on quality, design, and customer satisfaction. Our products are crafted with care, 
-        and our team is always ready to provide expert guidance to help you make the best choices.
-      </p>
-    </div>
+    <div class="max-w-6xl mx-auto py-20 px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            
+            <article class="group">
+                <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-6">
+                    <img src="{% static 'images/blog/journey.jpg' %}" alt="Our Journey" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                </div>
+                <div class="space-y-3">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">The Clauch Story</span>
+                    <h2 class="text-2xl font-bold font-montserrat group-hover:text-gray-600 transition-colors">Our Journey So Far</h2>
+                    <p class="text-gray-500 text-sm leading-relaxed line-clamp-3">
+                        From a small vision of quality to a multi-category lifestyle brand. Discover how we built our collections and launched our educational courses.
+                    </p>
+                    <a href="#" class="inline-block pt-2 text-xs font-bold border-b-2 border-black pb-1 hover:border-[#D4AF37] transition-all">Read Article</a>
+                </div>
+            </article>
 
-    <div class="border-b border-gray-300 pb-4">
-      <h2 class="text-xl font-semibold mb-1 font-montserrat">Stay Updated</h2>
-      <p class="text-gray-600 text-sm">
-        Follow our blogs to learn about new product launches, upcoming courses, and events. 
-        Even though we are just getting started, exciting content is on the way!
-      </p>
+            <article class="group">
+                <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-6">
+                    <img src="{% static 'images/blog/quality.jpg' %}" alt="Why Clauch" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                </div>
+                <div class="space-y-3">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">Craftsmanship</span>
+                    <h2 class="text-2xl font-bold font-montserrat group-hover:text-gray-600 transition-colors">Why Choose Clauch?</h2>
+                    <p class="text-gray-500 text-sm leading-relaxed line-clamp-3">
+                        At Clauch, we focus on the details. Learn about our commitment to sustainable design and how our expert team guides every choice.
+                    </p>
+                    <a href="#" class="inline-block pt-2 text-xs font-bold border-b-2 border-black pb-1 hover:border-[#D4AF37] transition-all">Read Article</a>
+                </div>
+            </article>
+
+            <article class="group">
+                <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-6 flex items-center justify-center p-8 bg-[#1A1A1A] text-white text-center">
+                    <div>
+                        <h3 class="text-xl font-montserrat font-bold mb-4">Stay Inspired</h3>
+                        <p class="text-sm opacity-70 mb-6 uppercase tracking-widest">Join our Newsletter</p>
+                        <input type="email" placeholder="Email Address" class="w-full bg-transparent border-b border-white/30 py-2 mb-4 focus:outline-none focus:border-white transition-colors text-sm">
+                        <button class="w-full py-3 bg-white text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors">Subscribe</button>
+                    </div>
+                </div>
+                <div class="space-y-3 mt-6">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">Updates</span>
+                    <h2 class="text-2xl font-bold font-montserrat">Upcoming Courses</h2>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Exciting new learning opportunities are launching soon. Be the first to know about our showroom workshops.
+                    </p>
+                </div>
+            </article>
+
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}
