@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block meta %}
-<title>{{ product.name }} Wholesale Manufacturer India | Clauch</title>
+<title>{{ product.name }} Wholesale Manufacturer India | Clauch Factory</title>
 
 <meta name="description" content="Buy {{ product.name }} from a trusted B2B manufacturer in India. Bulk supply, factory pricing, private labeling & low MOQ for wholesalers and retailers.">
 
@@ -10,17 +10,85 @@
 
 <!-- Open Graph -->
 <meta property="og:type" content="product">
-<meta property="og:title" content="{{ product.name }} Wholesale Manufacturer India | Clauch">
-<meta property="og:description" content="Bulk {{ product.name }} supplier from India. Factory pricing, private labeling and export-ready manufacturing by Clauch.">
+<meta property="og:title" content="{{ product.name }} Wholesale Manufacturer India | Clauch Factory">
+<meta property="og:description" content="Bulk {{ product.name }} supplier from India. Factory pricing, private labeling and export-ready manufacturing by Clauch Factory.">
 <meta property="og:image" content="{{ product.primary_image.url }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:site_name" content="Clauch">
+<meta property="og:site_name" content="Clauch Factory">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ product.name }} Wholesale Manufacturer India | Clauch">
+<meta name="twitter:title" content="{{ product.name }} Wholesale Manufacturer India | Clauch Factory">
 <meta name="twitter:description" content="B2B {{ product.name }} manufacturer in India offering bulk supply, private labeling and factory-direct pricing.">
 <meta name="twitter:image" content="{{ product.primary_image.url }}">
+
+<!-- ✅ PRODUCT + OFFER + BREADCRUMB SCHEMA -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://clauchfactory.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{{ product.category.name }}",
+          "item": "https://clauchfactory.com/category/{{ product.category.slug }}/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "{{ product.name }}",
+          "item": "{{ request.build_absolute_uri }}"
+        }
+      ]
+    },
+
+    {
+      "@type": "Product",
+      "name": "{{ product.name }}",
+      "image": "{{ product.primary_image.url }}",
+      "description": "{{ product.description|truncatechars:250 }}",
+      "sku": "{{ product.id }}",
+      "url": "{{ request.build_absolute_uri }}",
+
+      "brand": {
+        "@type": "Brand",
+        "name": "Clauch Factory"
+      },
+
+      "manufacturer": {
+        "@type": "Organization",
+        "name": "Clauch Factory"
+      },
+
+      "category": "{{ product.category.name }}",
+
+      "offers": {
+        "@type": "Offer",
+        "url": "{{ request.build_absolute_uri }}",
+        "priceCurrency": "INR",
+        "price": "{{ product.get_current_price_per_piece|floatformat:0 }}",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": {
+          "@type": "Organization",
+          "name": "Clauch Factory"
+        }
+      }
+    }
+
+  ]
+}
+</script>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 {% endblock %}
