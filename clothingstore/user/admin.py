@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, ProductColor, ProductImage
+from .models import Category, Product, ProductColor, ProductImage, CustomUser, Course, CourseVideo, CoursePDF, CourseEnrollment
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 # -------------------------------------------
 # Inline: Product Images under ProductColor
@@ -8,7 +9,8 @@ from .models import Category, Product, ProductColor, ProductImage
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 1
-    fields = ('image', 'preview')
+    # SEO UPDATED: Added 'alt_text'
+    fields = ('image', 'alt_text', 'preview')
     readonly_fields = ('preview',)
 
     def preview(self, obj):
@@ -23,7 +25,6 @@ class ProductImageInline(admin.TabularInline):
 class ProductColorInline(admin.TabularInline):
     model = ProductColor
     extra = 1
-    # ✅ ADDED 'stock' HERE
     fields = ('name', 'hex_code', 'is_primary', 'stock', 'color_box')
     readonly_fields = ('color_box',)
     show_change_link = True
@@ -38,7 +39,6 @@ class ProductColorInline(admin.TabularInline):
 # Admin: Product
 # -------------------------------------------
 class ProductAdmin(admin.ModelAdmin):
-    # Added 'weight' to the list display for a quick overview
     list_display = ('thumbnail', 'name', 'price', 'discount_price', 'weight', 'get_categories', 'get_primary_color')
     list_filter = ('categories',)
     search_fields = ('name', 'slug')
@@ -50,15 +50,19 @@ class ProductAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('name', 'slug', 'categories', 'price', 'discount_price', 'sizes', 'size_chart')
         }),
-        # New fieldset to group all shipping-related fields together
         ("Shipping Details (kg & cm)", {
             'fields': ('weight', 'length', 'width', 'height')
         }),
         ("Details", {
             'fields': ('description', 'html_description')
         }),
-        ("Primary Settings", {
-            'fields': ('primary_image', 'hover_image', 'rating', 'reviews_count')
+        # SEO UPDATED: Grouped images with their Alt Text fields
+        ("SEO & Primary Imagery", {
+            'fields': (
+                ('primary_image', 'primary_image_alt'),
+                ('hover_image', 'hover_image_alt'),
+                'rating', 'reviews_count'
+            )
         }),
     )
 
@@ -81,13 +85,10 @@ class ProductAdmin(admin.ModelAdmin):
 # Admin: ProductColor
 # -------------------------------------------
 class ProductColorAdmin(admin.ModelAdmin):
-    # ✅ ADDED 'stock' HERE
     list_display = ('product', 'name', 'hex_code', 'is_primary', 'stock', 'color_box')
     list_filter = ('product', 'is_primary')
     search_fields = ('product__name', 'name')
     inlines = [ProductImageInline]
-    
-    # Make stock editable directly from the list view
     list_editable = ('stock',)
 
     def color_box(self, obj):
@@ -100,8 +101,10 @@ class ProductColorAdmin(admin.ModelAdmin):
 # Admin: Category
 # -------------------------------------------
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image_tag')
+    # SEO UPDATED: Added image_alt
+    list_display = ('name', 'image_tag', 'image_alt')
     search_fields = ('name',)
+    fields = ('name', 'slug', 'image', 'image_alt')
 
     def image_tag(self, obj):
         if obj.image:
@@ -110,17 +113,15 @@ class CategoryAdmin(admin.ModelAdmin):
     image_tag.short_description = 'Image'
 
 # -------------------------------------------
-# Register Admin Models
+# Register E-commerce Models
 # -------------------------------------------
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductColor, ProductColorAdmin)
 
-
-# --- User Admin (Unchanged) ---
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import CustomUser
-
+# -------------------------------------------
+# Admin: CustomUser
+# -------------------------------------------
 class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
     list_display = ('phone_number', 'full_name', 'email', 'is_staff', 'is_superuser')
@@ -143,23 +144,20 @@ class CustomUserAdmin(BaseUserAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 
-
-# --- Course Admin (Unchanged) ---
-from .models import Course, CourseVideo, CoursePDF, CourseEnrollment
-
+# -------------------------------------------
+# Admin: Courses
+# -------------------------------------------
 class CourseVideoInline(admin.TabularInline):
     model = CourseVideo
     extra = 1
     fields = ("title", "description", "thumbnail", "video_file")
     show_change_link = True
 
-
 class CoursePDFInline(admin.TabularInline):
     model = CoursePDF
     extra = 1
     fields = ("title", "description", "file")
     show_change_link = True
-
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
@@ -171,20 +169,17 @@ class CourseAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at",)
     ordering = ("-created_at",)
 
-
 @admin.register(CourseVideo)
 class CourseVideoAdmin(admin.ModelAdmin):
     list_display = ("title", "course")
     search_fields = ("title", "description")
     list_filter = ("course",)
 
-
 @admin.register(CoursePDF)
 class CoursePDFAdmin(admin.ModelAdmin):
     list_display = ("title", "course")
     search_fields = ("title", "description")
     list_filter = ("course",)
-
 
 @admin.register(CourseEnrollment)
 class CourseEnrollmentAdmin(admin.ModelAdmin):

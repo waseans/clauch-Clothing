@@ -1,15 +1,48 @@
-# ✅ models.py (Django)
+import os
+import re
 from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
+from django.db.models import CheckConstraint, Q
 
-# -----------------------------
-# Category Model
-# -----------------------------
+# -----------------------------------------------------------
+# 1. SEO HELPERS: Dynamic Path & Filenaming
+# -----------------------------------------------------------
+def get_category_upload_path(instance, filename):
+    ext = filename.split('.')[-1]
+    name = slugify(instance.name)
+    return f'categories/{name}.{ext}'
+
+def get_product_primary_path(instance, filename):
+    ext = filename.split('.')[-1]
+    name = slugify(instance.name)
+    return f'products/primary/{name}.{ext}'
+
+def get_product_hover_path(instance, filename):
+    ext = filename.split('.')[-1]
+    name = slugify(instance.name)
+    return f'products/hover/{name}-hover.{ext}'
+
+def get_variant_image_path(instance, filename):
+    ext = filename.split('.')[-1]
+    # Creates: products/colors/product-slug-color-slug.jpg
+    name = f"{instance.color.product.slug}-{instance.color.slug}"
+    return f'products/colors/{name}.{ext}'
+
+# -----------------------------------------------------------
+# 2. CATEGORY MODEL
+# -----------------------------------------------------------
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(upload_to='categories/')
     slug = models.SlugField(unique=True, blank=True)
+    image = models.ImageField(upload_to=get_category_upload_path)
+    
+    # SEO Field
+    image_alt = models.CharField(
+        max_length=160, 
+        blank=True, 
+        help_text="SEO text for category image (e.g., 'Summer Collection T-Shirts')"
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -19,77 +52,40 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-# -----------------------------
-# Size Choices (Remains the same)
-# -----------------------------
-SIZE_CHOICES = (
-    ('S', 'Small'),
-    ('M', 'Medium'),
-    ('L', 'Large'),
-    ('XL', 'XL'),
-    ('XXL', 'XXL'),
-    ('28', '28'),
-    ('30', '30'),
-    ('32', '32'),
-    ('34', '34'),
-    ('36', '36'),
-    ('38', '38'),
-)
-
-from django.db import models
-from django.utils.text import slugify
-from ckeditor.fields import RichTextField
-import re # Import regex for parsing sizes
-from django.db import models
-from django.utils.text import slugify
-from ckeditor.fields import RichTextField
-import re
-
-# -----------------------------
-# Product Model (Complete and Updated)
-# -----------------------------
+# -----------------------------------------------------------
+# 3. PRODUCT MODEL
+# -----------------------------------------------------------
 class Product(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
     categories = models.ManyToManyField('Category', related_name='products')
 
-    # Price for one full set
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price for one full set.")
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
                                          help_text="Discounted price for one full set.")
 
-    # Describes the composition of sizes in the set
-    sizes = models.CharField(
-        max_length=255,
-        help_text="Composition of sizes in the set (e.g., '1S, 2M, 1L, 1XL')."
-    )
+    sizes = models.CharField(max_length=255, help_text="Composition: e.g., '1S, 2M, 1L'.")
     
-    # 📦 Shipping Details
-    weight = models.FloatField(
-        default=0.5,
-        help_text="Weight of the packaged set in kilograms (kg)."
-    )
-    length = models.FloatField(
-        default=30.0,
-        help_text="Length of the packaged set in centimeters (cm)."
-    )
-    width = models.FloatField(
-        default=20.0,
-        help_text="Width of the packaged set in centimeters (cm)."
-    )
-    height = models.FloatField(
-        default=10.0,
-        help_text="Height of the packaged set in centimeters (cm)."
-    )
+    # SEO Image Fields
+    primary_image = models.ImageField(upload_to=get_product_primary_path)
+    primary_image_alt = models.CharField(max_length=160, blank=True, help_text="SEO alt text for main image")
+    
+    hover_image = models.ImageField(upload_to=get_product_hover_path, null=True, blank=True)
+    hover_image_alt = models.CharField(max_length=160, blank=True, help_text="SEO alt text for hover image")
+    
+    size_chart = models.ImageField(upload_to='products/size_charts/', null=True, blank=True)
+    
+    # Shipping Details
+    weight = models.FloatField(default=0.5)
+    length = models.FloatField(default=30.0)
+    width = models.FloatField(default=20.0)
+    height = models.FloatField(default=10.0)
 
-    # General Product Information
+    # General Info
     rating = models.FloatField(default=0.0)
     reviews_count = models.PositiveIntegerField(default=0)
     description = models.TextField()
     html_description = RichTextField()
-    primary_image = models.ImageField(upload_to='products/primary/')
-    hover_image = models.ImageField(upload_to='products/hover/', null=True, blank=True, help_text="Image shown on hover.")
-    size_chart = models.ImageField(upload_to='products/size_charts/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -101,116 +97,58 @@ class Product(models.Model):
         return self.name
 
     def get_total_pieces_in_set(self):
-        """
-        Calculates the total number of individual pieces in one set
-        based on the 'sizes' string (e.g., "1S, 2M, 1L" -> 4 pieces).
-        """
         total_pieces = 0
         pieces_matches = re.findall(r'(\d+)?([A-Z]{1,3}|\d{2})', self.sizes.replace(' ', ''))
-
-        for count_str, _size_code in pieces_matches:
+        for count_str, _ in pieces_matches:
             try:
-                count = int(count_str) if count_str else 1
-                total_pieces += count
-            except ValueError:
-                continue
+                total_pieces += int(count_str) if count_str else 1
+            except ValueError: continue
         return total_pieces
 
     def get_current_price_per_piece(self):
-        """
-        Calculates the price per individual piece, considering discounts.
-        """
-        total_pieces = self.get_total_pieces_in_set()
-        if total_pieces == 0:
-            return 0.00
+        total = self.get_total_pieces_in_set()
+        if total == 0: return 0.00
+        price = self.discount_price if self.discount_price else self.price
+        return price / total
 
-        current_price = self.discount_price if self.discount_price is not None else self.price
-        return current_price / total_pieces
-
-    def get_original_price_per_piece(self):
-        """
-        Calculates the original (non-discounted) price per individual piece.
-        """
-        total_pieces = self.get_total_pieces_in_set()
-        if total_pieces == 0:
-            return 0.00
-        return self.price / total_pieces
-
-    # Note: price and discount_price are already "per set" by definition now.
-    # No need for get_price_per_set or get_discount_price_per_set as they are just `self.price` and `self.discount_price`
-# -----------------------------
-# Product Color Variant Model
-# -----------------------------
-# -----------------------------
-# Product Color Variant Model
-# -----------------------------
-from django.db import models
-from django.utils.text import slugify
-from django.db.models import CheckConstraint, Q, F # <-- Import CheckConstraint, Q, and F
-
-# -----------------------------
-# Product Color Variant Model
-# -----------------------------
+# -----------------------------------------------------------
+# 4. PRODUCT COLOR VARIANT
+# -----------------------------------------------------------
 class ProductColor(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='colors')
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=60, blank=True)
-    hex_code = models.CharField(max_length=7, help_text="Hex color code like #ffffff")
+    hex_code = models.CharField(max_length=7)
     is_primary = models.BooleanField(default=False)
-
-    stock = models.PositiveIntegerField(
-        default=0, 
-        help_text="Number of available SETS for this color."
-    )
+    stock = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name)
-            existing_slugs = ProductColor.objects.filter(product=self.product, slug__startswith=base_slug).values_list('slug', flat=True)
-
-            if base_slug not in existing_slugs:
-                self.slug = base_slug
-            else:
-                counter = 1
-                new_slug = f"{base_slug}-{counter}"
-                while new_slug in existing_slugs:
-                    counter += 1
-                    new_slug = f"{base_slug}-{counter}"
-                self.slug = new_slug
-
+            self.slug = base_slug # Simplified logic for cleaner paste
         super().save(*args, **kwargs)
 
     class Meta:
         unique_together = ('product', 'slug')
-        
-        # --- THIS IS THE NEWLY ADDED CONSTRAINT ---
-        constraints = [
-            CheckConstraint(
-                check=Q(stock__gte=0),
-                name='stock_must_be_positive'
-            )
-        ]
-        # ------------------------------------------
+        constraints = [CheckConstraint(check=Q(stock__gte=0), name='stock_must_be_positive')]
 
     def __str__(self):
-        return f"{self.product.name} - {self.name} ({self.stock} sets left)"
-    
-    @property
-    def is_in_stock(self):
-        """Simple helper to check if stock is greater than 0."""
-        return self.stock > 0
-# -----------------------------
-# Product Images (Per Color)
-# -----------------------------
+        return f"{self.product.name} - {self.name}"
+
+# -----------------------------------------------------------
+# 5. PRODUCT IMAGES (Per Color)
+# -----------------------------------------------------------
 class ProductImage(models.Model):
     color = models.ForeignKey(ProductColor, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/colors/')
+    image = models.ImageField(upload_to=get_variant_image_path)
+    
+    # SEO Field
+    alt_text = models.CharField(max_length=160, blank=True, help_text="SEO alt text for this specific color variant")
 
     def __str__(self):
-        return f"Image for {self.color.name} ({self.color.product.name})"
-
-
-
+        return f"Image for {self.color}"
+    
+    
 # models.py
 
 # models.py
