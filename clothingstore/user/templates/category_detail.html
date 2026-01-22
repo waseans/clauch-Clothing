@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block seo %}
   <title>{{ category.name }} | Clauch</title>
   <meta name="description" content="Explore premium wholesale clothing in the {{ category.name }} category. Best B2B deals only on Clauch.">
   <meta name="keywords" content="{{ category.name }}, wholesale {{ category.name }}, B2B fashion, Clauch clothing, bulk fashion orders">
   <meta name="robots" content="index, follow">
 
-  <!-- Open Graph / Facebook -->
   <meta property="og:title" content="{{ category.name }} | Clauch">
   <meta property="og:description" content="Wholesale deals for {{ category.name }} clothing. View sets, sizes, prices.">
   <meta property="og:image" content="{{ category.image.url }}">
+  {# SEO UPDATED: Added Image Alt for Social Platforms #}
+  <meta property="og:image:alt" content="{{ category.image_alt|default:category.name }}">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
   <meta property="og:type" content="website">
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ category.name }} | Clauch">
   <meta name="twitter:description" content="Shop premium wholesale {{ category.name }} sets in bulk from Clauch.">
   <meta name="twitter:image" content="{{ category.image.url }}">
 {% endblock %}
-
 
 {% block content %}
 <div class="text-center text-lg sm:text-xl font-semibold mt-6 mb-4 uppercase tracking-wide">
@@ -30,7 +30,6 @@
     <div class="flex gap-2 flex-grow">
         {% for label in categories %}
         <a href="{% url 'category_detail' label.slug %}">
-
             <button class="px-4 py-1 border text-xs sm:text-sm border-gray-800 text-gray-800 font-medium hover:bg-black hover:text-white transition-all duration-200">
                 {{ label.name }}
             </button>
@@ -53,24 +52,30 @@
         <div class="relative">
             <a href="{% url 'product_detail' product.slug %}">
                 <div class="relative w-full img-3-4">
-                    <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover bg-white">
+                    {# SEO UPDATED: Using the new alt text field and lazy loading #}
+                    <img 
+                        src="{{ product.primary_image.url }}" 
+                        alt="{{ product.primary_image_alt|default:product.name }}" 
+                        loading="lazy"
+                        class="w-full h-full object-cover bg-white"
+                    >
                 </div>
             </a>
             <button class="absolute top-2 right-2 bg-black text-white text-xs px-4 py-2 rounded shadow-md hover:shadow-lg transition-all">
                 ADD
             </button>
         </div>
-        <div class="pt-1 pb-2"> {# Added pb-2 for consistent bottom padding #}
+        <div class="pt-1 pb-2">
             <p class="text-xs sm:text-sm text-gray-900 leading-tight truncate">{{ product.name }}</p>
             
             {# Price per Piece - Main and larger #}
-            <div class="text-base font-bold text-gray-900 mt-1"> {# Increased size and bold #}
+            <div class="text-base font-bold text-gray-900 mt-1">
               ₹{{ product.get_current_price_per_piece|floatformat:0 }} <span class="text-xs font-normal text-gray-600">/ Piece</span>
             </div>
 
             {# Price per Set - Smaller and less prominent #}
             {% if product.get_total_pieces_in_set > 0 %}
-                <p class="text-xs text-gray-500 mt-0.5"> {# Smaller text and lighter color #}
+                <p class="text-xs text-gray-500 mt-0.5">
                     Set: ₹{{ product.discount_price|default:product.price|floatformat:0 }}
                 </p>
             {% endif %}
@@ -87,7 +92,6 @@
         </div>
 
         <div class="flex-1 overflow-y-auto px-4 pb-20 pt-2">
-
             <div>
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('sortBy')">
                     <h3 class="font-medium text-sm">Sort By</h3>
@@ -148,7 +152,6 @@
                     <input type="number" placeholder="Max" class="border rounded px-2 py-1 w-20 text-center">
                 </div>
             </div>
-
         </div>
 
         <div class="absolute bottom-0 left-0 w-full bg-white px-4 py-3 border-t">

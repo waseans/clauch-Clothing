@@ -332,9 +332,13 @@
               </div>
             {% endfor %}
           {% else %}
-            <div class="swiper-slide">
-              <img src="{{ product.primary_image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover" />
-            </div>
+<div class="swiper-slide">
+    <img 
+        src="{{ product.primary_image.url }}" 
+        alt="{{ product.primary_image_alt|default:product.name }}" 
+        class="w-full h-full object-cover" 
+    />
+</div>
           {% endif %}
         </div>
 
