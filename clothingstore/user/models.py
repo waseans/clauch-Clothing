@@ -1,9 +1,14 @@
 import os
 import re
+import random
+from datetime import timedelta
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
+from django.conf import settings
 from ckeditor.fields import RichTextField
 from django.db.models import CheckConstraint, Q
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 # -----------------------------------------------------------
 # 1. SEO HELPERS: Dynamic Path & Filenaming
@@ -122,10 +127,25 @@ class ProductColor(models.Model):
     is_primary = models.BooleanField(default=False)
     stock = models.PositiveIntegerField(default=0)
 
+    # ✅ ADDED BACK: Fixed "Out of Stock" frontend issue
+    @property
+    def is_in_stock(self):
+        return self.stock > 0
+
     def save(self, *args, **kwargs):
         if not self.slug:
+            # Reverted to your old robust slug logic
             base_slug = slugify(self.name)
-            self.slug = base_slug # Simplified logic for cleaner paste
+            existing_slugs = ProductColor.objects.filter(product=self.product, slug__startswith=base_slug).values_list('slug', flat=True)
+            if base_slug not in existing_slugs:
+                self.slug = base_slug
+            else:
+                counter = 1
+                new_slug = f"{base_slug}-{counter}"
+                while new_slug in existing_slugs:
+                    counter += 1
+                    new_slug = f"{base_slug}-{counter}"
+                self.slug = new_slug
         super().save(*args, **kwargs)
 
     class Meta:
@@ -133,7 +153,7 @@ class ProductColor(models.Model):
         constraints = [CheckConstraint(check=Q(stock__gte=0), name='stock_must_be_positive')]
 
     def __str__(self):
-        return f"{self.product.name} - {self.name}"
+        return f"{self.product.name} - {self.name} ({self.stock} sets left)"
 
 # -----------------------------------------------------------
 # 5. PRODUCT IMAGES (Per Color)
@@ -141,23 +161,14 @@ class ProductColor(models.Model):
 class ProductImage(models.Model):
     color = models.ForeignKey(ProductColor, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=get_variant_image_path)
-    
-    # SEO Field
-    alt_text = models.CharField(max_length=160, blank=True, help_text="SEO alt text for this specific color variant")
+    alt_text = models.CharField(max_length=160, blank=True, help_text="SEO alt text for variant image")
 
     def __str__(self):
         return f"Image for {self.color}"
-    
-    
-# models.py
 
-# models.py
-
-import random
-from django.db import models
-from django.utils import timezone
-from datetime import timedelta
-
+# -----------------------------------------------------------
+# 6. OTP MODEL
+# -----------------------------------------------------------
 class OTP(models.Model):
     phone_number = models.CharField(max_length=15)
     code = models.CharField(max_length=6)
@@ -166,9 +177,9 @@ class OTP(models.Model):
     def is_expired(self):
         return timezone.now() > self.created_at + timedelta(minutes=5)
 
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+# -----------------------------------------------------------
+# 7. USER MODELS
+# -----------------------------------------------------------
 class CustomUserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
         if not phone_number:
@@ -184,12 +195,9 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(phone_number, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    # Basic fields
     phone_number = models.CharField(max_length=15, unique=True)
     full_name = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-
-    # Company/Billing Details
     company_name = models.CharField(max_length=255, blank=True, null=True)
     gst_number = models.CharField(max_length=50, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
@@ -197,27 +205,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     state = models.CharField(max_length=100, blank=True, null=True)
     zip_code = models.CharField(max_length=20, blank=True, null=True)
     country = models.CharField(max_length=100, blank=True, null=True)
-
-    # Permissions
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    # Manager
     objects = CustomUserManager()
-
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.phone_number
 
-
-
-from django.db import models
-from django.utils.text import slugify
-from ckeditor.fields import RichTextField
-from django.conf import settings
-
+# -----------------------------------------------------------
+# 8. COURSE MODELS
+# -----------------------------------------------------------
 class Course(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
@@ -244,7 +244,6 @@ class Course(models.Model):
     def has_discount(self):
         return self.discount_price is not None
 
-
 class CourseVideo(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos")
     title = models.CharField(max_length=200)
@@ -255,7 +254,6 @@ class CourseVideo(models.Model):
     def __str__(self):
         return f"{self.course.title} - {self.title}"
 
-
 class CoursePDF(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="pdfs")
     title = models.CharField(max_length=200)
@@ -265,10 +263,8 @@ class CoursePDF(models.Model):
     def __str__(self):
         return f"{self.course.title} - {self.title}"
 
-
 class CourseEnrollment(models.Model):
     STATUS_CHOICES = (("active", "Active"), ("pending", "Pending"), ("cancelled", "Cancelled"))
-
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="enrollments")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
