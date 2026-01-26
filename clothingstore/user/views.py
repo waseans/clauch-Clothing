@@ -206,6 +206,11 @@ from django.http import JsonResponse
 from .models import Product, ProductColor
 from django.db.models import Q
 
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import Product, ProductColor, Category  # ✅ Added Category
+from django.db.models import Q
+
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
 
@@ -213,7 +218,9 @@ def product_detail(request, slug):
     primary_color = colors.filter(is_primary=True).first() or colors.first()
     sizes = sorted(filter(None, map(str.strip, product.sizes.split(',')))) if product.sizes else []
 
-    # ✅ Get related products with shared categories
+    # ✅ Get all categories for the sidebar/menu
+    all_categories = Category.objects.all()
+
     related_products = Product.objects.filter(
         categories__in=product.categories.all()
     ).exclude(id=product.id).distinct()[:4]
@@ -226,21 +233,19 @@ def product_detail(request, slug):
         'primary_image': product.primary_image.url if product.primary_image else '',
         'color_images': primary_color.images.all() if primary_color else [],
         'related_products': related_products,
+        'all_categories': all_categories, # ✅ Pass to template
     }
     return render(request, 'product_detail.html', context)
 
-# -----------------------------
-# Product Page by Specific Color URL
-# e.g., /product/shirt/black/
-# -----------------------------
 def product_detail_by_color(request, product_slug, color_slug):
     product = get_object_or_404(Product, slug=product_slug)
     color = get_object_or_404(ProductColor, product=product, slug=color_slug)
-
-    # Apply the same exclusion for slug filtering
+    
     colors = ProductColor.objects.filter(product=product).exclude(slug__isnull=True).exclude(slug__exact='')
-
     sizes = sorted(filter(None, map(str.strip, product.sizes.split(',')))) if product.sizes else []
+    
+    # ✅ Get all categories here as well
+    all_categories = Category.objects.all()
 
     context = {
         'product': product,
@@ -249,6 +254,7 @@ def product_detail_by_color(request, product_slug, color_slug):
         'sizes': sizes,
         'primary_image': product.primary_image.url if product.primary_image else '',
         'color_images': color.images.all(),
+        'all_categories': all_categories, # ✅ Pass to template
     }
     return render(request, 'product_detail.html', context)
 
