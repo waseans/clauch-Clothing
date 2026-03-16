@@ -176,29 +176,67 @@
   }
 </style>
 
-<!-- ✅ Category Grid -->
-<div class="w-full bg-white py-6 px-4">
-  <h2 class="text-lg font-semibold font-montserrat uppercase mb-6 text-center tracking-wide">
+
+
+
+<div class="w-full bg-white py-8 px-4 overflow-hidden">
+  <h2 class="text-lg font-semibold font-montserrat uppercase mb-6 text-center tracking-widest">
     Order By Category
   </h2>
 
-  <!-- Mobile: grid layout | Desktop: flex layout -->
-  <div class="grid grid-cols-3 gap-4 md:flex md:flex-wrap md:justify-center md:gap-6">
-    {% for category in categories %}
-      <a href="{% url 'category_detail' category.slug %}" class="block w-full max-w-[100px] md:max-w-[140px]">
-        <div class="relative group transform-style preserve-3d transition-transform duration-500 hover:rotate-y-[8deg] hover:-rotate-x-[5deg]">
-          <img src="{{ category.image.url }}" alt="{{ category.name }}" loading="lazy"
-            class="w-full aspect-[2.5/4] object-cover shadow-md group-hover:scale-105 transition duration-300" />
-          <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[11px] md:text-sm 
-     font-montserrat font-semibold tracking-wide text-gray-800 drop-shadow">
-  {{ category.name }}
-</div>
-
-        </div>
-      </a>
-    {% endfor %}
+  <div class="swiper category-swiper max-w-6xl mx-auto">
+    <div class="swiper-wrapper">
+      {% for category in categories %}
+      <div class="swiper-slide flex flex-col items-center">
+        <a href="{% url 'category_detail' category.slug %}" class="group text-center">
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-transparent group-hover:border-black transition-all duration-300 mb-3 mx-auto">
+            <img 
+              src="{{ category.image.url }}" 
+              alt="{{ category.name }}" 
+              loading="lazy"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+            />
+          </div>
+          <span class="text-[11px] md:text-xs font-montserrat font-bold uppercase tracking-tighter text-gray-800">
+            {{ category.name }}
+          </span>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const catSwiper = new Swiper('.category-swiper', {
+      slidesPerView: 3, // Default for mobile
+      spaceBetween: 15,
+      loop: true,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+      breakpoints: {
+        // When window width is >= 768px (Laptop/Tablet)
+        768: {
+          slidesPerView: 5,
+          spaceBetween: 30,
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Optional: Smooth transition for the circular borders */
+  .category-swiper .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+
 
 
 <!-- ✅ Autoplay Background Video Section (Mobile Only) -->
