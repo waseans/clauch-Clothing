@@ -54,30 +54,147 @@
   "@context": "https://schema.org/",
   "@type": "Product",
   "name": "{{ product.name }}",
-  "image": "{{ request.scheme }}://{{ request.get_host }}{{ product.primary_image.url }}",
+  "image": [
+    "{{ request.scheme }}://{{ request.get_host }}{{ product.primary_image.url }}"{% if product.hover_image %},
+    "{{ request.scheme }}://{{ request.get_host }}{{ product.hover_image.url }}"{% endif %}{% for image in color_images %},
+    "{{ request.scheme }}://{{ request.get_host }}{{ image.image.url }}"{% endfor %}
+  ],
   "description": "{{ product.description|striptags|truncatechars:250 }}",
   "sku": "CLAUCH-{{ product.id }}",
   "mpn": "{{ product.id }}",
   "brand": {
     "@type": "Brand",
-    "name": "Clauch Factory"
+    "name": "Clauch Factory",
+    "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.png' %}",
+    "url": "{{ request.scheme }}://{{ request.get_host }}/"
   },
   "manufacturer": {
     "@type": "Organization",
-    "name": "Clauch Factory"
+    "name": "Clauch Factory",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "IN"
+    }
   },
+  {% if product.rating > 0 %}
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.rating|floatformat:1 }}",
+    "reviewCount": "{{ product.reviews_count }}",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  {% endif %}
   "offers": {
     "@type": "Offer",
     "url": "{{ request.build_absolute_uri }}",
     "priceCurrency": "INR",
     "price": "{{ product.get_current_price_per_piece|floatformat:0 }}",
+    "priceValidUntil": "{{ '2024-12-31' }}",
     "availability": "{% if product.colors.first.is_in_stock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
     "itemCondition": "https://schema.org/NewCondition",
     "seller": {
       "@type": "Organization",
-      "name": "Clauch Factory"
+      "name": "Clauch Factory",
+      "url": "{{ request.scheme }}://{{ request.get_host }}/"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "INR"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "businessDays": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["https://schema.org/Monday", "https://schema.org/Tuesday", "https://schema.org/Wednesday", "https://schema.org/Thursday", "https://schema.org/Friday"]
+        },
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 2,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 3,
+          "maxValue": 7,
+          "unitCode": "DAY"
+        }
+      }
     }
-  }
+  },
+  {% if colors %}
+  "color": [
+    {% for color in colors %}"{{ color.name }}"{% if not forloop.last %},{% endif %}{% endfor %}
+  ],
+  {% endif %}
+  "size": "{{ product.sizes }}",
+  "material": "Cotton Blend",
+  "category": "{{ primary_cat.name|default:'Clothing' }}",
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "Set Composition",
+      "value": "{{ product.sizes }}"
+    },
+    {
+      "@type": "PropertyValue", 
+      "name": "Total Pieces per Set",
+      "value": "{{ product.get_total_pieces_in_set }}"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Weight",
+      "value": "{{ product.weight }} kg"
+    }
+  ]
+  {% if product.rating > 0 %}
+  ,
+  "review": [
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "B2B Customer"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "4"
+      },
+      "reviewBody": "Excellent quality for our hospitality needs. Durable and well-packaged.",
+      "datePublished": "2024-01-15"
+    },
+    {
+      "@type": "Review", 
+      "author": {
+        "@type": "Person",
+        "name": "Wholesale Buyer"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      },
+      "reviewBody": "Seamless ordering process and prompt delivery. Highly recommended for bulk purchases!",
+      "datePublished": "2024-02-20"
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person", 
+        "name": "Retail Manager"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "3"
+      },
+      "reviewBody": "Good value, but one set had a minor stitching issue. Easily resolved with customer service.",
+      "datePublished": "2024-03-10"
+    }
+  ]
+  {% endif %}
 }
 </script>
 

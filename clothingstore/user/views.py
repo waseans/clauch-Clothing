@@ -49,6 +49,12 @@ def home_view(request):
     }
     return render(request, "home.html", context)
 
+def landing_view(request):
+    """
+    Renders the premium manufacturing landing page.
+    """
+    return render(request, "landing.html")
+
 
 from django.template.loader import render_to_string
 from django.http import JsonResponse

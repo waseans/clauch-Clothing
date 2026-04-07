@@ -1,0 +1,639 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clauch Factory - Premium Clothing Manufacturing | Start Your Brand</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="Clauch Factory | Premium Clothing Manufacturing">
+    <meta name="description" content="Premium B2B clothing manufacturer specializing in private labels, DTF printing, and bulk apparel production. High quality with low MOQ starting from 50pcs.">
+    
+    <!-- ✅ Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        premium: '#111827',
+                        whatsapp: '#25D366',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- ✅ Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ✅ Swiper.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <!-- ✅ AOS (Animate on Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper-bg: #FDFCF9;
+        }
+        
+        body {
+            background-color: var(--paper-bg);
+            color: #111827;
+            overflow-x: hidden;
+        }
+
+        .paper-texture {
+            background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .premium-shadow {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        }
+
+        .cta-hover {
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .cta-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #111827 0%, #4B5563 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Swiper Customization */
+        .swiper-pagination-bullet-active {
+            background: #111827 !important;
+        }
+        
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+        }
+    </style>
+</head>
+<body class="paper-texture">
+
+    <!-- 🟢 Floating WhatsApp -->
+    <a href="https://wa.me/917888111768" class="whatsapp-float w-16 h-16 bg-whatsapp rounded-full flex items-center justify-center shadow-2xl cta-hover text-white">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg> 
+    </a>
+
+    <!-- 1. Hero Section -->
+    <header class="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20">
+        <!-- Top Info Bar -->
+        <div class="absolute top-0 left-0 w-full py-6 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 z-20">
+            <div class="flex items-center gap-2">
+                <span class="text-xl font-bold tracking-tight premium">CLAUCH <span class="text-xs font-light tracking-widest text-gray-400">FACTORY</span></span>
+            </div>
+            <div class="flex flex-wrap justify-center gap-3 md:gap-6">
+                <!-- Point 1 -->
+                <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                    <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-600">1 MOQ Starting from 50pcs</span>
+                </div>
+                <!-- Point 2 -->
+                <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-600">Factory Direct Pricing</span>
+                </div>
+                <!-- Point 3 -->
+                <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                    <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-600">Worldwide Shipping Available</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div data-aos="fade-right" class="space-y-8">
+                <div class="inline-block py-1 border-b border-premium text-[11px] font-bold tracking-[0.3em] uppercase opacity-50">
+                    Est. 2025 | Manufacturing Excellence
+                </div>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif leading-[1.05] gradient-text">
+                    Scale Your <br> Clothing Brand <br>
+                    <span class="italic font-normal text-gray-300">Like Never Before</span>
+                </h1>
+                <p class="text-lg text-gray-500 max-w-lg leading-relaxed font-light">
+                    From sampling to mass production. We are your dedicated manufacturing partner for high-quality, private label apparel.
+                </p>
+                <div class="flex flex-wrap gap-5">
+                    <a href="https://wa.me/917888111768" class="px-10 py-5 bg-premium text-white flex items-center gap-3 rounded-xl font-bold cta-hover">
+                        <svg class="w-5 h-5 fill-whatsapp" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
+                        Start Your Project
+                    </a>
+                </div>
+            </div>
+            <div data-aos="fade-left" class="relative">
+                <div class="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl portrait-mask">
+                    <img src="{% static 'images/landing_hero.png' %}" alt="Factory" class="w-full aspect-[4/5] object-cover">
+                </div>
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-gray-100 rounded-full blur-3xl opacity-50 -z-0"></div>
+            </div>
+        </div>
+
+        <!-- Decorative Background -->
+        <div class="absolute top-1/2 left-0 w-full h-px bg-gray-100 -z-0"></div>
+    </header>
+
+    <div class="section-divider"></div>
+
+    <!-- 2. Services Section -->
+    <section id="services" class="py-32 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                <div class="space-y-4">
+                    <span class="text-xs font-bold tracking-widest text-gray-400 uppercase">Our Expertise</span>
+                    <h2 class="text-4xl md:text-6xl font-serif">Tailored Manufacturing <br> Solutions</h2>
+                </div>
+                <a href="https://wa.me/917888111768" class="px-8 py-4 border border-premium rounded-xl font-bold hover:bg-premium hover:text-white transition-all flex items-center gap-2">
+                    Inquire About Services <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service 1 -->
+                <div data-aos="fade-up" data-aos-delay="100" class="group space-y-6">
+                    <div class="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 relative">
+                        <img src="{% static 'images/landing_fabrics.png' %}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-2xl font-serif">Private Label</h3>
+                        <p class="text-sm text-gray-500 font-light">Full custom branding including labels, tags, and packaging for your brand identity.</p>
+                    </div>
+                </div>
+                <!-- Service 2 -->
+                <div data-aos="fade-up" data-aos-delay="200" class="group space-y-6">
+                    <div class="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 relative">
+                        <img src="{% static 'images/landing_tshirts.png' %}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-2xl font-serif">Custom Printing</h3>
+                        <p class="text-sm text-gray-500 font-light">High-definition DTF, Screen, and Puff printing with durable wash-fastness quality.</p>
+                    </div>
+                </div>
+                <!-- Service 3 -->
+                <div data-aos="fade-up" data-aos-delay="300" class="group space-y-6">
+                    <div class="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 relative">
+                        <img src="{% static 'images/landing_hoodies.png' %}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-2xl font-serif">Bulk Blanks</h3>
+                        <p class="text-sm text-gray-500 font-light">Premium ready-made blanks available for immediate customization and dispatch.</p>
+                    </div>
+                </div>
+                <!-- Service 4 -->
+                <div data-aos="fade-up" data-aos-delay="400" class="group space-y-6">
+                    <div class="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 relative">
+                        <img src="{% static 'images/landing_packaging.png' %}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-2xl font-serif">Full Package (FPP)</h3>
+                        <p class="text-sm text-gray-500 font-light">End-to-end support from trend research and tech packs to shipping.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Why Choose Us Section -->
+    <section class="py-32 bg-premium text-white overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-24 items-center">
+                <div data-aos="fade-right" class="space-y-12">
+                    <div class="space-y-4">
+                        <span class="text-xs font-bold tracking-widest text-[#25D366] uppercase">Why Choose Clauch</span>
+                        <h2 class="text-4xl md:text-6xl font-serif leading-tight">The Manufacturing <br> Edge You Need</h2>
+                    </div>
+                    
+                    <div class="grid gap-8">
+                        <div class="flex gap-6 items-start">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                                <span class="text-xl font-bold">01</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Unmatched Quality Control</h4>
+                                <p class="text-gray-400 text-sm font-light">Every single piece undergoes a 3-step quality audit before leaving our factory floor.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 items-start">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                                <span class="text-xl font-bold">02</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Sustainable Sourcing</h4>
+                                <p class="text-gray-400 text-sm font-light">We use ethically sourced organic cotton and eco-friendly dyes in our production cycles.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 items-start">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                                <span class="text-xl font-bold">03</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Flexible Scalability</h4>
+                                <p class="text-gray-400 text-sm font-light">Whether it's 50 pieces or 50,000, our assembly lines are designed to adapt instantly.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://wa.me/917888111768" class="inline-flex px-10 py-5 bg-whatsapp text-white rounded-xl font-bold cta-hover gap-3">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg> 
+                        Book a Discovery Call
+                    </a>
+                </div>
+
+                <div data-aos="zoom-in" class="relative group">
+                    <div class="absolute -inset-4 bg-gradient-to-tr from-white/10 to-transparent rounded-[3rem] blur-xl group-hover:opacity-100 transition"></div>
+                    <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=1000&auto=format&fit=crop" class="w-full aspect-square object-cover rounded-[3rem] relative z-10 opacity-80 group-hover:opacity-100 transition duration-1000">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Global Trust Section -->
+    <section class="py-32">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-5xl font-serif mb-16">Serving Global Brands <br> From Local Roots</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 max-w-5xl mx-auto">
+                <div class="space-y-2">
+                    <span class="text-5xl font-serif font-bold">100+</span>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Successful Brands</p>
+                </div>
+                <div class="space-y-2">
+                    <span class="text-5xl font-serif font-bold">5+</span>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Countries Exported</p>
+                </div>
+                <div class="space-y-2">
+                    <span class="text-5xl font-serif font-bold">10 Lakh +</span>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Units Produced</p>
+                </div>
+                <div class="space-y-2">
+                    <span class="text-5xl font-serif font-bold">98%</span>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Client Retention</p>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- 5. Factory Video Section -->
+    <section class="relative h-[80vh] bg-premium overflow-hidden">
+        <div class="absolute inset-0 opacity-40">
+            <!-- Replace with actual video if available -->
+            <img src="https://images.unsplash.com/photo-1556761175-5973cf0f32e7?q=80&w=1332&auto=format&fit=crop" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-premium via-transparent to-transparent"></div>
+        
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div data-aos="zoom-in" class="text-center space-y-8 px-6">
+                <a href="#" class="w-24 h-24 bg-white rounded-full flex items-center justify-center hover:scale-110 transition shadow-2xl mx-auto group">
+                    <svg class="w-8 h-8 fill-premium group-hover:scale-95 transition" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </a>
+                <div class="space-y-4">
+                    <h2 class="text-4xl md:text-6xl text-white font-serif">Behind The Scenes</h2>
+                    <p class="text-gray-300 max-w-lg mx-auto font-light">See how we transform raw fabric into premium apparel with precision and care.</p>
+                </div>
+                <a href="https://wa.me/917888111768" class="inline-flex px-10 py-5 bg-whatsapp text-white rounded-xl font-bold cta-hover gap-3">
+                    Start Your Production Journey
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. What We Manufacture -->
+    <section id="manufacture" class="py-32 bg-[#F9F7F2]">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20 space-y-4">
+                <span class="text-xs font-bold tracking-widest text-gray-400 uppercase">Production Range</span>
+                <h2 class="text-4xl md:text-6xl font-serif">Endless Possibilities</h2>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div class="bg-white p-8 rounded-[3rem] premium-shadow group cursor-pointer">
+                    <div class="w-24 h-24 rounded-full bg-gray-50 mb-8 mx-auto flex items-center justify-center group-hover:scale-110 transition duration-500 overflow-hidden">
+                        <img src="{% static 'images/landing_tshirts.png' %}" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-serif text-center">T-Shirts</h3>
+                    <p class="text-[10px] text-center text-gray-400 mt-2">Oversized, Regular, Boxy</p>
+                </div>
+                <div class="bg-white p-8 rounded-[3rem] premium-shadow group cursor-pointer">
+                    <div class="w-24 h-24 rounded-full bg-gray-50 mb-8 mx-auto flex items-center justify-center group-hover:scale-110 transition duration-500 overflow-hidden">
+                        <img src="{% static 'images/landing_hoodies.png' %}" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-serif text-center">Hoodies</h3>
+                    <p class="text-[10px] text-center text-gray-400 mt-2">Heavy Fleece, French Terry</p>
+                </div>
+                <div class="bg-white p-8 rounded-[3rem] premium-shadow group cursor-pointer">
+                    <div class="w-24 h-24 rounded-full bg-gray-50 mb-8 mx-auto flex items-center justify-center group-hover:scale-110 transition duration-500 overflow-hidden">
+                        <img src="{% static 'images/landing_jeans.png' %}" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-serif text-center">Denim</h3>
+                    <p class="text-[10px] text-center text-gray-400 mt-2">Raw, Selvedge, Custom Wash</p>
+                </div>
+                <div class="bg-white p-8 rounded-[3rem] premium-shadow group cursor-pointer">
+                    <div class="w-24 h-24 rounded-full bg-gray-50 mb-8 mx-auto flex items-center justify-center group-hover:scale-110 transition duration-500 overflow-hidden">
+                        <img src="{% static 'images/landing_packaging.png' %}" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-serif text-center">Accessories</h3>
+                    <p class="text-[10px] text-center text-gray-400 mt-2">Tote Bags, Caps, Socks</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Sample Products (NEW SECTION) -->
+    <section class="py-32 bg-white overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                <div class="space-y-4">
+                    <span class="text-xs font-bold tracking-widest text-gray-400 uppercase">Recent Production</span>
+                    <h2 class="text-4xl md:text-5xl font-serif">Our Sampling <br> Showroom</h2>
+                </div>
+                <a href="https://wa.me/917888111768" class="inline-flex px-8 py-4 bg-whatsapp text-white rounded-xl font-bold cta-hover gap-3">
+                    Request Physical Samples
+                </a>
+            </div>
+
+            <div class="swiper swiper-samples">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="rounded-3xl overflow-hidden aspect-[3/4] bg-gray-100">
+                           <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-bold">Heavyweight Tee</h4>
+                            <p class="text-xs text-gray-500">240 GSM | Puff Print</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="rounded-3xl overflow-hidden aspect-[3/4] bg-gray-100">
+                           <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-bold">Streetwear Hoodie</h4>
+                            <p class="text-xs text-gray-500">400 GSM | Multi-color Screen Print</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="rounded-3xl overflow-hidden aspect-[3/4] bg-gray-100">
+                           <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-bold">Selvedge Jeans</h4>
+                            <p class="text-xs text-gray-500">14oz | Hand Distressed</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="rounded-3xl overflow-hidden aspect-[3/4] bg-gray-100">
+                           <img src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-bold">Flannel Overshirt</h4>
+                            <p class="text-xs text-gray-500">Premium Wool Blend</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Product Detail (T-shirt etc.) -->
+    <section class="py-32 bg-premium text-white">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div data-aos="fade-right" class="space-y-12">
+                     <div class="space-y-4">
+                        <span class="text-xs font-bold tracking-widest text-[#25D366] uppercase">Deep Dive</span>
+                        <h2 class="text-4xl md:text-6xl font-serif leading-tight">Superior <br> T-Shirt Specs</h2>
+                        <p class="text-gray-400 font-light">The backbone of any brand. We specialize in T-shirts that feel luxury and last forever.</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+                            <h5 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Fabric Options</h5>
+                            <p class="text-sm">160 GSM - 300 GSM <br> 100% Cotton, Supima, Slub</p>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+                            <h5 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Fits Available</h5>
+                            <p class="text-sm">Boxy, Oversized, Drop Shoulder, Regular Slim</p>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+                            <h5 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Finishing</h5>
+                            <p class="text-sm">Bio-wash, Silicon finish, Vintage pigment dye</p>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+                            <h5 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Customization</h5>
+                            <p class="text-sm">DTF, Screen, Puff, Embroidery, Appliqué</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-5">
+                        <a href="https://wa.me/917888111768" class="px-10 py-5 bg-whatsapp text-white rounded-xl font-bold cta-hover flex items-center gap-3">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg> 
+                            Get T-Shirt Price List
+                        </a>
+                    </div>
+                </div>
+                <div data-aos="fade-left" class="relative group">
+                    <div class="rounded-[3rem] overflow-hidden">
+                        <img src="{% static 'images/landing_tshirts.png' %}" class="w-full aspect-[4/5] object-cover group-hover:scale-105 transition duration-1000">
+                    </div>
+                    <div class="absolute bottom-8 right-8 px-6 py-6 bg-white text-premium rounded-2xl shadow-2xl flex flex-col items-center">
+                        <span class="text-3xl font-serif font-bold">100%</span>
+                        <span class="text-[10px] uppercase font-bold tracking-widest">Cotton</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Process Section -->
+    <section class="py-32 bg-white">
+        <div class="container mx-auto px-6">
+             <div class="text-center mb-24 space-y-4">
+                <span class="text-xs font-bold tracking-widest text-gray-400 uppercase">Seamless Workflow</span>
+                <h2 class="text-4xl md:text-6xl font-serif">How We Build Your Brand</h2>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-12 relative">
+                <!-- Line Decor -->
+                <div class="hidden md:block absolute top-[60px] left-0 w-full h-px bg-gray-100 -z-0"></div>
+
+                <div class="relative space-y-8 text-center md:text-left">
+                    <div class="w-14 h-14 bg-premium text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto md:mx-0 relative z-10 shadow-xl">1</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">Discovery</h4>
+                        <p class="text-sm text-gray-500 font-light">We discuss your vision, fabrics, and designs during a deep-dive consultation.</p>
+                    </div>
+                </div>
+                <div class="relative space-y-8 text-center md:text-left">
+                    <div class="w-14 h-14 bg-premium text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto md:mx-0 relative z-10 shadow-xl">2</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">Sampling</h4>
+                        <p class="text-sm text-gray-500 font-light">Transforming tech packs into physical samples for your review and approval.</p>
+                    </div>
+                </div>
+                <div class="relative space-y-8 text-center md:text-left">
+                    <div class="w-14 h-14 bg-premium text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto md:mx-0 relative z-10 shadow-xl">3</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">Production</h4>
+                        <p class="text-sm text-gray-500 font-light">Mass production starts in our facility with continuous quality audits.</p>
+                    </div>
+                </div>
+                <div class="relative space-y-8 text-center md:text-left">
+                    <div class="w-14 h-14 bg-premium text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto md:mx-0 relative z-10 shadow-xl">4</div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">Delivery</h4>
+                        <p class="text-sm text-gray-500 font-light">Final finishing, individual packaging, and worldwide logistics to your door.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Customization Section -->
+    <section class="py-32 bg-[#F9F7F2]">
+        <div class="container mx-auto px-6">
+            <div data-aos="fade-up" class="max-w-4xl mx-auto space-y-16">
+                <div class="text-center space-y-4">
+                    <span class="text-xs font-bold tracking-widest text-gray-400 uppercase">Ultimate Flexibility</span>
+                    <h2 class="text-4xl md:text-6xl font-serif">Infinite Customization</h2>
+                    <p class="text-gray-500 max-w-lg mx-auto font-light">If you can dream it, we can manufacture it. Every detail is under your control.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-lg group-hover:bg-premium group-hover:text-white transition group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <span class="text-xs mt-3 block font-bold">Fabric</span>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-lg group-hover:bg-premium group-hover:text-white transition group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg>
+                        </div>
+                        <span class="text-xs mt-3 block font-bold">Dyeing</span>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-lg group-hover:bg-premium group-hover:text-white transition group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19V5m-7 7l7-7 7 7"></path></svg>
+                        </div>
+                        <span class="text-xs mt-3 block font-bold">Embroidery</span>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-lg group-hover:bg-premium group-hover:text-white transition group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        </div>
+                        <span class="text-xs mt-3 block font-bold">Labels</span>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-lg group-hover:bg-premium group-hover:text-white transition group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                        </div>
+                        <span class="text-xs mt-3 block font-bold">Packaging</span>
+                    </div>
+                    <div class="text-center group">
+                        <div class="w-20 h-20 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-lg group-hover:bg-premium group-hover:text-white transition group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <span class="text-xs mt-3 block font-bold">Fast Lane</span>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="https://wa.me/917888111768" class="inline-flex px-12 py-6 bg-premium text-white rounded-xl font-bold cta-hover gap-3">
+                        Design Your Custom Label
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. Final CTA Section -->
+    <section class="py-32 bg-white relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div data-aos="zoom-in" class="bg-premium text-white rounded-[4rem] p-12 md:p-24 text-center space-y-12">
+                <h2 class="text-5xl md:text-8xl font-serif">Ready to Launch?</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg font-light leading-relaxed">
+                    Stop looking for manufacturers and start building with a partner. We are ready to bring your collection to life.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <a href="https://wa.me/917888111768" class="w-full sm:w-auto px-12 py-6 bg-whatsapp text-white rounded-2xl font-bold text-xl cta-hover flex items-center justify-center gap-3">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
+                        Chat with an Expert
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Abstract decor -->
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-gray-50 rounded-full"></div>
+    </header>
+
+    <!-- Footer Light -->
+    <footer class="py-12 bg-white border-t border-gray-100 italic">
+        <div class="container mx-auto px-6 text-center text-gray-400 text-sm">
+            © 2025 Clauch Factory. Premium Clothing Manufacturing.
+        </div>
+    </footer>
+
+    <!-- ✅ Swiper.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <!-- ✅ AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize AOS
+            AOS.init({
+                duration: 1000,
+                once: true,
+                offset: 100
+            });
+
+            // Slider configurations
+            new Swiper('.swiper-samples', {
+                slidesPerView: 1.2,
+                spaceBetween: 20,
+                autoplay: { delay: 3000 },
+                breakpoints: {
+                    640: { slidesPerView: 2.5, spaceBetween: 30 },
+                    1024: { slidesPerView: 4.5, spaceBetween: 40 }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -67,12 +67,49 @@
 
   "knowsAbout": [
     "Bulk apparel manufacturing",
-    "Private label clothing manufacturing",
+    "Private label clothing manufacturing", 
     "Wholesale garment supply",
     "Custom clothing production",
     "Denim manufacturing",
     "B2B apparel manufacturing"
-  ]
+  ],
+  
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "B2B Clothing Products",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "T-Shirts",
+          "category": "Clothing"
+        }
+      },
+      {
+        "@type": "Offer", 
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Shirts",
+          "category": "Clothing"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product", 
+          "name": "Jeans",
+          "category": "Clothing"
+        }
+      }
+    ]
+  },
+  
+  "serviceType": "B2B Clothing Manufacturing",
+  "hasCredential": {
+    "@type": "EducationalOccupationalCredential",
+    "credentialCategory": "Manufacturing License"
+  }
 }
 </script>
 
@@ -145,6 +182,7 @@
       transition: transform .3s ease;
     }
   </style>
+  {% block extra_head %}{% endblock %}
 <!-- 🔔 Fixed Alert Marquee Bar (Top) -->
 <div class="fixed top-0 left-0 w-full bg-black text-white h-5 z-50">
   <div class="whitespace-nowrap animate-marquee text-[10px] font-raleway font-medium tracking-wider leading-[1.2rem] px-4">
@@ -156,24 +194,24 @@
 <!-- 📱 Fixed Mobile Top Navigation -->
 <div class="fixed top-5 left-0 w-full bg-white border-b z-40 md:hidden flex items-center justify-between px-4 py-2">
   <!-- Left - Logo/Text -->
-  <div class="text-[16px] font-semibold text-black font-montserrat">
+  <div class="text-[14px] font-semibold text-black font-montserrat">
     <a href="{% url 'home' %}" class="hover:text-gray-700 transition">
       Clauch
     </a>
   </div>
 
   <!-- Right - Text Links Only -->
-  <div class="flex space-x-4">
-    <a href="{% url 'new' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+  <div class="flex space-x-3">
+    <a href="{% url 'new' %}" class="text-[11px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Shop
     </a>
-    <a href="{% url 'showroom' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
-      Our Factory
+    <a href="{% url 'landing' %}" class="text-[11px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+      Manufacturing
     </a>
-    <a href="{% url 'blog_list' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+    <a href="{% url 'blog_list' %}" class="text-[11px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Blogs
     </a>
-    <a href="{% url 'course_list' %}" class="text-[12px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
+    <a href="{% url 'course_list' %}" class="text-[11px] text-black underline underline-offset-4 hover:text-gray-700 transition font-montserrat">
       Courses
     </a>
   </div>
@@ -230,8 +268,8 @@
   <a href="{% url 'new' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
     Shop
   </a>
-  <a href="{% url 'showroom' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
-    Our Factory
+  <a href="{% url 'landing' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
+    Manufacturing
   </a>
   <a href="{% url 'course_list' %}" class="px-4 py-2 rounded-full text-sm font-normal text-gray-700 hover:text-white hover:bg-black transition">
     Courses
@@ -294,7 +332,7 @@
   </a>
 </nav>
 
-<footer class="relative bg-cover bg-center bg-no-repeat text-white font-[Montserrat] px-6 md:px-16 pt-10 pb-24 md:pb-10 mt-10" style="background-image: url('{% static '/images/footer-black.jpg' %}');">
+<footer class="relative bg-cover bg-center bg-no-repeat text-white font-montserrat px-4 md:px-16 pt-8 pb-24 md:pb-10 mt-10" style="background-image: url('{% static 'images/footer-black.jpg' %}');">
   <div class="absolute inset-0 bg-black bg-opacity-80"></div> <!-- Dark overlay -->
 
   <div class="relative max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 z-10">
@@ -316,7 +354,7 @@
         <li><a href="{% url 'shipping_return' %}" class="hover:text-white transition">Shipping & Return</a></li>
         <li><a href="{% url 'faq' %}" class="hover:text-white transition">FAQs</a></li>
         <li><a href="{% url 'showroom' %}" class="hover:text-white transition">Contact</a></li>
-        <li><a href="{% url 'showroom' %}" class="hover:text-white transition">Showroom</a></li>
+        <li><a href="{% url 'landing' %}" class="hover:text-white transition">Manufacturing</a></li>
       </ul>
     </div>
 
@@ -355,5 +393,6 @@
 </footer>
 
 
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>
