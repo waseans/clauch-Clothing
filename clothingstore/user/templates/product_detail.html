@@ -4,21 +4,21 @@
 {# Access the first category safely to handle the ManyToMany relationship #}
 {% with primary_cat=product.categories.first %}
 
-<title>{{ product.name }} Wholesale | B2B {{ primary_cat.name|default:"Clothing" }} Manufacturer India – Clauch Factory</title>
+<title>{{ product.name }} Wholesale | B2B {{ primary_cat.name|default:"Clothing" }} Manufacturer India – Clauchfactory Factory</title>
 
 <meta name="description" content="Buy {{ product.name }} from a B2B {{ primary_cat.name|default:'clothing' }} manufacturer in India. Bulk supply, factory pricing, private labeling, and low MOQ for wholesalers and retailers.">
 
 <meta name="keywords" content="{{ product.name }} wholesale, {{ product.name }} manufacturer India, bulk {{ product.name }}, B2B {{ product.name }}, private label {{ product.name }}, {{ primary_cat.name }} factory">
 
 <meta property="og:type" content="product">
-<meta property="og:title" content="{{ product.name }} Wholesale Manufacturer India | Clauch Factory">
-<meta property="og:description" content="Bulk {{ product.name }} supplier from India. Factory pricing, private labeling and export-ready manufacturing by Clauch Factory.">
+<meta property="og:title" content="{{ product.name }} Wholesale Manufacturer India | Clauchfactory Factory">
+<meta property="og:description" content="Bulk {{ product.name }} supplier from India. Factory pricing, private labeling and export-ready manufacturing by Clauchfactory Factory.">
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ product.primary_image.url }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:site_name" content="Clauch Factory">
+<meta property="og:site_name" content="Clauchfactory Factory">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ product.name }} Wholesale Manufacturer India | Clauch Factory">
+<meta name="twitter:title" content="{{ product.name }} Wholesale Manufacturer India | Clauchfactory Factory">
 <meta name="twitter:description" content="B2B {{ product.name }} manufacturer in India offering bulk supply, private labeling and factory-direct pricing.">
 <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ product.primary_image.url }}">
 
@@ -60,17 +60,17 @@
     "{{ request.scheme }}://{{ request.get_host }}{{ image.image.url }}"{% endfor %}
   ],
   "description": "{{ product.description|striptags|truncatechars:250 }}",
-  "sku": "CLAUCH-{{ product.id }}",
+  "sku": "CLAUCHFACTORY-{{ product.id }}",
   "mpn": "{{ product.id }}",
   "brand": {
     "@type": "Brand",
-    "name": "Clauch Factory",
+    "name": "Clauchfactory Factory",
     "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.png' %}",
     "url": "{{ request.scheme }}://{{ request.get_host }}/"
   },
   "manufacturer": {
     "@type": "Organization",
-    "name": "Clauch Factory",
+    "name": "Clauchfactory Factory",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "IN"
@@ -95,7 +95,7 @@
     "itemCondition": "https://schema.org/NewCondition",
     "seller": {
       "@type": "Organization",
-      "name": "Clauch Factory",
+      "name": "Clauchfactory Factory",
       "url": "{{ request.scheme }}://{{ request.get_host }}/"
     },
     "shippingDetails": {

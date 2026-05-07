@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     'www.clauch.in',
     'clauchfactory.com',      # new domain
     'www.clauchfactory.com',  # new domain www
+    '42fd-2401-4900-c947-6b0d-6d5f-a35c-f89d-8554.ngrok-free.app',
 ]
 
 CSRF_TRUSTED_ORIGINS = [

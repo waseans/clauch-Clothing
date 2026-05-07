@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Courses - Clauch{% endblock %}
+{% block title %}Courses - Clauchfactory{% endblock %}
 
 {% block content %}
 <div class="bg-[#FAFAFA] min-h-screen py-16 px-4 sm:px-8 lg:px-20 font-[Montserrat]">
@@ -11,7 +11,7 @@
     <div class="text-center">
       <h1 class="text-2xl sm:text-3xl font-extralight mb-2 tracking-tight">Our Courses</h1>
       <p class="text-gray-600 text-sm sm:text-base font-light leading-relaxed">
-        Learn directly from the <b class="font-semibold">Clauch Founder</b> —
+        Learn directly from the <b class="font-semibold">Clauchfactory Founder</b> —
         his real experiences, what to do, what not to do, and how to scale your clothing brand.
       </p>
     </div>
@@ -83,7 +83,7 @@ function startPayment(courseSlug, amount) {
         "key": "{{ settings.RAZORPAY_KEY_ID }}",
         "amount": data.amount,
         "currency": data.currency,
-        "name": "Clauch Academy",
+        "name": "Clauchfactory Academy",
         "description": "Course Purchase",
         "order_id": data.order_id,
         "handler": function (response){

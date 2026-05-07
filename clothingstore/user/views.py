@@ -191,6 +191,9 @@ def privacy_policy_view(request):
 def terms_and_condition_view(request):
     return render(request, "terms_and_condition.html")
 
+def about_view(request):
+    return render(request, "about.html")
+
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render

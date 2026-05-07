@@ -21,6 +21,7 @@ urlpatterns = [
     path('contact/', views.contact_view, name='contact'),
     path('privacy-policy/', views.privacy_policy_view, name='privacy_policy'),
     path('terms-and-condition/', views.terms_and_condition_view, name='terms_and_condition'),
+    path('about/', views.about_view, name='about'),
     path('account/', views.account_view, name='account'),
     path('category/<slug:slug>/', views.category_detail, name='category_detail'),
     path("ajax/filter-popular-products/", views.filter_popular_products, name="filter_popular_products"),
