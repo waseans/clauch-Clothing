@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
   {% if razorpay_order %}
   var options = {
       "key": "{{ razorpay_key }}", "amount": "{{ amount_to_pay_now }}", "currency": "INR",
-      "name": "Clauchfactory", "description": "Order Payment", "order_id": "{{ razorpay_order.id }}",
+      "name": "Clauch Factory", "description": "Order Payment", "order_id": "{{ razorpay_order.id }}",
       "handler": function (response){
           document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
           document.getElementById('checkout-form').submit();

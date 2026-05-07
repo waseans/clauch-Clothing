@@ -4,17 +4,17 @@
 
 {% block head %}
   <title>
-    {% if query %}Search results for "{{ query }}" - Clauchfactory{% else %}Search - Clauchfactory{% endif %}
+    {% if query %}Search results for "{{ query }}" - Clauch Factory{% else %}Search - Clauch Factory{% endif %}
   </title>
-  <meta name="description" content="{% if query %}Browse results for '{{ query }}' on Clauchfactory. Find trending fashion pieces and categories tailored to your needs.{% else %}Discover trending fashion, popular categories, and best-selling products at Clauchfactory.{% endif %}">
-  <meta name="keywords" content="{% if query %}{{ query }}, clothing, fashion, Clauchfactory{% else %}fashion, clothing, popular categories, best sellers, Clauchfactory{% endif %}">
+  <meta name="description" content="{% if query %}Browse results for '{{ query }}' on Clauch Factory. Find trending fashion pieces and categories tailored to your needs.{% else %}Discover trending fashion, popular categories, and best-selling products at Clauch Factory.{% endif %}">
+  <meta name="keywords" content="{% if query %}{{ query }}, clothing, fashion, Clauch Factory{% else %}fashion, clothing, popular categories, best sellers, Clauch Factory{% endif %}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ request.build_absolute_uri }}">
-  <meta property="og:title" content="{% if query %}Search for '{{ query }}' - Clauchfactory{% else %}Search - Clauchfactory{% endif %}">
-  <meta property="og:description" content="{% if query %}Browse '{{ query }}' search results on Clauchfactory.{% else %}Explore fashion trends and shop popular styles at Clauchfactory.{% endif %}">
+  <meta property="og:title" content="{% if query %}Search for '{{ query }}' - Clauch Factory{% else %}Search - Clauch Factory{% endif %}">
+  <meta property="og:description" content="{% if query %}Browse '{{ query }}' search results on Clauch Factory.{% else %}Explore fashion trends and shop popular styles at Clauch Factory.{% endif %}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
-  <meta property="og:site_name" content="Clauchfactory">
+  <meta property="og:site_name" content="Clauch Factory">
   <meta property="og:image" content="{% static 'images/og-image.jpg' %}"> {# Replace with a real image #}
 {% endblock %}
 
