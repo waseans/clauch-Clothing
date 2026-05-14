@@ -1,0 +1,71 @@
+Create a premium, modern Contact Us page for 'CLAUCH FACTORY' (an apparel manufacturing company) that exactly matches the following structure and aesthetics:
+
+1. HERO SECTION:
+- Full-width background image of a bustling apparel factory floor.
+- Overlay text: 'CONTACT US' in small uppercase, followed by a large bold heading 'Let's Build Your Brand'.
+- Subtext: 'From sampling to bulk production, our team is ready to help you manufacture premium-quality apparel with reliable turnaround times.'
+- Two call-to-action buttons: 'Chat on WhatsApp' (white button with icon) and 'Call Now' (outlined/black button with icon).
+
+2. STATS BAR:
+- A horizontal bar below the hero with 5 items:
+  * 100+ Brands Trust Us
+  * 1M+ Units Produced
+  * Low MOQ Flexible Orders
+  * Worldwide Shipping
+  * On-Time Delivery
+- Each item should have a clean, line-art icon.
+
+3. MAIN CONTACT SECTION:
+- Two-column layout:
+  - LEFT COLUMN ('Send Us a Message'):
+    * Title: 'Send Us a Message'
+    * Subtitle: 'Fill the form below and our team will get back to you within 24 hours.'
+    * Form Fields: Full Name*, Brand Name*, Email Address*, Phone Number*, Product Type (Dropdown), Quantity Requirement (Dropdown).
+    * Large text area for 'Tell us about your requirements*'.
+    * Full-width black 'Send Inquiry' button with a paper plane icon.
+  - RIGHT COLUMN ('Get in Touch'):
+    * Solid black background container with rounded corners.
+    * Title: 'Get in Touch' (White text).
+    * Contact Details with icons (White text):
+      - Address: Near LCC, Supreme Hotel, Near Dhamankarnaka, Bhiwandi, Maharashtra - 421302, India.
+      - Phone: +91 90212 75825
+      - Email: info@clauchfactory.com
+      - Working Hours: Monday - Saturday, 10:00 AM - 7:00 PM
+    * Full-width white 'Chat on WhatsApp' button with a green WhatsApp icon.
+
+4. SPECIALIZATION SECTION:
+- Title: 'WE SPECIALIZE IN' (small uppercase) followed by 'End-to-End Apparel Manufacturing' (large bold).
+- Description text: 'From fabric to final packaging, we provide complete manufacturing solutions for streetwear and fashion brands.'
+- A horizontal grid of 5 cards, each containing:
+  * A high-quality image representing the service.
+  * Title below the image: 
+    1. Premium Printing (DTF, Puff, Screen)
+    2. Embroidery & Detailing
+    3. Cut & Sew Production
+    4. Quality Control & Inspection
+    5. Packaging & Worldwide Shipping
+
+5. FAQ SECTION:
+- Title: 'Frequently Asked Questions'.
+- Accordion-style layout with questions and a '+' icon:
+  - What is your minimum order quantity (MOQ)?
+  - Do you provide samples before bulk production?
+  - How long does production take?
+  - Do you ship internationally?
+  - Can you manufacture custom designs?
+
+6. FIND US SECTION:
+- Title: 'Find Us'.
+- A large, embedded map showing the location of 'Clauch Factory' in Bhiwandi.
+
+7. FOOTER CTA:
+- Dark/Black section.
+- Text: 'Ready to Start Your Brand?' and 'Let's bring your ideas to life with quality manufacturing.'
+- Two buttons: 'Chat on WhatsApp' (white) and 'Call Now' (outlined/white text).
+
+AESTHETICS:
+- Use a clean, premium color palette: Black, White, and Soft Grays.
+- Typography: Use a modern sans-serif font (like Inter or Montserrat).
+- Spacing: Generous white space between sections.
+- Responsiveness: Ensure it looks stunning on mobile and desktop.
+- Interactive elements: Hover effects on buttons and accordion transitions.
