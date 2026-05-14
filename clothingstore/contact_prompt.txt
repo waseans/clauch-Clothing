@@ -27,10 +27,10 @@ Create a premium, modern Contact Us page for 'CLAUCH FACTORY' (an apparel manufa
     * Solid black background container with rounded corners.
     * Title: 'Get in Touch' (White text).
     * Contact Details with icons (White text):
-      - Address: Near LCC, Supreme Hotel, Near Dhamankarnaka, Bhiwandi, Maharashtra - 421302, India.
+      - Address: Clauch factory, Near LCC, Supreme Hotel, Dhamankarnaka, Bhiwandi, Maharashtra - 421302, India.
       - Phone: +91 90212 75825
       - Email: info@clauchfactory.com
-      - Working Hours: Monday - Saturday, 10:00 AM - 7:00 PM
+      - Working Hours: Monday - Sunday: 10:30 AM - 8:30 PM (Friday: 3:00 PM - 8:30 PM). Open all days.
     * Full-width white 'Chat on WhatsApp' button with a green WhatsApp icon.
 
 4. SPECIALIZATION SECTION:
