@@ -3,11 +3,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clauch Factory | Premium Streetwear Manufacturing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clauch Factory | Premium Apparel Manufacturing</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Your manufacturing partner for scalable streetwear production. From sampling to bulk manufacturing, we help fashion brands grow.">
+    <meta name="description" content="High-end B2B clothing manufacturing for private labels. Low MOQ, premium quality, global shipping.">
     
     <!-- ✅ Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,8 +20,10 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        gold: '#C5A059',
                         premium: '#0A0A0A',
+                        accent: '#C5A059',
+                        ivory: '#FAF9F6',
+                        whatsapp: '#25D366',
                     }
                 }
             }
@@ -29,420 +31,652 @@
     </script>
     
     <!-- ✅ Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- ✅ Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- ✅ Swiper.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <!-- ✅ AOS (Animate on Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
-        .animate-fadeIn {
-            animation: fadeIn 1s ease-out forwards;
+        :root {
+            --premium: #0A0A0A;
+            --ivory: #FAF9F6;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        body {
+            background-color: var(--ivory);
+            color: var(--premium);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        
-        .transition-all-400 { transition: all 0.4s ease; }
-        
+
+        .glass-nav {
+            background: rgba(250, 249, 246, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-premium {
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-premium:active {
+            transform: scale(0.96);
+        }
+
+        .text-balance {
+            text-wrap: balance;
+        }
+
+        .portrait-aspect {
+            aspect-ratio: 4 / 5;
+        }
+
+        .shadow-soft {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+        }
+
+        .whatsapp-pulse {
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--ivory); }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+
+        .section-padding { @apply py-20 px-6 md:py-32 md:px-12; }
     </style>
 </head>
-<body class="font-sans text-premium bg-white overflow-x-hidden">
+<body class="font-sans">
 
-    <!-- 🧭 Navigation -->
-    <nav class="flex justify-between items-center px-6 md:px-16 py-6 absolute top-0 left-0 w-full z-50">
-        <div class="text-2xl font-bold tracking-tight text-white md:text-premium">
-            <a href="/">Clauch Factory</a>
-        </div>
-        <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-white md:text-premium">
-            <a href="{% url 'home' %}" class="hover:text-gold transition">Home</a>
-            <a href="{% url 'about' %}" class="hover:text-gold transition">About Us</a>
-            <a href="#services" class="hover:text-gold transition">Services</a>
-            <a href="{% url 'landing' %}" class="hover:text-gold transition text-gold">Manufacturing</a>
-            <a href="{% url 'blog_list' %}" class="hover:text-gold transition">Blogs</a>
-            <a href="https://wa.me/919021275825" class="bg-premium text-white px-6 py-2.5 rounded-md hover:bg-gold hover:text-white transition shadow-lg">Start Your Brand</a>
-        </div>
-        <!-- Mobile Menu Icon (Placeholder) -->
-        <div class="md:hidden text-white">
-            <i data-lucide="menu" class="w-8 h-8"></i>
-        </div>
-    </nav>
+    <!-- 🟢 Fixed Bottom CTA for Mobile -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md md:hidden">
+        <a href="https://wa.me/917888111768" class="flex items-center justify-between bg-premium text-white p-2 rounded-2xl shadow-2xl whatsapp-pulse">
+            <div class="flex items-center gap-3 pl-4">
+                <div class="w-2 h-2 rounded-full bg-whatsapp"></div>
+                <span class="text-xs font-bold uppercase tracking-wider">Online Now</span>
+            </div>
+            <div class="bg-whatsapp text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+                <span>Chat on WhatsApp</span>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg> 
+            </div>
+        </a>
+    </div>
 
-    <!-- 🚀 Hero Section -->
-    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        <div class="absolute inset-0">
-            <img src="{% static 'images/landing/hero_bg.png' %}" alt="Factory Floor" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50"></div>
+    <!-- 1. Hero Section -->
+    <header class="relative min-h-[90vh] flex flex-col pt-12">
+        <nav class="flex justify-between items-center px-6 md:px-12 py-4 absolute top-0 left-0 w-full z-20">
+            <span class="text-xl font-bold tracking-tighter">CLAUCH FACTORY<span class="text-accent">.</span></span>
+            <div class="hidden md:flex gap-4">
+                <div class="bg-white/50 backdrop-blur-md px-4 py-2 rounded-full border border-black/5 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-whatsapp animate-pulse"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Factory Live</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mx-auto px-6 h-full flex flex-col md:flex-row items-center gap-12 mt-12">
+            <div class="flex-1 space-y-8 z-10" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/5 rounded-full mb-4">
+                    <span class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">Premium B2B Manufacturing</span>
+                </div>
+                <h1 class="text-5xl md:text-8xl font-serif leading-[0.95] tracking-tight text-balance">
+                    Build Your <br>Brand With <br> <span class="text-accent italic">Precision.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-black/50 font-light max-w-md leading-relaxed">
+                    The end-to-end manufacturing partner for streetwear brands, private labels, and custom apparel collections.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="https://wa.me/917888111768" class="btn-premium px-8 py-5 bg-premium text-white rounded-2xl font-bold flex items-center justify-center gap-3">
+                        Start Production
+                        <svg class="w-5 h-5 fill-whatsapp" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
+                    </a>
+                    <a href="#manufacture" class="btn-premium px-8 py-5 bg-white text-premium border border-black/5 rounded-2xl font-bold flex items-center justify-center gap-3">
+                        View Categories
+                    </a>
+                </div>
+            </div>
+            <div class="flex-1 w-full relative" data-aos="fade-left" data-aos-delay="200">
+                <div class="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl portrait-aspect">
+                    <img src="{% static 'images/landing_hero.png' %}" alt="Factory Quality" class="w-full h-full object-cover">
+                    <!-- Overlay Info -->
+                    <div class="absolute bottom-6 left-6 right-6 p-6 glass-nav rounded-3xl border border-white/20">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-widest opacity-40">MOQ Starts At</p>
+                                <p class="text-2xl font-serif">50 Pieces</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] font-bold uppercase tracking-widest opacity-40">Lead Time</p>
+                                <p class="text-2xl font-serif">14-21 Days</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Abstract Decor -->
+                <div class="absolute -top-10 -right-10 w-64 h-64 bg-accent/10 rounded-full blur-3xl -z-0"></div>
+                <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-whatsapp/5 rounded-full blur-3xl -z-0"></div>
+            </div>
         </div>
+    </header>
+
+    <div class="section-divider"></div>
+
+    <!-- 2. Services Section -->
+    <section id="services" class="section-padding bg-white">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                <div class="space-y-4">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Expertise</span>
+                    <h2 class="text-4xl md:text-6xl font-serif tracking-tight">Manufacturing <br> Excellence</h2>
+                </div>
+                <p class="text-sm text-black/40 max-w-xs font-light">Dedicated to providing high-quality production standards for every piece we create.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Service 1 -->
+                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up">
+                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
+                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Private Label</h3>
+                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">Complete custom branding, labels, and tags to match your unique brand identity.</p>
+                </div>
+                <!-- Service 2 -->
+                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
+                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Digital Printing</h3>
+                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">High-definition DTF and screen printing with exceptional durability and vibrance.</p>
+                </div>
+                <!-- Service 3 -->
+                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
+                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Bulk Blanks</h3>
+                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">Premium ready-to-ship garments available for immediate custom decoration.</p>
+                </div>
+                <!-- Service 4 -->
+                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
+                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Full Package</h3>
+                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">End-to-end support from sampling and tech packs to global logistics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Why Choose Us Section -->
+    <section class="section-padding bg-premium text-white overflow-hidden relative">
+        <!-- Background Accent -->
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-accent/5 -skew-x-12 translate-x-1/2"></div>
         
-        <div class="relative z-10 container mx-auto px-6 md:px-16 animate-fadeIn">
-            <p class="text-white/80 uppercase tracking-widest text-sm font-bold mb-6">About Clauch Factory</p>
-            <h1 class="text-5xl md:text-8xl font-serif text-white leading-tight mb-8">
-                Your Manufacturing <br> Partner for Scalable <br> Streetwear Production
-            </h1>
-            <p class="text-lg md:text-xl text-white/80 max-w-2xl mb-12 leading-relaxed">
-                From sampling to bulk production, we help fashion brands bring their ideas to life with quality, speed and reliability.
-            </p>
-            
-            <div class="flex flex-wrap gap-4">
-                <a href="https://wa.me/919021275825" class="bg-gold text-white px-10 py-5 rounded-md font-bold text-lg hover:bg-white hover:text-gold transition shadow-2xl">Start Your Brand</a>
-                <a href="#services" class="border-2 border-white text-white px-10 py-5 rounded-md font-bold text-lg hover:bg-white/10 transition">Our Manufacturing</a>
-            </div>
-        </div>
-    </section>
+        <div class="container mx-auto relative z-10">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-12" data-aos="fade-right">
+                    <div class="space-y-4">
+                        <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">The Clauch Factory Edge</span>
+                        <h2 class="text-4xl md:text-7xl font-serif leading-tight">Scale Without <br> Friction.</h2>
+                    </div>
 
-    <!-- 📊 Stats Bar -->
-    <section class="bg-white border-b border-gray-100 py-12">
-        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
-            <div class="flex items-center gap-6">
-                <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-gold">
-                    <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+                    <div class="grid gap-10">
+                        <div class="flex gap-6">
+                            <span class="text-accent font-serif text-3xl">01</span>
+                            <div class="space-y-2">
+                                <h4 class="text-xl font-bold">Absolute Quality</h4>
+                                <p class="text-white/40 text-sm font-light leading-relaxed">3-step quality audit in every production cycle, ensuring zero compromises.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <span class="text-accent font-serif text-3xl">02</span>
+                            <div class="space-y-2">
+                                <h4 class="text-xl font-bold">Ethical Sourcing</h4>
+                                <p class="text-white/40 text-sm font-light leading-relaxed">Supporting your brand with sustainable fabrics and eco-friendly dye houses.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <span class="text-accent font-serif text-3xl">03</span>
+                            <div class="space-y-2">
+                                <h4 class="text-xl font-bold">Fast-Track Delivery</h4>
+                                <p class="text-white/40 text-sm font-light leading-relaxed">Standard 3-week lead times to keep your inventory moving at scale.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <a href="https://wa.me/917888111768" class="btn-premium inline-flex px-10 py-5 bg-accent text-premium rounded-2xl font-bold gap-3 shadow-2xl items-center">
+                            Start Your Journey
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-2xl font-bold">100+</p>
-                    <p class="text-sm text-gray-500 font-medium">Brands Manufactured</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-gold">
-                    <i data-lucide="package" class="w-8 h-8"></i>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold">1M+</p>
-                    <p class="text-sm text-gray-500 font-medium">Garments Produced</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-gold">
-                    <i data-lucide="refresh-cw" class="w-8 h-8"></i>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold">98%</p>
-                    <p class="text-sm text-gray-500 font-medium">Client Retention</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-gold">
-                    <i data-lucide="globe" class="w-8 h-8"></i>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold">15+</p>
-                    <p class="text-sm text-gray-500 font-medium">Countries Served</p>
+
+                <div class="relative" data-aos="zoom-out">
+                    <div class="rounded-[3rem] overflow-hidden border border-white/10 p-4 bg-white/5 backdrop-blur-3xl">
+                        <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=1000&auto=format&fit=crop" class="w-full portrait-aspect object-cover rounded-[2.5rem] opacity-90 transition duration-1000 hover:scale-105">
+                    </div>
+                    <!-- Floating Stats -->
+                    <div class="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2rem] shadow-2xl hidden md:block">
+                        <p class="text-premium text-4xl font-serif">100%</p>
+                        <p class="text-black/40 text-[10px] uppercase font-bold tracking-widest">Client Satisfaction</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 📖 Our Story Section -->
-    <section class="py-32 bg-gray-50/50">
-        <div class="container mx-auto px-6 md:px-16 grid lg:grid-cols-2 gap-20 items-center">
-            <div>
-                <p class="text-gold uppercase tracking-[0.3em] text-xs font-bold mb-6">Our Story</p>
-                <h2 class="text-4xl md:text-6xl font-serif leading-tight mb-10">Built in Bhiwandi. <br> Trusted Worldwide.</h2>
-                <div class="space-y-6 text-gray-600 leading-relaxed text-lg mb-12">
-                    <p>Founded with a vision to revolutionize apparel manufacturing for fashion brands, Clauch Factory started as a local production unit in Bhiwandi and has grown into a trusted manufacturing partner for emerging and established brands worldwide.</p>
-                    <p>We combine craftsmanship, technology and strict quality control to deliver garments that speak for your brand.</p>
-                </div>
-                <a href="{% url 'about' %}" class="inline-block bg-premium text-white px-10 py-4 rounded-md font-bold hover:bg-gold transition shadow-xl">Read Our Full Story</a>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4">
-                <div class="rounded-3xl overflow-hidden h-[500px] row-span-2 shadow-2xl">
-                    <img src="{% static 'images/landing/story_worker.png' %}" alt="Story Large" class="w-full h-full object-cover">
-                </div>
-                <div class="rounded-3xl overflow-hidden h-[242px] shadow-xl">
-                    <img src="{% static 'images/landing/story_factory.png' %}" alt="Story Small 1" class="w-full h-full object-cover">
-                </div>
-                <div class="rounded-3xl overflow-hidden h-[242px] shadow-xl">
-                    <img src="{% static 'images/landing/story_embroidery.png' %}" alt="Story Small 2" class="w-full h-full object-cover">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 🛠 What We Do Section -->
-    <section id="services" class="py-32 bg-white">
-        <div class="container mx-auto px-6 md:px-16">
-            <div class="text-center mb-20">
-                <p class="text-gold uppercase tracking-[0.3em] text-xs font-bold mb-4">What We Do</p>
-                <h2 class="text-4xl md:text-6xl font-serif">End-to-End Manufacturing Solutions</h2>
-            </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Card 1 -->
-                <div class="p-10 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-premium mb-10">
-                        <i data-lucide="shield-check" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-6">Private Label Manufacturing</h3>
-                    <ul class="space-y-4 text-gray-500 font-medium">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Custom Labels & Tags</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Branded Packaging</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Low MOQ</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Full Production Support</li>
-                    </ul>
-                </div>
-                <!-- Card 2 -->
-                <div class="p-10 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-premium mb-10">
-                        <i data-lucide="layers" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-6">Printing & Decoration</h3>
-                    <ul class="space-y-4 text-gray-500 font-medium">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> DTF Printing</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Screen Printing</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Puff & Rubber Printing</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Embroidery</li>
-                    </ul>
-                </div>
-                <!-- Card 3 -->
-                <div class="p-10 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-premium mb-10">
-                        <i data-lucide="box" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-6">Bulk Production</h3>
-                    <ul class="space-y-4 text-gray-500 font-medium">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> High-Quality Stitching</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Size Grading</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> In-Line Quality Check</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> On-Time Delivery</li>
-                    </ul>
-                </div>
-                <!-- Card 4 -->
-                <div class="p-10 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-premium mb-10">
-                        <i data-lucide="truck" class="w-8 h-8"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-6">Packaging & Logistics</h3>
-                    <ul class="space-y-4 text-gray-500 font-medium">
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Custom Packaging</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Barcode & Tagging</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> Global Shipping</li>
-                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-gold rounded-full"></div> End-to-End Support</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ⚡ Our Process Section -->
-    <section class="bg-[#0A0A0A] text-white py-32 overflow-hidden">
-        <div class="container mx-auto px-6 md:px-16">
-            <p class="text-gold uppercase tracking-[0.3em] text-xs font-bold mb-6">Our Process</p>
-            
-            <div class="grid lg:grid-cols-5 gap-12 items-center">
-                <!-- Left Side: Process -->
-                <div class="lg:col-span-3">
-                    <h2 class="text-4xl md:text-5xl font-serif leading-tight mb-20">Simple Process. <br> Consistent Results.</h2>
-                    
-                    <!-- Horizontal Timeline -->
-                    <div class="flex flex-row justify-between items-start relative">
-                        <!-- Dotted Line Connector -->
-                        <div class="absolute top-6 left-6 right-6 border-t-2 border-dotted border-white/20 -z-0 hidden md:block"></div>
-                        
-                        <!-- Step 01 -->
-                        <div class="flex flex-col items-center text-center relative z-10 w-1/5 group">
-                            <div class="w-12 h-12 rounded-xl bg-[#1A1A1A] border border-white/10 flex items-center justify-center mb-6 group-hover:border-gold transition duration-300">
-                                <i data-lucide="shirt" class="w-6 h-6 text-gold"></i>
-                            </div>
-                            <p class="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">01</p>
-                            <h4 class="font-bold text-sm mb-3">Sampling</h4>
-                            <p class="text-[10px] text-white/30 leading-relaxed px-1">We develop samples as per your design.</p>
-                        </div>
-
-                        <!-- Step 02 -->
-                        <div class="flex flex-col items-center text-center relative z-10 w-1/5 group">
-                            <div class="w-12 h-12 rounded-xl bg-[#1A1A1A] border border-white/10 flex items-center justify-center mb-6 group-hover:border-gold transition duration-300">
-                                <i data-lucide="check-circle" class="w-6 h-6 text-gold"></i>
-                            </div>
-                            <p class="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">02</p>
-                            <h4 class="font-bold text-sm mb-3">Approval</h4>
-                            <p class="text-[10px] text-white/30 leading-relaxed px-1">You review & approve the sample.</p>
-                        </div>
-
-                        <!-- Step 03 -->
-                        <div class="flex flex-col items-center text-center relative z-10 w-1/5 group">
-                            <div class="w-12 h-12 rounded-xl bg-[#1A1A1A] border border-white/10 flex items-center justify-center mb-6 group-hover:border-gold transition duration-300">
-                                <i data-lucide="scissors" class="w-6 h-6 text-gold"></i>
-                            </div>
-                            <p class="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">03</p>
-                            <h4 class="font-bold text-sm mb-3">Production</h4>
-                            <p class="text-[10px] text-white/30 leading-relaxed px-1">Bulk production with quality checks.</p>
-                        </div>
-
-                        <!-- Step 04 -->
-                        <div class="flex flex-col items-center text-center relative z-10 w-1/5 group">
-                            <div class="w-12 h-12 rounded-xl bg-[#1A1A1A] border border-white/10 flex items-center justify-center mb-6 group-hover:border-gold transition duration-300">
-                                <i data-lucide="package" class="w-6 h-6 text-gold"></i>
-                            </div>
-                            <p class="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">04</p>
-                            <h4 class="font-bold text-sm mb-3">QC & Packing</h4>
-                            <p class="text-[10px] text-white/30 leading-relaxed px-1">Final inspection & secure packaging.</p>
-                        </div>
-
-                        <!-- Step 05 -->
-                        <div class="flex flex-col items-center text-center relative z-10 w-1/5 group">
-                            <div class="w-12 h-12 rounded-xl bg-[#1A1A1A] border border-white/10 flex items-center justify-center mb-6 group-hover:border-gold transition duration-300">
-                                <i data-lucide="truck" class="w-6 h-6 text-gold"></i>
-                            </div>
-                            <p class="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">05</p>
-                            <h4 class="font-bold text-sm mb-3">Shipping</h4>
-                            <p class="text-[10px] text-white/30 leading-relaxed px-1">On-time delivery to your doorstep.</p>
-                        </div>
-                    </div>
+    <!-- 4. Global Trust Section -->
+    <section class="section-padding bg-ivory">
+        <div class="container mx-auto">
+            <div class="max-w-4xl mx-auto text-center space-y-16">
+                <div class="space-y-4" data-aos="fade-up">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Global Reach</span>
+                    <h2 class="text-4xl md:text-6xl font-serif">A Trusted Partner for <br> Emerging & Iconic Brands</h2>
                 </div>
                 
-                <!-- Right Side: Image -->
-                <div class="lg:col-span-2">
-                    <div class="rounded-[3rem] overflow-hidden h-[500px] shadow-2xl relative">
-                        <img src="{% static 'images/landing/process_warehouse.png' %}" alt="Warehouse" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent"></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="100">
+                        <span class="text-5xl font-serif text-accent">100+</span>
+                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Brands Scaled</p>
+                    </div>
+                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="200">
+                        <span class="text-5xl font-serif text-accent">5+</span>
+                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Countries Exported</p>
+                    </div>
+                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="300">
+                        <span class="text-5xl font-serif text-accent">1M+</span>
+                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Units Shipped</p>
+                    </div>
+                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="400">
+                        <span class="text-5xl font-serif text-accent">98%</span>
+                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Repeat Rate</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ✨ Why Brands Choose Us -->
-    <section class="py-32 bg-white">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-4xl md:text-5xl font-serif mb-20">Why Brands Choose Us</h2>
-            
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-12">
+    <!-- 5. Factory Video Section -->
+    <section class="relative h-[70vh] md:h-[90vh] bg-premium overflow-hidden group">
+        <div class="absolute inset-0 opacity-40">
+            <img src="https://images.unsplash.com/photo-1556761175-5973cf0f32e7?q=80&w=1332&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-b from-premium/20 via-transparent to-premium"></div>
+        
+        <div class="absolute inset-0 flex items-center justify-center p-6 text-center">
+            <div class="space-y-8" data-aos="zoom-in">
+                <a href="https://wa.me/917888111768" class="w-24 h-24 bg-accent text-premium rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-2xl mx-auto shadow-accent/20">
+                    <svg class="w-8 h-8 fill-current translate-x-1" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </a>
                 <div class="space-y-4">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center text-gold">
-                        <i data-lucide="zap" class="w-8 h-8"></i>
-                    </div>
-                    <h4 class="font-bold">Low MOQ</h4>
-                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Start small, scale fast.</p>
+                    <h2 class="text-4xl md:text-7xl text-white font-serif leading-tight">Behind the Craft</h2>
+                    <p class="text-white/60 max-w-md mx-auto font-light leading-relaxed">See how we transform raw fabric into premium streetwear using state-of-the-art technology.</p>
                 </div>
-                <div class="space-y-4">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center text-gold">
-                        <i data-lucide="clock-3" class="w-8 h-8"></i>
-                    </div>
-                    <h4 class="font-bold">Fast Turnaround</h4>
-                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Timely delivery, every time.</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center text-gold">
-                        <i data-lucide="award" class="w-8 h-8"></i>
-                    </div>
-                    <h4 class="font-bold">Quality Assurance</h4>
-                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Strict quality at every step.</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center text-gold">
-                        <i data-lucide="users-2" class="w-8 h-8"></i>
-                    </div>
-                    <h4 class="font-bold">Experienced Team</h4>
-                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Skilled, Reliable, Professional.</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center text-gold">
-                        <i data-lucide="message-square" class="w-8 h-8"></i>
-                    </div>
-                    <h4 class="font-bold">Transparent Communication</h4>
-                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Clear updates at every stage.</p>
+                <div class="pt-4">
+                    <a href="https://wa.me/917888111768" class="btn-premium px-8 py-4 border border-white/20 text-white rounded-full font-bold inline-flex items-center gap-2 hover:bg-white hover:text-premium transition-all">
+                        Request Factory Tour
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 🏁 Bottom CTA -->
-    <section class="py-32 px-6">
-        <div class="max-w-7xl mx-auto bg-premium text-white rounded-[4rem] p-16 md:p-32 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-12 overflow-hidden relative shadow-2xl">
-            <div class="relative z-10">
-                <h2 class="text-4xl md:text-6xl font-serif mb-6">Ready to Scale Your Brand?</h2>
-                <p class="text-white/40 text-lg md:text-xl font-light">Let's turn your ideas into high-quality streetwear that sells.</p>
+    <!-- 6. What We Manufacture -->
+    <section id="manufacture" class="section-padding bg-white">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                <div class="space-y-4" data-aos="fade-up">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Collections</span>
+                    <h2 class="text-4xl md:text-6xl font-serif">Endless Possibilities</h2>
+                </div>
+                <p class="text-sm text-black/40 max-w-xs font-light">From classic essentials to avant-garde streetwear, we manufacture across all categories.</p>
             </div>
-            
-            <div class="flex flex-col sm:flex-row gap-6 relative z-10">
-                <a href="https://wa.me/919021275825" class="bg-gold text-white px-10 py-5 rounded-md font-bold text-lg hover:bg-white hover:text-gold transition shadow-xl">Book a Consultation</a>
-                <a href="https://wa.me/919021275825" class="border-2 border-white/20 text-white px-10 py-5 rounded-md font-bold text-lg hover:bg-white/10 transition">Contact Us on WhatsApp</a>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+                <!-- T-Shirts -->
+                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up">
+                    <img src="{% static 'images/landing_tshirts.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 class="text-white text-2xl font-serif mb-2">T-Shirts</h3>
+                        <p class="text-white/60 text-xs font-light">Oversized, Boxy, Heavyweight</p>
+                    </div>
+                </div>
+                <!-- Hoodies -->
+                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up" data-aos-delay="100">
+                    <img src="{% static 'images/landing_hoodies.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 class="text-white text-2xl font-serif mb-2">Hoodies</h3>
+                        <p class="text-white/60 text-xs font-light">French Terry, Heavy Fleece</p>
+                    </div>
+                </div>
+                <!-- Denim -->
+                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up" data-aos-delay="200">
+                    <img src="{% static 'images/landing_jeans.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 class="text-white text-2xl font-serif mb-2">Denim</h3>
+                        <p class="text-white/60 text-xs font-light">Raw Selvedge, Custom Washes</p>
+                    </div>
+                </div>
+                <!-- Accessories -->
+                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up" data-aos-delay="300">
+                    <img src="{% static 'images/landing_packaging.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 class="text-white text-2xl font-serif mb-2">Private Label</h3>
+                        <p class="text-white/60 text-xs font-light">Packaging, Tags, Custom Trim</p>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Decor -->
-            <div class="absolute -top-32 -right-32 w-96 h-96 bg-gold/10 rounded-full blur-[100px]"></div>
-            <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-gold/10 rounded-full blur-[100px]"></div>
         </div>
     </section>
 
-    <!-- 🏷 Footer -->
-    <footer class="bg-premium text-white pt-32 pb-12 border-t border-white/5">
-        <div class="container mx-auto px-6 md:px-16">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-16 mb-24">
-                <div>
-                    <h3 class="text-xl font-bold mb-8">Clauch Factory</h3>
-                    <p class="text-white/40 leading-relaxed font-light mb-8">Premium streetwear manufacturing services for fashion brands worldwide.</p>
-                    <div class="flex gap-6">
-                        <a href="#" class="text-white/40 hover:text-white transition"><i data-lucide="instagram" class="w-6 h-6"></i></a>
-                        <a href="#" class="text-white/40 hover:text-white transition"><i data-lucide="facebook" class="w-6 h-6"></i></a>
-                        <a href="#" class="text-white/40 hover:text-white transition"><i data-lucide="youtube" class="w-6 h-6"></i></a>
-                        <a href="#" class="text-white/40 hover:text-white transition"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
-                    </div>
+    <!-- 7. Sample Products (NEW SECTION) -->
+    <section class="section-padding bg-ivory overflow-hidden">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                <div class="space-y-4" data-aos="fade-right">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Showroom</span>
+                    <h2 class="text-4xl md:text-6xl font-serif">Recent Production <br> Samples</h2>
                 </div>
-                
-                <div>
-                    <h4 class="font-bold mb-8 uppercase tracking-widest text-xs text-gold">Quick Links</h4>
-                    <ul class="space-y-4 text-white/40 font-light">
-                        <li><a href="{% url 'home' %}" class="hover:text-white transition">Home</a></li>
-                        <li><a href="{% url 'about' %}" class="hover:text-white transition">About Us</a></li>
-                        <li><a href="{% url 'landing' %}" class="hover:text-white transition">Manufacturing</a></li>
-                        <li><a href="{% url 'blog_list' %}" class="hover:text-white transition">Blog</a></li>
-                        <li><a href="{% url 'contact' %}" class="hover:text-white transition">Contact</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold mb-8 uppercase tracking-widest text-xs text-gold">Our Services</h4>
-                    <ul class="space-y-4 text-white/40 font-light">
-                        <li><a href="#" class="hover:text-white transition">Private Label</a></li>
-                        <li><a href="#" class="hover:text-white transition">Printing</a></li>
-                        <li><a href="#" class="hover:text-white transition">Bulk Production</a></li>
-                        <li><a href="#" class="hover:text-white transition">Packaging</a></li>
-                        <li><a href="#" class="hover:text-white transition">Logistics</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold mb-8 uppercase tracking-widest text-xs text-gold">Contact Info</h4>
-                    <ul class="space-y-6 text-white/40 font-light">
-                        <li class="flex gap-4">
-                            <i data-lucide="map-pin" class="w-5 h-5 text-gold shrink-0"></i>
-                            <span>Clauch Factory, Near LCC, Supreme Hotel,<br>Near Dhamankarnaka, Bhiwandi 421302</span>
-                        </li>
-                        <li class="flex gap-4">
-                            <i data-lucide="phone" class="w-5 h-5 text-gold shrink-0"></i>
-                            <span>+91 7888111768</span>
-                        </li>
-                        <li class="flex gap-4">
-                            <i data-lucide="mail" class="w-5 h-5 text-gold shrink-0"></i>
-                            <span>hello@clauchfactory.com</span>
-                        </li>
-                    </ul>
+                <div class="flex gap-4">
+                    <a href="https://wa.me/917888111768" class="btn-premium px-8 py-4 bg-premium text-white rounded-2xl font-bold text-sm">
+                        Order Sample Kit
+                    </a>
                 </div>
             </div>
-            
-            <div class="pt-12 border-t border-white/5 flex flex-col md:row justify-between items-center gap-6 text-[10px] uppercase font-bold tracking-[0.2em] text-white/20">
-                <p>© 2026 Clauch Factory. All rights reserved.</p>
-                <div class="flex gap-8">
-                    <a href="{% url 'privacy_policy' %}" class="hover:text-white transition">Privacy Policy</a>
-                    <span class="opacity-20">|</span>
-                    <a href="{% url 'terms_and_condition' %}" class="hover:text-white transition">Terms & Conditions</a>
+
+            <div class="swiper swiper-samples overflow-visible">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
+                           <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Streetwear Tee</div>
+                        </div>
+                        <div class="mt-6 space-y-1">
+                            <h4 class="font-bold text-lg">Heavyweight Essential</h4>
+                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">240 GSM | Puff Print</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
+                           <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Hoodie</div>
+                        </div>
+                        <div class="mt-6 space-y-1">
+                            <h4 class="font-bold text-lg">Boxy Oversized Hoodie</h4>
+                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">400 GSM | French Terry</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
+                           <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Cargos</div>
+                        </div>
+                        <div class="mt-6 space-y-1">
+                            <h4 class="font-bold text-lg">Tech Utility Pants</h4>
+                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">Ripstop | 12 Pockets</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
+                           <img src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Outerwear</div>
+                        </div>
+                        <div class="mt-6 space-y-1">
+                            <h4 class="font-bold text-lg">Wool Varsity Jacket</h4>
+                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">Custom Embroidery</p>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Product Detail (T-shirt etc.) -->
+    <section class="section-padding bg-premium text-white">
+        <div class="container mx-auto">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-12" data-aos="fade-right">
+                    <div class="space-y-4">
+                        <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Deep Dive</span>
+                        <h2 class="text-4xl md:text-7xl font-serif tracking-tight leading-tight">Superior <br> T-Shirt Specs</h2>
+                        <p class="text-white/40 font-light text-lg">We don't just make T-shirts; we engineer the perfect garment for your brand's silhouette.</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
+                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> 
+                            </div>
+                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Fabric Palette</h5>
+                            <p class="text-sm font-medium">160-300 GSM <br> Combed Cotton, Supima, French Terry</p>
+                        </div>
+                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
+                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg> 
+                            </div>
+                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Technical Fits</h5>
+                            <p class="text-sm font-medium">Boxy, Oversized, Drop Shoulder, Standard Pro</p>
+                        </div>
+                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
+                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.183.244l-.3.178c-.71.42-.962 1.341-.56 2.053L5 19l2.5-3z"></path></svg> 
+                            </div>
+                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Premium Finish</h5>
+                            <p class="text-sm font-medium">Bio-wash, Silicon finish, Vintage Pigment Dyes</p>
+                        </div>
+                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
+                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg> 
+                            </div>
+                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Decoration</h5>
+                            <p class="text-sm font-medium">DTF, Screen, Puff, Embroidery, Appliqué</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <a href="https://wa.me/917888111768" class="btn-premium px-10 py-5 bg-whatsapp text-white rounded-2xl font-bold flex items-center justify-center gap-3 w-full sm:w-auto">
+                            Get Quote for T-Shirts
+                        </a>
+                    </div>
+                </div>
+                <div class="relative" data-aos="fade-left">
+                    <div class="rounded-[4rem] overflow-hidden border border-white/10 p-4 bg-white/5 backdrop-blur-3xl">
+                        <img src="{% static 'images/landing_tshirts.png' %}" class="w-full h-full portrait-aspect object-cover rounded-[3.5rem] opacity-90">
+                    </div>
+                    <div class="absolute -top-10 -right-10 bg-accent p-8 rounded-[2rem] shadow-2xl text-premium">
+                        <p class="text-4xl font-serif font-bold italic">Luxury</p>
+                        <p class="text-black/40 text-[10px] uppercase font-bold tracking-widest whitespace-nowrap">Standard Guaranteed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Process Section -->
+    <section class="section-padding bg-white overflow-hidden">
+        <div class="container mx-auto">
+            <div class="max-w-4xl mx-auto space-y-20">
+                <div class="text-center space-y-4" data-aos="fade-up">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Seamless Workflow</span>
+                    <h2 class="text-4xl md:text-6xl font-serif">Journey to Production</h2>
+                </div>
+
+                <div class="relative grid md:grid-cols-4 gap-4">
+                    <!-- Progress Line -->
+                    <div class="hidden md:block absolute top-10 left-0 w-full h-px bg-black/5 -z-0"></div>
+
+                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up">
+                        <div class="w-12 h-12 bg-premium text-white rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">01</div>
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-bold">Discovery</h4>
+                            <p class="text-sm text-black/40 font-light leading-relaxed">Deep-dive into your vision, tech packs, and fabric requirements.</p>
+                        </div>
+                    </div>
+                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-12 h-12 bg-premium text-white rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">02</div>
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-bold">Sampling</h4>
+                            <p class="text-sm text-black/40 font-light leading-relaxed">Physical prototyping to perfect the fit, color, and finish of every style.</p>
+                        </div>
+                    </div>
+                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-12 h-12 bg-premium text-white rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">03</div>
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-bold">Bulk Run</h4>
+                            <p class="text-sm text-black/40 font-light leading-relaxed">Full-scale manufacturing with stringent multi-point quality checks.</p>
+                        </div>
+                    </div>
+                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-12 h-12 bg-accent text-premium rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">04</div>
+                        <div class="space-y-4">
+                            <h4 class="text-xl font-bold">Logistics</h4>
+                            <p class="text-sm text-black/40 font-light leading-relaxed">Individual packing and door-to-door global shipping support.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 10. Customization Section -->
+    <section class="section-padding bg-ivory">
+        <div class="container mx-auto">
+            <div class="max-w-4xl mx-auto space-y-16">
+                <div class="text-center space-y-4" data-aos="fade-up">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Ultimate Flexibility</span>
+                    <h2 class="text-4xl md:text-6xl font-serif">Infinite Customization</h2>
+                    <p class="text-black/40 max-w-lg mx-auto font-light lg:text-lg">Every detail is under your control. If you can dream it, we can manufacture it.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="0">
+                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Fabric</span>
+                    </div>
+                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="50">
+                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg>
+                        </div>
+                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Dyeing</span>
+                    </div>
+                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19V5m-7 7l7-7 7 7"></path></svg>
+                        </div>
+                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Detailing</span>
+                    </div>
+                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="150">
+                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        </div>
+                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Labels</span>
+                    </div>
+                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                        </div>
+                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Packing</span>
+                    </div>
+                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="250">
+                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
+                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Fast Track</span>
+                    </div>
+                </div>
+
+                <div class="text-center pt-8">
+                    <a href="https://wa.me/917888111768" class="btn-premium inline-flex px-12 py-6 bg-premium text-white rounded-2xl font-bold border border-white/10 hover:bg-accent hover:text-premium transition-all">
+                        Design Your Collection
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. Final CTA Section -->
+    <section class="section-padding bg-white relative overflow-hidden">
+        <div class="container mx-auto relative z-10">
+            <div data-aos="zoom-in" class="bg-premium text-white rounded-[4rem] p-12 md:p-32 text-center space-y-12 relative overflow-hidden">
+                <!-- Abstract Bg Glow -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-accent/20 rounded-full blur-[100px]"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-whatsapp/20 rounded-full blur-[100px]"></div>
+
+                <div class="space-y-6 relative z-10">
+                    <h2 class="text-5xl md:text-[7rem] font-serif leading-[0.9] tracking-tight">Ready to <br> Launch?</h2>
+                    <p class="text-white/40 max-w-xl mx-auto text-lg md:text-xl font-light leading-relaxed">
+                        Stop looking for manufacturers and start building with a partner who understands your brand's DNA.
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+                    <a href="https://wa.me/917888111768" class="w-full sm:w-auto px-12 py-6 bg-whatsapp text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 hover:scale-105 transition-transform whatsapp-pulse">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
+                        Start Your Brand
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Light -->
+    <footer class="py-12 bg-white border-t border-black/5">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <span class="text-xl font-bold tracking-tighter">CLAUCH FACTORY<span class="text-accent">.</span></span>
+            <div class="text-black/30 text-[10px] font-bold uppercase tracking-[0.2em]">
+                © 2026 Clauch Factory. Premium Clothing Manufacturing.
+            </div>
+            <div class="flex gap-6">
+                <a href="https://wa.me/917888111768" class="text-black/40 hover:text-premium transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg></a>
             </div>
         </div>
     </footer>
 
+    <!-- ✅ Swiper.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <!-- ✅ AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize AOS
+            AOS.init({
+                duration: 1200,
+                once: true,
+                offset: 50,
+                easing: 'ease-out-expo'
+            });
+
+            // Slider configurations
+            new Swiper('.swiper-samples', {
+                slidesPerView: 1.2,
+                spaceBetween: 16,
+                grabCursor: true,
+                autoplay: { delay: 4000, disableOnInteraction: false },
+                breakpoints: {
+                    640: { slidesPerView: 2.2, spaceBetween: 24 },
+                    1024: { slidesPerView: 3.5, spaceBetween: 32 }
+                }
+            });
+        });
     </script>
 </body>
 </html>

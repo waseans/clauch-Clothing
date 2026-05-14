@@ -1,0 +1,66 @@
+
+1. HERO SECTION:
+- Full-width high-quality background image of a garment factory floor.
+- Dark overlay for text readability.
+- Text: 'ABOUT CLAUCH FACTORY' (small uppercase) followed by a large, bold heading 'Your Manufacturing Partner for Scalable Streetwear Production'.
+- Description: 'From sampling to bulk production, we help fashion brands bring their ideas to life with quality, speed and reliability.'
+- Two buttons: 'Start Your Brand' (Solid Gold/Yellow) and 'Our Manufacturing' (Transparent with White border).
+
+2. STATS BAR:
+- A clean horizontal bar with 4 items:
+  * 100+ Brands Manufactured (Icon: Shopping Bag)
+  * 1M+ Garments Produced (Icon: Box)
+  * 98% Client Retention (Icon: Refresh/Cycle)
+  * 15+ Countries Served (Icon: Globe)
+
+3. OUR STORY SECTION:
+- Two-column layout:
+  - LEFT COLUMN:
+    * 'OUR STORY' (small uppercase).
+    * 'Built in Bhiwandi. Trusted Worldwide.' (Bold heading).
+    * Detailed paragraph about the company's growth from a local unit in Bhiwandi to a global partner, focusing on craftsmanship and technology.
+    * 'Read Our Full Story' button (Solid Black).
+  - RIGHT COLUMN:
+    * A grid of 3 images: One large vertical image on the left, and two smaller horizontal images stacked on the right.
+
+4. WHAT WE DO SECTION (End-to-End Solutions):
+- Title: 'WHAT WE DO' followed by 'End-to-End Manufacturing Solutions'.
+- A grid of 4 clean white cards with subtle shadows:
+  1. Private Label Manufacturing: (Icon: Tag/Shield) - List of features like Custom Labels, Low MOQ.
+  2. Printing & Decoration: (Icon: Layers) - List of features like DTF, Screen Printing, Embroidery.
+  3. Bulk Production: (Icon: Package) - List of features like High-Quality Stitching, Size Grading.
+  4. Packaging & Logistics: (Icon: Shipping Box) - List of features like Global Shipping, Barcoding.
+
+5. OUR PROCESS SECTION:
+- Solid Black background section.
+- LEFT SIDE:
+  * 'OUR PROCESS' (small uppercase).
+  * 'Simple Process. Consistent Results.' (Bold White heading).
+  * A horizontal timeline with 5 steps (Icon + Number + Title + Short Description):
+    01 Sampling, 02 Approval, 03 Production, 04 QC & Packing, 05 Shipping.
+- RIGHT SIDE:
+  * A high-quality image of a warehouse with tall shelving (stock and inventory).
+
+6. WHY BRANDS CHOOSE US:
+- Title: 'Why Brands Choose Us'.
+- A horizontal grid of 5 items with line-art icons and titles:
+  * Low MOQ, Fast Turnaround, Quality Assurance, Experienced Team, Transparent Communication.
+
+7. BOTTOM CTA SECTION:
+- A rounded-corner black container.
+- Text: 'Ready to Scale Your Brand?' and 'Let's turn your ideas into high-quality streetwear that sells.'
+- Buttons: 'Book a Consultation' (Gold/Yellow) and 'Contact Us on WhatsApp' (Outlined White).
+
+8. FOOTER:
+- 4-column layout:
+  * Col 1: Logo and brief company mission.
+  * Col 2: Quick Links (Home, About Us, etc.).
+  * Col 3: Our Services (Private Label, Printing, etc.).
+  * Col 4: Contact Info (Address, Phone, Email) and Social Media Icons (Instagram, Facebook, etc.).
+- Bottom bar with Copyright and Privacy/Terms links.
+
+AESTHETICS:
+- Font: Use a combination of a Serif font for headings (like Playfair Display) and a clean Sans-Serif for body text (like Inter or Montserrat).
+- Color Palette: Black, White, Gold (#C5A059), and Soft Grays.
+- Spacing: Generous white space for a premium feel.
+- Animations: Subtle fade-in effects on scroll.
