@@ -4,13 +4,6 @@ from django.conf import settings
 import math
 import re
 
-BLOG_TEMPLATES = (
-    ("template1", "Template 1"),
-    ("template2", "Template 2"),
-    ("template3", "Template 3"),
-    ("template4", "Template 4"),
-)
-
 BLOG_STATUS = (
     ("draft", "Draft"),
     ("published", "Published"),
@@ -49,8 +42,7 @@ class Blog(models.Model):
     title = models.CharField(max_length=300)
     slug = models.SlugField(unique=True, blank=True)
 
-    template = models.CharField(max_length=20, choices=BLOG_TEMPLATES)
-
+    html_content = models.TextField(blank=True, null=True, help_text="Paste your raw HTML here.")
     # SEO
     meta_description = models.CharField(max_length=300, blank=True, null=True)
     seo_keywords = models.CharField(max_length=400, blank=True, null=True)  # comma-separated

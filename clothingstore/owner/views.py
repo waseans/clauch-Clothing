@@ -18,5 +18,4 @@ def blog_list(request):
 
 def blog_detail(request, slug):
     blog = get_object_or_404(Blog, slug=slug, is_published=True)
-    template_file = f"blogs/{blog.template}.html"
-    return render(request, template_file, {"blog": blog})
+    return render(request, "blogs/blog_detail.html", {"blog": blog})

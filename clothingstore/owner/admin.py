@@ -33,7 +33,6 @@ class BlogAdmin(admin.ModelAdmin):
         "title",
         "admin_thumbnail",
         "category",
-        "template",
         "status",
         "reading_time",
         "created_at",
@@ -41,7 +40,6 @@ class BlogAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
-        "template",
         "status",
         "is_published",
         "category",
@@ -70,7 +68,7 @@ class BlogAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Basic Info", {
-            "fields": ("title", "slug", "template", "author", "status", "publish_at")
+            "fields": ("title", "slug", "author", "status", "publish_at")
         }),
 
         ("Category & Tags", {
@@ -96,7 +94,7 @@ class BlogAdmin(admin.ModelAdmin):
         }),
 
         ("Content", {
-            "fields": ("subtitle_1", "subtitle_2", "paragraph_1", "paragraph_2")
+            "fields": ("html_content", "subtitle_1", "subtitle_2", "paragraph_1", "paragraph_2")
         }),
 
         ("Meta Data", {
