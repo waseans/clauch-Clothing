@@ -240,6 +240,53 @@ def update_cart_quantity(request):
     return redirect('view_cart')
 
 
+def get_valid_coupon_discount(request, cart_items):
+    """
+    Helper function to validate and recalculate the coupon discount based on current cart items.
+    Updates the session if the coupon becomes invalid or the amount changes.
+    Returns (coupon_code, discount_amount_decimal)
+    """
+    coupon_code = request.session.get('coupon_code', '').strip()
+    if not coupon_code:
+        return '', Decimal('0.00')
+        
+    try:
+        coupon = Coupon.objects.get(code__iexact=coupon_code, active=True)
+        if coupon.expires_at and coupon.expires_at < timezone.now():
+            raise ValueError("Expired")
+            
+        eligible_subtotal = Decimal('0.00')
+        total_subtotal = Decimal('0.00')
+        
+        if coupon.is_product_specific:
+            applicable_product_ids = set(coupon.applicable_products.values_list('id', flat=True))
+        else:
+            applicable_product_ids = None
+
+        for item in cart_items:
+            item_total = (item.discount_price or item.actual_price) * item.quantity
+            total_subtotal += item_total
+            if applicable_product_ids is None or item.product_id in applicable_product_ids:
+                eligible_subtotal += item_total
+                
+        if (coupon.is_product_specific and eligible_subtotal == 0) or total_subtotal < coupon.min_order_amount:
+            raise ValueError("Ineligible")
+            
+        discount_amount = Decimal('0.00')
+        if coupon.discount_type == 'PERCENT':
+            discount_amount = (eligible_subtotal * coupon.discount_value / Decimal('100')).quantize(Decimal('0.01'))
+        elif coupon.discount_type == 'FLAT':
+            discount_amount = min(coupon.discount_value, eligible_subtotal)
+            
+        request.session['coupon_discount'] = str(discount_amount)
+        return coupon.code, discount_amount
+        
+    except (Coupon.DoesNotExist, ValueError):
+        if 'coupon_code' in request.session: del request.session['coupon_code']
+        if 'coupon_discount' in request.session: del request.session['coupon_discount']
+        return '', Decimal('0.00')
+
+
 @login_required(login_url='login')
 @require_POST
 def ajax_apply_coupon(request):
@@ -337,7 +384,7 @@ def ajax_calculate_shipping(request):
 
     # 2. Calculate Subtotal
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
-    coupon_discount = Decimal(request.session.get('coupon_discount', '0.00'))
+    _, coupon_discount = get_valid_coupon_discount(request, cart_items)
     discounted_subtotal = subtotal - coupon_discount
 
     # Calculate total weight and max dimensions (for debugging & verification)
@@ -429,8 +476,8 @@ def checkout_view(request):
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
     subtotal = Decimal(str(subtotal))
     
-    coupon_code = request.session.get('coupon_code', '')
-    coupon_discount = Decimal(request.session.get('coupon_discount', '0.00'))
+    # Recalculate to ensure accurate discount if cart changed
+    coupon_code, coupon_discount = get_valid_coupon_discount(request, cart_items)
     discounted_subtotal = subtotal - coupon_discount
 
     if request.method == 'POST':
@@ -528,7 +575,7 @@ def checkout_view(request):
         try:
             razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
             razorpay_order = razorpay_client.order.create({
-                "amount": razorpay_amount, "currency": "INR", "payment_capture": 1, "notes": {"order_id": order.id}
+                "amount": razorpay_amount, "currency": "INR", "payment_capture": 1, "notes": {"order_id": str(order.id)}
             })
             order.razorpay_order_id = razorpay_order['id'] # Save Razorpay Order ID
             order.save()

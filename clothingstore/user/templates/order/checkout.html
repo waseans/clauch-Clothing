@@ -51,7 +51,17 @@
         </div>
         {% endfor %}
       </div>
-      <div id="desktop-totals-container" class="mt-6 text-sm space-y-2">
+      
+      <!-- Desktop Coupon Section -->
+      <div class="mt-6 border-t pt-4">
+        <div class="flex gap-2">
+            <input type="text" id="coupon-input-desktop" placeholder="Discount code" value="{{ coupon_code|default:'' }}" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black uppercase">
+            <button type="button" id="apply-coupon-btn-desktop" class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-semibold rounded hover:bg-gray-300 transition">Apply</button>
+        </div>
+        <button type="button" id="remove-coupon-btn-desktop" class="{% if not coupon_code %}hidden{% endif %} text-xs text-red-600 hover:underline mt-2">Remove Coupon</button>
+      </div>
+
+      <div id="desktop-totals-container" class="mt-4 border-t pt-4 text-sm space-y-2">
         <div class="flex justify-between text-gray-700">
           <span>Subtotal</span>
           <span>₹{{ subtotal|floatformat:0 }}</span>
@@ -66,7 +76,7 @@
           <span>Shipping</span>
           <span id="summary-shipping" class="text-xs text-gray-500">Enter pincode to calculate</span>
         </div>
-        <hr>
+        <hr class="my-2">
         <div class="flex justify-between font-bold text-base text-gray-900">
           <span>Grand Total</span>
           <span id="summary-grand-total">₹{{ discounted_subtotal|default:subtotal|floatformat:0 }}</span>
@@ -82,7 +92,7 @@
       <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
 
       <div class="lg:hidden space-y-4 border-b pb-6">
-        <h3 class="text-lg font-semibold text-gray-900">Your Order</h3>
+        <h3 class="text-lg font-semibold text-gray-900">Order Summary</h3>
         {% for item in cart_items %}
         <div class="flex gap-4">
           <img src="{{ item.product.primary_image.url }}" class="w-16 h-16 rounded object-cover border">
@@ -93,6 +103,15 @@
           </div>
         </div>
         {% endfor %}
+        
+        <!-- Mobile Coupon Section -->
+        <div class="mt-4 border-t pt-4">
+          <div class="flex gap-2">
+              <input type="text" id="coupon-input-mobile" placeholder="Discount code" value="{{ coupon_code|default:'' }}" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black uppercase">
+              <button type="button" id="apply-coupon-btn-mobile" class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-semibold rounded hover:bg-gray-300 transition">Apply</button>
+          </div>
+          <button type="button" id="remove-coupon-btn-mobile" class="{% if not coupon_code %}hidden{% endif %} text-xs text-red-600 hover:underline mt-2">Remove Coupon</button>
+        </div>
       </div>
       
       <div>
@@ -112,7 +131,7 @@
           </div>
           <div>
               <label class="text-gray-600">Pincode *</label>
-              <input name="pincode" id="pincode-input" type="tel" value="{{ form_data.pincode|default:'' }}" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black">
+              <input name="pincode" id="pincode-input" type="tel" value="{{ form_data.pincode|default:'' }}" required class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black" placeholder="6-digit PIN">
           </div>
           <div class="md:col-span-2">
               <label class="text-gray-600">Address *</label>
@@ -143,23 +162,8 @@
         </div>
       </div>
 
-      <div class="border-t pt-6 space-y-4">
-        
-        <!-- Coupon Section inside form -->
-        <div>
-          <h3 class="text-sm font-semibold mb-3 text-gray-900">Have a coupon?</h3>
-          <div class="flex gap-2 mb-2">
-              <input type="text" id="coupon-input" placeholder="Enter coupon code" value="{{ coupon_code|default:'' }}" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black uppercase">
-              <button type="button" id="apply-coupon-btn" class="px-4 py-2 bg-black text-white text-sm font-semibold rounded hover:bg-gray-800 transition disabled:opacity-50">Apply</button>
-          </div>
-          <button type="button" id="remove-coupon-btn" class="{% if not coupon_code %}hidden{% endif %} text-xs text-red-600 hover:underline">Remove Coupon</button>
-        </div>
-
-        <button type="button" id="calculate-shipping-btn" class="w-full py-2.5 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black">
-          Calculate Shipping
-        </button>
-        
-        <div id="dynamic-totals-container" class="hidden text-sm space-y-2 pt-2">
+      <div class="border-t pt-6 space-y-4 lg:hidden">
+        <div id="dynamic-totals-container" class="hidden text-sm space-y-2">
             <div class="flex justify-between text-gray-700">
                 <span>Subtotal</span>
                 <span>₹{{ subtotal|floatformat:0 }}</span>
@@ -174,8 +178,7 @@
                 <span>Shipping Fee</span>
                 <span id="dynamic-shipping" class="font-medium"></span>
             </div>
-
-            <hr>
+            <hr class="my-2">
             <div class="flex justify-between font-bold text-lg text-gray-900">
                 <span>Grand Total</span>
                 <span id="dynamic-grand-total"></span>
@@ -185,9 +188,11 @@
                 <strong class="text-gray-800">₹{{ discounted_subtotal|default:subtotal|floatformat:0 }}</strong> is to be paid on delivery.
             </div>
         </div>
-        
-        <button type="submit" id="pay-now-btn" disabled class="w-full py-3 bg-black text-white rounded-lg font-semibold transition text-sm disabled:bg-gray-400 disabled:cursor-not-allowed">
-          Calculate Shipping to Proceed
+      </div>
+      
+      <div class="pt-2">
+        <button type="submit" id="pay-now-btn" disabled class="w-full py-4 bg-black text-white rounded-lg font-bold transition text-base disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md">
+          Enter Pincode to Calculate Shipping
         </button>
       </div>
     </form>
@@ -242,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // --- State Reset Function ---
   function resetShippingState() {
     payBtn.disabled = true;
-    payBtn.innerText = 'Calculate Shipping to Proceed';
+    payBtn.innerText = 'Enter Pincode to Calculate Shipping';
     
     // Hide dynamic totals section
     dynamicTotalsContainer.classList.add('hidden');
@@ -256,15 +261,23 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // --- Event Listeners ---
-  pincodeInput.addEventListener('input', resetShippingState);
-  paymentMethodRadios.forEach(radio => radio.addEventListener('change', resetShippingState));
-  calculateBtn.addEventListener('click', handleShippingCalculation);
+  let shippingCalcTimeout;
+  function triggerAutoCalculate() {
+      resetShippingState();
+      const val = pincodeInput.value.trim();
+      if (val.length === 6 && /^\d+$/.test(val)) {
+          clearTimeout(shippingCalcTimeout);
+          payBtn.innerText = 'Calculating Shipping...';
+          shippingCalcTimeout = setTimeout(() => {
+              handleShippingCalculation();
+          }, 600);
+      }
+  }
+
+  pincodeInput.addEventListener('input', triggerAutoCalculate);
+  paymentMethodRadios.forEach(radio => radio.addEventListener('change', triggerAutoCalculate));
 
   // --- Coupon Logic ---
-  const couponInput = document.getElementById('coupon-input');
-  const applyCouponBtn = document.getElementById('apply-coupon-btn');
-  const removeCouponBtn = document.getElementById('remove-coupon-btn');
-
   function saveFormData() {
       const formData = new FormData(document.getElementById('checkout-form'));
       const data = Object.fromEntries(formData.entries());
@@ -285,56 +298,67 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   restoreFormData();
 
-  if(applyCouponBtn) {
-      applyCouponBtn.addEventListener('click', function() {
-          const code = couponInput.value.trim();
-          if (!code) {
-              showToast('Please enter a coupon code', 'error');
-              return;
+  function handleCouponApply(inputEl, btnEl) {
+      const code = inputEl.value.trim();
+      if (!code) {
+          showToast('Please enter a coupon code', 'error');
+          return;
+      }
+      btnEl.disabled = true;
+      const originalText = btnEl.innerText;
+      btnEl.innerText = '...';
+      
+      fetch("{% url 'ajax_apply_coupon' %}", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+          body: JSON.stringify({ coupon_code: code })
+      })
+      .then(r => r.json())
+      .then(data => {
+          if (data.status === 'success') {
+              showToast(data.message, 'success');
+              saveFormData();
+              location.reload(); 
+          } else {
+              showToast(data.message, 'error');
           }
-          applyCouponBtn.disabled = true;
-          applyCouponBtn.innerText = '...';
-          
-          fetch("{% url 'ajax_apply_coupon' %}", {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-              body: JSON.stringify({ coupon_code: code })
-          })
-          .then(r => r.json())
-          .then(data => {
-              if (data.status === 'success') {
-                  showToast(data.message, 'success');
-                  saveFormData();
-                  location.reload(); 
-              } else {
-                  showToast(data.message, 'error');
-              }
-          })
-          .catch(err => showToast('Error applying coupon', 'error'))
-          .finally(() => {
-              applyCouponBtn.disabled = false;
-              applyCouponBtn.innerText = 'Apply';
-          });
+      })
+      .catch(err => showToast('Error applying coupon', 'error'))
+      .finally(() => {
+          btnEl.disabled = false;
+          btnEl.innerText = originalText;
       });
   }
 
-  if(removeCouponBtn) {
-      removeCouponBtn.addEventListener('click', function() {
-          removeCouponBtn.innerText = '...';
-          fetch("{% url 'ajax_remove_coupon' %}", {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken }
-          })
-          .then(r => r.json())
-          .then(data => {
-              if (data.status === 'success') {
-                  showToast(data.message, 'success');
-                  saveFormData();
-                  location.reload();
-              }
-          });
+  function handleCouponRemove(btnEl) {
+      btnEl.innerText = '...';
+      fetch("{% url 'ajax_remove_coupon' %}", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken }
+      })
+      .then(r => r.json())
+      .then(data => {
+          if (data.status === 'success') {
+              showToast(data.message, 'success');
+              saveFormData();
+              location.reload();
+          }
       });
   }
+
+  // Attach to both Desktop and Mobile elements
+  ['desktop', 'mobile'].forEach(view => {
+      const applyBtn = document.getElementById(`apply-coupon-btn-${view}`);
+      const inputEl = document.getElementById(`coupon-input-${view}`);
+      const removeBtn = document.getElementById(`remove-coupon-btn-${view}`);
+      
+      if (applyBtn && inputEl) {
+          applyBtn.addEventListener('click', () => handleCouponApply(inputEl, applyBtn));
+      }
+      if (removeBtn) {
+          removeBtn.addEventListener('click', () => handleCouponRemove(removeBtn));
+      }
+  });
 
   // --- Main Calculation Logic ---
   function handleShippingCalculation() {
@@ -346,9 +370,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    calculateBtn.innerText = 'Calculating...';
-    calculateBtn.disabled = true;
-    resetShippingState();
+    payBtn.innerText = 'Calculating Shipping...';
+    payBtn.disabled = true;
 
     fetch("{% url 'ajax_calculate_shipping' %}", {
       method: 'POST',
@@ -388,11 +411,12 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(error => {
       showToast(error.error || 'Could not calculate shipping.', 'error');
       resetShippingState();
-    })
-    .finally(() => {
-      calculateBtn.innerText = 'Calculate Shipping';
-      calculateBtn.disabled = false;
     });
+  }
+  
+  // On page load, if a 6-digit pincode is already present, try calculating automatically
+  if (pincodeInput.value.trim().length === 6 && /^\d+$/.test(pincodeInput.value.trim())) {
+      triggerAutoCalculate();
   }
 
   // --- Razorpay Handler ---
