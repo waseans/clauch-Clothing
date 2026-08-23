@@ -15,6 +15,8 @@ urlpatterns = [
     # Checkout process
     path('checkout/', views.checkout_view, name='checkout'),
     path('ajax/calculate-shipping/', views.ajax_calculate_shipping, name='ajax_calculate_shipping'),
+    path('ajax/apply-coupon/', views.ajax_apply_coupon, name='ajax_apply_coupon'),
+    path('ajax/remove-coupon/', views.ajax_remove_coupon, name='ajax_remove_coupon'),
 
     # Order status pages
     path('order/success/<int:order_id>/', views.order_success_view, name='order_success'),

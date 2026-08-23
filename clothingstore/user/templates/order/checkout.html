@@ -56,6 +56,12 @@
           <span>Subtotal</span>
           <span>₹{{ subtotal|floatformat:0 }}</span>
         </div>
+        {% if coupon_discount > 0 %}
+        <div class="flex justify-between text-green-600 text-sm mt-1">
+          <span>Discount ({{ coupon_code }})</span>
+          <span>-₹{{ coupon_discount|floatformat:0 }}</span>
+        </div>
+        {% endif %}
         <div class="flex justify-between">
           <span>Shipping</span>
           <span id="summary-shipping" class="text-xs text-gray-500">Enter pincode to calculate</span>
@@ -63,13 +69,23 @@
         <hr>
         <div class="flex justify-between font-bold text-base text-gray-900">
           <span>Grand Total</span>
-          <span id="summary-grand-total">₹{{ subtotal|floatformat:0 }}</span>
+          <span id="summary-grand-total">₹{{ discounted_subtotal|default:subtotal|floatformat:0 }}</span>
         </div>
         <div id="cod-note-container" class="hidden text-xs text-gray-600 bg-gray-100 p-2 rounded-md mt-2">
           You are paying the shipping fee now. The remaining amount of
-          <strong class="text-gray-800">₹{{ subtotal|floatformat:0 }}</strong> is to be paid on delivery.
+          <strong class="text-gray-800">₹{{ discounted_subtotal|default:subtotal|floatformat:0 }}</strong> is to be paid on delivery.
         </div>
       </div>
+    </div>
+    
+    <!-- Coupon Section -->
+    <div class="lg:col-span-1 bg-white p-6 rounded-xl border order-2 lg:order-3 mt-6 lg:mt-0 shadow-sm">
+        <h3 class="text-sm font-semibold mb-3 text-gray-900">Have a coupon?</h3>
+        <div class="flex gap-2 mb-2">
+            <input type="text" id="coupon-input" placeholder="Enter coupon code" value="{{ coupon_code|default:'' }}" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black uppercase">
+            <button type="button" id="apply-coupon-btn" class="px-4 py-2 bg-black text-white text-sm font-semibold rounded hover:bg-gray-800 transition disabled:opacity-50">Apply</button>
+        </div>
+        <button type="button" id="remove-coupon-btn" class="{% if not coupon_code %}hidden{% endif %} text-xs text-red-600 hover:underline">Remove Coupon</button>
     </div>
 
     <form method="POST" class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm space-y-8 order-last lg:order-1" id="checkout-form">
@@ -148,6 +164,12 @@
                 <span>Subtotal</span>
                 <span>₹{{ subtotal|floatformat:0 }}</span>
             </div>
+            {% if coupon_discount > 0 %}
+            <div class="flex justify-between text-green-600 text-sm mt-1">
+                <span>Discount ({{ coupon_code }})</span>
+                <span>-₹{{ coupon_discount|floatformat:0 }}</span>
+            </div>
+            {% endif %}
             <div class="flex justify-between text-gray-700">
                 <span>Shipping Fee</span>
                 <span id="dynamic-shipping" class="font-medium"></span>
@@ -160,7 +182,7 @@
             </div>
             <div id="dynamic-cod-note-container" class="hidden text-xs text-gray-600 bg-gray-100 p-2 rounded-md mt-2">
                 You are paying the shipping fee now. The remaining amount of
-                <strong class="text-gray-800">₹{{ subtotal|floatformat:0 }}</strong> is to be paid on delivery.
+                <strong class="text-gray-800">₹{{ discounted_subtotal|default:subtotal|floatformat:0 }}</strong> is to be paid on delivery.
             </div>
         </div>
         
@@ -186,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const payBtn = document.getElementById('pay-now-btn');
   const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-  const subtotal = parseFloat("{{ subtotal }}");
+  let subtotal = parseFloat("{{ discounted_subtotal|default:subtotal }}");
 
   // Desktop Summary Elements
   const summaryShippingEl = document.getElementById('summary-shipping');
@@ -237,6 +259,82 @@ document.addEventListener('DOMContentLoaded', function() {
   pincodeInput.addEventListener('input', resetShippingState);
   paymentMethodRadios.forEach(radio => radio.addEventListener('change', resetShippingState));
   calculateBtn.addEventListener('click', handleShippingCalculation);
+
+  // --- Coupon Logic ---
+  const couponInput = document.getElementById('coupon-input');
+  const applyCouponBtn = document.getElementById('apply-coupon-btn');
+  const removeCouponBtn = document.getElementById('remove-coupon-btn');
+
+  function saveFormData() {
+      const formData = new FormData(document.getElementById('checkout-form'));
+      const data = Object.fromEntries(formData.entries());
+      sessionStorage.setItem('checkoutFormData', JSON.stringify(data));
+  }
+
+  function restoreFormData() {
+      const data = JSON.parse(sessionStorage.getItem('checkoutFormData'));
+      if (data) {
+          document.querySelector('input[name="full_name"]').value = data.full_name || '';
+          document.querySelector('input[name="phone"]').value = data.phone || '';
+          document.querySelector('input[name="email"]').value = data.email || '';
+          document.querySelector('input[name="pincode"]').value = data.pincode || '';
+          document.querySelector('textarea[name="address"]').value = data.address || '';
+          document.querySelector('input[name="city"]').value = data.city || '';
+          document.querySelector('input[name="state"]').value = data.state || '';
+      }
+  }
+  restoreFormData();
+
+  if(applyCouponBtn) {
+      applyCouponBtn.addEventListener('click', function() {
+          const code = couponInput.value.trim();
+          if (!code) {
+              showToast('Please enter a coupon code', 'error');
+              return;
+          }
+          applyCouponBtn.disabled = true;
+          applyCouponBtn.innerText = '...';
+          
+          fetch("{% url 'ajax_apply_coupon' %}", {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+              body: JSON.stringify({ coupon_code: code })
+          })
+          .then(r => r.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  showToast(data.message, 'success');
+                  saveFormData();
+                  location.reload(); 
+              } else {
+                  showToast(data.message, 'error');
+              }
+          })
+          .catch(err => showToast('Error applying coupon', 'error'))
+          .finally(() => {
+              applyCouponBtn.disabled = false;
+              applyCouponBtn.innerText = 'Apply';
+          });
+      });
+  }
+
+  if(removeCouponBtn) {
+      removeCouponBtn.addEventListener('click', function() {
+          removeCouponBtn.innerText = '...';
+          fetch("{% url 'ajax_remove_coupon' %}", {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken }
+          })
+          .then(r => r.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  showToast(data.message, 'success');
+                  saveFormData();
+                  location.reload();
+              }
+          });
+      });
+  }
 
   // --- Main Calculation Logic ---
   function handleShippingCalculation() {

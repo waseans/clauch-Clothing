@@ -61,6 +61,7 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 @admin.register(Coupon)
 class CouponAdmin(admin.ModelAdmin):
-    list_display = ['code', 'discount_type', 'discount_value', 'min_order_amount', 'active', 'expires_at']
-    list_filter = ['discount_type', 'active', 'expires_at']
+    list_display = ['code', 'discount_type', 'discount_value', 'min_order_amount', 'active', 'is_product_specific', 'expires_at']
+    list_filter = ['discount_type', 'active', 'is_product_specific', 'expires_at']
     search_fields = ['code']
+    filter_horizontal = ('applicable_products',)

@@ -113,6 +113,10 @@ class Coupon(models.Model):
     min_order_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     active = models.BooleanField(default=True)
     expires_at = models.DateTimeField(null=True, blank=True)
+    
+    # Product-specific logic
+    is_product_specific = models.BooleanField(default=False, help_text="If checked, this coupon only applies to selected products.")
+    applicable_products = models.ManyToManyField('user.Product', blank=True, help_text="Select products for which this coupon is valid.")
 
     def __str__(self):
         return self.code

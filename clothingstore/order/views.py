@@ -17,6 +17,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django import forms
 from django.views.decorators.http import require_POST
+from django.utils import timezone
 
 # --- Stock Management Imports ---
 from django.db import transaction, IntegrityError
@@ -241,6 +242,84 @@ def update_cart_quantity(request):
 
 @login_required(login_url='login')
 @require_POST
+def ajax_apply_coupon(request):
+    data = json.loads(request.body)
+    code = data.get('coupon_code', '').strip()
+    
+    if not code:
+        return JsonResponse({'status': 'error', 'message': 'Please enter a coupon code.'}, status=400)
+        
+    try:
+        coupon = Coupon.objects.get(code__iexact=code, active=True)
+    except Coupon.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Invalid or inactive coupon code.'}, status=400)
+        
+    if coupon.expires_at and coupon.expires_at < timezone.now():
+        return JsonResponse({'status': 'error', 'message': 'This coupon has expired.'}, status=400)
+        
+    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
+    if not cart_items.exists():
+        return JsonResponse({'status': 'error', 'message': 'Your cart is empty.'}, status=400)
+        
+    eligible_subtotal = Decimal('0.00')
+    total_subtotal = Decimal('0.00')
+    
+    if coupon.is_product_specific:
+        applicable_product_ids = set(coupon.applicable_products.values_list('id', flat=True))
+    else:
+        applicable_product_ids = None
+
+    for item in cart_items:
+        item_total = (item.discount_price or item.actual_price) * item.quantity
+        total_subtotal += item_total
+        if applicable_product_ids is None or item.product_id in applicable_product_ids:
+            eligible_subtotal += item_total
+            
+    if coupon.is_product_specific and eligible_subtotal == 0:
+        return JsonResponse({'status': 'error', 'message': 'This coupon is not applicable to any products in your cart.'}, status=400)
+        
+    if total_subtotal < coupon.min_order_amount:
+        return JsonResponse({'status': 'error', 'message': f'Minimum order amount of ₹{coupon.min_order_amount} is required.'}, status=400)
+        
+    discount_amount = Decimal('0.00')
+    if coupon.discount_type == 'PERCENT':
+        discount_amount = (eligible_subtotal * coupon.discount_value / Decimal('100')).quantize(Decimal('0.01'))
+    elif coupon.discount_type == 'FLAT':
+        discount_amount = min(coupon.discount_value, eligible_subtotal)
+        
+    request.session['coupon_code'] = coupon.code
+    request.session['coupon_discount'] = str(discount_amount)
+    # Clear shipping info since total changed
+    if 'shipping_info' in request.session: del request.session['shipping_info']
+    
+    return JsonResponse({
+        'status': 'success', 
+        'message': 'Coupon applied successfully!',
+        'discount_amount': str(discount_amount),
+        'new_subtotal': str(total_subtotal - discount_amount)
+    })
+
+@login_required(login_url='login')
+@require_POST
+def ajax_remove_coupon(request):
+    if 'coupon_code' in request.session:
+        del request.session['coupon_code']
+    if 'coupon_discount' in request.session:
+        del request.session['coupon_discount']
+    # Clear shipping info since total changed
+    if 'shipping_info' in request.session: del request.session['shipping_info']
+        
+    cart_items = CartItem.objects.filter(user=request.user)
+    subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
+        
+    return JsonResponse({
+        'status': 'success', 
+        'message': 'Coupon removed.',
+        'subtotal': str(subtotal)
+    })
+
+@login_required(login_url='login')
+@require_POST
 def ajax_calculate_shipping(request):
     data = json.loads(request.body)
     pincode = data.get('pincode')
@@ -258,6 +337,8 @@ def ajax_calculate_shipping(request):
 
     # 2. Calculate Subtotal
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
+    coupon_discount = Decimal(request.session.get('coupon_discount', '0.00'))
+    discounted_subtotal = subtotal - coupon_discount
 
     # Calculate total weight and max dimensions (for debugging & verification)
     items = [item for item in cart_items if item.product]
@@ -267,13 +348,13 @@ def ajax_calculate_shipping(request):
     max_height = max((item.product.height for item in items), default=0)
 
     # Log the computed shipping parameters so we can verify them in logs
-    print(f"[shipping-debug] subtotal={subtotal}, total_weight={total_weight}, length={max_length}, width={max_width}, height={max_height}")
+    print(f"[shipping-debug] subtotal={subtotal}, discounted_subtotal={discounted_subtotal}, total_weight={total_weight}, length={max_length}, width={max_width}, height={max_height}")
 
     # 3. Calculate Shipping using iThink for BOTH methods
     # We pass the payment_method ("Prepaid" or "COD") directly to the iThink wrapper
     ithink_result = get_ithink_rate_for_checkout(
         pincode=pincode, 
-        subtotal=subtotal, 
+        subtotal=discounted_subtotal, 
         cart_items=cart_items,
         payment_method=payment_method  # Ensure your helper accepts this
     )
@@ -310,12 +391,13 @@ def ajax_calculate_shipping(request):
         'method': payment_method
     }
     
-    grand_total = subtotal + final_shipping_charge
+    grand_total = discounted_subtotal + final_shipping_charge
 
     return JsonResponse({
         # 'shipping_charge' is the FINAL applied charge (may be carrier rate or our fallback)
         'shipping_charge': f"{final_shipping_charge:.2f}",
         'grand_total': f"{grand_total:.2f}",
+        'discount_amount': f"{coupon_discount:.2f}",
         'carrier_rate': f"{shipping_charge:.2f}",
         'fallback_rate': f"{fallback_charge:.2f}",
         # Expose computed shipping parameters for verification
@@ -346,6 +428,10 @@ def checkout_view(request):
 
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
     subtotal = Decimal(str(subtotal))
+    
+    coupon_code = request.session.get('coupon_code', '')
+    coupon_discount = Decimal(request.session.get('coupon_discount', '0.00'))
+    discounted_subtotal = subtotal - coupon_discount
 
     if request.method == 'POST':
         data = request.POST
@@ -381,6 +467,8 @@ def checkout_view(request):
                 cart_items.delete()
                 if 'order_id' in request.session: del request.session['order_id']
                 if 'shipping_info' in request.session: del request.session['shipping_info']
+                if 'coupon_code' in request.session: del request.session['coupon_code']
+                if 'coupon_discount' in request.session: del request.session['coupon_discount']
                 
                 # 4. Redirect to success
                 return redirect('order_success', order_id=order.id)
@@ -407,7 +495,7 @@ def checkout_view(request):
         shipping_charge = Decimal(shipping_info['charge'])
         shipping_service = shipping_info['service']
         
-        grand_total = subtotal + shipping_charge
+        grand_total = discounted_subtotal + shipping_charge
         payment_method = data.get('payment_method', 'RZP')
         amount_to_pay_now = grand_total if payment_method == "RZP" else shipping_charge
         razorpay_amount = int(amount_to_pay_now * 100)
@@ -417,7 +505,9 @@ def checkout_view(request):
             user=user, full_name=data['full_name'], phone=data['phone'], email=data.get('email', ''),
             address=data['address'], city=data['city'], state=data['state'], pincode=data['pincode'],
             payment_method=payment_method, 
-            subtotal=subtotal, 
+            subtotal=subtotal,
+            coupon_code=coupon_code,
+            discount_amount=coupon_discount,
             shipping_charge=shipping_charge, 
             grand_total=grand_total,
             shipping_service_name=shipping_service['service_name'],
@@ -481,8 +571,11 @@ def checkout_view(request):
     context = { 
         "cart_items": processed_cart_items,
         "subtotal": subtotal,
+        "coupon_code": coupon_code,
+        "coupon_discount": coupon_discount,
+        "discounted_subtotal": discounted_subtotal,
         "shipping_charge": Decimal("0.00"), 
-        "grand_total": subtotal,
+        "grand_total": discounted_subtotal,
         "razorpay_key": settings.RAZORPAY_KEY_ID, 
         "user_profile": user 
     }
