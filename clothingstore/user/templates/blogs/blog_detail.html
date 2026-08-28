@@ -4,54 +4,53 @@
 {% block title %}{{ blog.title }} | Clauch Factory{% endblock %}
 
 {% block content %}
-{% if blog.html_content %}
-    {{ blog.html_content|safe }}
-{% else %}
-    <div class="w-full bg-white pb-24 pt-10">
+<div class="font-inter bg-white text-black min-h-screen">
+    {% if blog.html_content %}
+        {{ blog.html_content|safe }}
+    {% else %}
+        
+        <!-- HEADER / TITLE -->
+        <header class="w-full py-16 md:py-24 border-b border-gray-200">
+            <div class="max-w-4xl mx-auto px-6 text-center">
+                <div class="text-[10px] md:text-[12px] tracking-[0.2em] mb-6 font-medium text-gray-500 uppercase">
+                    {{ blog.created_at|date:"F d, Y" }}
+                </div>
+                
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter text-black mb-6 leading-[1.1]">
+                    {{ blog.title }}
+                </h1>
+
+                {% if blog.subtitle_1 %}
+                <p class="mt-6 text-gray-600 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
+                    {{ blog.subtitle_1 }}
+                </p>
+                {% endif %}
+
+                {% if blog.subtitle_2 %}
+                <p class="mt-4 text-gray-500 text-sm md:text-base font-normal max-w-2xl mx-auto">
+                    {{ blog.subtitle_2 }}
+                </p>
+                {% endif %}
+            </div>
+        </header>
 
         <!-- MAIN HERO IMAGE -->
         {% if blog.main_image %}
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="relative w-full bg-[#EAEAEA] rounded-3xl overflow-hidden shadow-xl">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-12">
+            <div class="w-full bg-gray-100 rounded-sm overflow-hidden border border-gray-200">
                 <img src="{{ blog.main_image.url }}"
-                     class="w-full h-[450px] md:h-[550px] object-cover rounded-3xl border-[8px] border-white shadow-xl" />
+                     class="w-full h-[400px] md:h-[600px] object-cover" />
             </div>
         </div>
         {% endif %}
 
-        <!-- TITLE + SUBTITLES -->
-        <div class="max-w-4xl mx-auto text-center px-6 mt-12">
-            <h1 class="text-4xl md:text-5xl font-semibold text-gray-900 font-montserrat leading-tight">
-                {{ blog.title }}
-            </h1>
-
-            {% if blog.subtitle_1 %}
-            <p class="mt-4 text-gray-600 text-lg font-montserrat">
-                {{ blog.subtitle_1 }}
-            </p>
-            {% endif %}
-
-            {% if blog.subtitle_2 %}
-            <p class="mt-2 text-gray-500 text-base font-montserrat">
-                {{ blog.subtitle_2 }}
-            </p>
-            {% endif %}
-
-            <p class="mt-4 text-xs text-gray-500 font-montserrat tracking-wide">
-                {{ blog.created_at|date:"F d, Y" }}
-            </p>
-
-            <div class="w-16 h-[2px] bg-black mx-auto mt-6"></div>
-        </div>
-
-
         <!-- CONTENT SECTIONS -->
-        <div class="max-w-4xl mx-auto px-6 mt-12 space-y-16 font-montserrat">
+        <article class="max-w-3xl mx-auto px-6 py-16 md:py-24 space-y-12">
 
             <!-- PARAGRAPH 1 -->
             {% if blog.paragraph_1 %}
-            <div>
-                <p class="text-gray-700 leading-relaxed text-[17px] whitespace-pre-line">
+            <div class="prose prose-lg prose-gray max-w-none">
+                <p class="text-gray-800 leading-loose text-base md:text-lg whitespace-pre-line">
                     {{ blog.paragraph_1 }}
                 </p>
             </div>
@@ -59,52 +58,55 @@
 
             <!-- IMAGE 1 -->
             {% if blog.image_1 %}
-            <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
+            <div class="w-full bg-gray-50 border border-gray-200 rounded-sm overflow-hidden my-12">
                 <img src="{{ blog.image_1.url }}"
-                     class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+                     class="w-full h-[400px] object-cover" />
             </div>
             {% endif %}
 
             <!-- PARAGRAPH 2 -->
             {% if blog.paragraph_2 %}
-            <div>
-                <p class="text-gray-700 leading-relaxed text-[17px] whitespace-pre-line">
+            <div class="prose prose-lg prose-gray max-w-none">
+                <p class="text-gray-800 leading-loose text-base md:text-lg whitespace-pre-line">
                     {{ blog.paragraph_2 }}
                 </p>
             </div>
             {% endif %}
 
-            <!-- OPTIONAL EXTRA IMAGES (FIXED → NO LOOP) -->
+            <!-- EXTRA IMAGES -->
             {% if blog.image_2 %}
-            <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
-                <img src="{{ blog.image_2.url }}"
-                     class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+            <div class="w-full bg-gray-50 border border-gray-200 rounded-sm overflow-hidden my-12">
+                <img src="{{ blog.image_2.url }}" class="w-full h-[400px] object-cover" />
             </div>
             {% endif %}
 
             {% if blog.image_3 %}
-            <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
-                <img src="{{ blog.image_3.url }}"
-                     class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+            <div class="w-full bg-gray-50 border border-gray-200 rounded-sm overflow-hidden my-12">
+                <img src="{{ blog.image_3.url }}" class="w-full h-[400px] object-cover" />
             </div>
             {% endif %}
 
             {% if blog.image_4 %}
-            <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
-                <img src="{{ blog.image_4.url }}"
-                     class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+            <div class="w-full bg-gray-50 border border-gray-200 rounded-sm overflow-hidden my-12">
+                <img src="{{ blog.image_4.url }}" class="w-full h-[400px] object-cover" />
             </div>
             {% endif %}
 
             {% if blog.image_5 %}
-            <div class="w-full bg-[#F5F5F5] rounded-3xl p-3 shadow-lg">
-                <img src="{{ blog.image_5.url }}"
-                     class="rounded-3xl w-full h-[400px] object-cover border-[6px] border-white shadow-xl" />
+            <div class="w-full bg-gray-50 border border-gray-200 rounded-sm overflow-hidden my-12">
+                <img src="{{ blog.image_5.url }}" class="w-full h-[400px] object-cover" />
             </div>
             {% endif %}
 
+        </article>
+
+        <!-- FOOTER CTA -->
+        <div class="border-t border-gray-200 py-16 text-center">
+            <a href="{% url 'blog_list' %}" class="inline-block px-8 py-3 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-sm">
+                &larr; Back to Journal
+            </a>
         </div>
 
-    </div>
-{% endif %}
+    {% endif %}
+</div>
 {% endblock %}

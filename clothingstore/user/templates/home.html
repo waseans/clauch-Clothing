@@ -56,150 +56,102 @@
   });
 </script>
 
-<h1 style="visibility:hidden">Clauch Factory – B2B Clothing Manufacturer & Wholesale Apparel Supplier in India</h1>
+<h1 class="sr-only">Clauch Factory – B2B Clothing Manufacturer & Wholesale Apparel Supplier in India</h1>
 
-<!-- ✅ Hero Section -->
-<div class="relative w-full h-[70vh] overflow-hidden bg-black text-white font-montserrat">
-  <div class="swiper h-full z-0">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide bg-cover bg-center lazy-bg" data-bg-mobile="{% static 'images/banner-4-mobile.webp' %}" data-bg-desktop="{% static 'images/banner-4-desktop.webp' %}"></div>
-      <div class="swiper-slide bg-cover bg-center lazy-bg" data-bg-mobile="{% static 'images/banner-3-mobile.webp' %}" data-bg-desktop="{% static 'images/banner-2-desktop.webp' %}"></div>
-      <div class="swiper-slide bg-cover bg-center lazy-bg" data-bg-mobile="{% static 'images/banner-1-mobile.webp' %}" data-bg-desktop="{% static 'images/banner-3-desktop.webp' %}"></div>
+<!-- ✅ Minimalist Hero Section -->
+<div class="relative w-full h-[calc(100vh-60px)] md:h-[calc(100vh-88px)] overflow-hidden bg-white text-black font-inter">
+  
+  <!-- Hero Background Image -->
+  <div class="absolute inset-0">
+    <img src="{% static 'images/b2b_manufacturing_hero.jpg' %}" alt="B2B Manufacturing Facility" class="w-full h-full object-cover object-center">
+    <!-- Premium overlay to ensure the text remains legible while showing off the facility -->
+    <div class="absolute inset-0 bg-white/85 md:bg-gradient-to-r md:from-white/95 md:via-white/70 md:to-transparent backdrop-blur-[2px] md:backdrop-blur-[1px]"></div>
+  </div>
+
+
+
+  <!-- Left Content (Mobile Top, Desktop Left) -->
+  <div class="absolute top-[12%] md:top-[28%] left-[6%] md:left-[8%] z-20 w-[88%] md:w-[45%] md:max-w-2xl">
+    <div class="text-[10px] md:text-[12px] tracking-[0.2em] mb-4 md:mb-6 font-medium text-gray-800 md:text-gray-700 leading-tight">B2B MANUFACTURING & WHOLESALE</div>
+    <h1 class="font-bold uppercase tracking-tighter text-[#111] leading-none flex flex-col items-start gap-1 md:gap-2">
+      <span class="text-[8vw] sm:text-[6vw] lg:text-[4.5vw]">BUILD</span>
+      <span class="text-[8vw] sm:text-[6vw] lg:text-[4.5vw]">YOUR BRAND WITH</span>
+      <span class="italic text-gray-500 text-[14vw] sm:text-[11vw] lg:text-[9vw] leading-[0.8] mt-1 md:mt-2">CLAUCH</span>
+    </h1>
+  </div>
+
+  <!-- Right Content (Mobile Stacked Below, Desktop Right) -->
+  <div class="absolute top-[48%] md:top-[40%] left-[6%] md:left-auto right-[6%] md:right-[8%] z-20 w-[88%] md:w-[48%] md:max-w-[28rem] flex flex-col items-start">
+    <p class="text-[14px] md:text-[15px] leading-[1.6] md:leading-[1.8] text-[#222] md:text-[#444] mb-6 md:mb-8 font-medium md:font-light text-left bg-transparent p-0 rounded-none shadow-none">
+      From sampling to bulk production, we help fashion brands scale with premium quality, speed, and reliability. Your trusted end-to-end manufacturing and wholesale partner.
+    </p>
+    <div class="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto items-start">
+      <a href="{% url 'new' %}" class="bg-black text-white text-[11px] font-medium tracking-widest px-6 md:px-8 py-4 text-center hover:bg-gray-800 transition shadow-lg w-full md:w-auto">
+        WHOLESALE CATALOG
+      </a>
+      <a href="{% url 'about' %}" class="bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none border border-gray-400 text-black text-[11px] font-medium tracking-widest px-6 md:px-8 py-4 text-center hover:bg-white hover:border-black transition shadow-sm md:shadow-none w-full md:w-auto">
+        START MANUFACTURING
+      </a>
     </div>
   </div>
 
-  <div class="swiper-pagination absolute bottom-[90px] left-1/2 transform -translate-x-1/2 z-20 flex justify-center items-center gap-2 w-fit"></div>
-
-  <div class="absolute top-4 md:top-6 left-1/2 -translate-x-1/2 z-10 text-[10px] md:text-[13px] font-semibold tracking-[.2em] uppercase text-white">
-    CLAUCH FACTORY
+  <!-- Bottom Badges -->
+  <div class="absolute bottom-0 md:bottom-[8%] left-0 md:left-[8%] w-full md:w-auto z-20 flex bg-white/95 backdrop-blur-md border-t md:border border-gray-200 shadow-sm">
+    <div class="flex-1 px-1 sm:px-3 md:px-6 py-3.5 md:py-5 border-r border-gray-200 flex items-center justify-center gap-1.5 md:gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 md:h-5 md:w-5 text-gray-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+      <span class="text-[7.5px] sm:text-[9px] md:text-[10px] tracking-widest font-medium text-gray-800 uppercase text-center leading-tight">LOW MOQ</span>
+    </div>
+    <div class="flex-1 px-1 sm:px-3 md:px-6 py-3.5 md:py-5 border-r border-gray-200 flex items-center justify-center gap-1.5 md:gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 md:h-5 md:w-5 text-gray-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+      <span class="text-[7.5px] sm:text-[9px] md:text-[10px] tracking-widest font-medium text-gray-800 uppercase text-center leading-tight">EXPERIENCED<br class="block sm:hidden"> TEAM</span>
+    </div>
+    <div class="flex-1 px-1 sm:px-3 md:px-6 py-3.5 md:py-5 flex items-center justify-center gap-1.5 md:gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 md:h-5 md:w-5 text-gray-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+      <span class="text-[7.5px] sm:text-[9px] md:text-[10px] tracking-widest font-medium text-gray-800 uppercase text-center leading-tight">QUALITY<br class="block sm:hidden"> ASSURANCE</span>
+    </div>
   </div>
 
-  <!-- 🔍 Search Form -->
-  <form method="GET" action="{% url 'search_results' %}" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-xl z-10">
-    <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white px-4 py-2 rounded-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-      <input 
-  type="text" 
-  name="q" 
-  placeholder="Search..." 
-  id="search-input" 
-  class="w-full bg-transparent focus:outline-none placeholder-white/80 text-base" 
-  style="font-size:16px;" 
-/>
+  <!-- Right Scroll Indicator -->
+  <div class="absolute bottom-[20%] right-[3%] z-20 hidden lg:flex flex-col items-center gap-6">
+    <div class="text-[9px] tracking-[0.2em] text-gray-500 uppercase rotate-180" style="writing-mode: vertical-rl;">
+      MODERN ESSENTIALS
     </div>
-  </form>
-
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
-    <a href="{% url 'new' %}" class="bg-white text-black text-xs px-6 py-2 rounded-full font-medium shadow-sm hover:bg-neutral-200 transition-all">
-      SHOP NOW
-    </a>
+    <div class="w-[1px] h-20 bg-gray-400 relative">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gray-800"></div>
+    </div>
+    <div class="text-[9px] tracking-[0.2em] text-black uppercase font-medium rotate-180" style="writing-mode: vertical-rl;">
+      FW26 COLLECTION
+    </div>
   </div>
 </div>
 
-<!-- Swiper + Responsive Scripts -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
-<script>
-  const swiper = new Swiper('.swiper', {
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-      renderBullet: function (index, className) {
-        return `<span class="${className} bullet inline-block w-[8px] h-[8px] rounded-full bg-white/40 transition-all duration-300 ease-in-out"></span>`;
-      },
-    },
-    on: {
-      slideChange: function () {
-        const bullets = document.querySelectorAll('.swiper-pagination .bullet');
-        bullets.forEach((b, i) => {
-          if (i === swiper.realIndex) {
-            b.style.width = '24px';
-            b.style.opacity = '1';
-            b.style.backgroundColor = 'white';
-          } else {
-            b.style.width = '8px';
-            b.style.opacity = '0.4';
-            b.style.backgroundColor = 'white';
-          }
-        });
-      }
-    },
-  });
-
-  function setResponsiveBackgrounds() {
-    const isMobile = window.innerWidth <= 768;
-    document.querySelectorAll('.lazy-bg').forEach(slide => {
-      const bgMobile = slide.getAttribute('data-bg-mobile');
-      const bgDesktop = slide.getAttribute('data-bg-desktop');
-      const selected = isMobile ? bgMobile : bgDesktop;
-      if (selected) {
-        slide.style.backgroundImage = `url('${selected}')`;
-      }
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', setResponsiveBackgrounds);
-  window.addEventListener('resize', setResponsiveBackgrounds);
-</script>
-
-<!-- 🔁 Rotating Placeholder -->
-<script>
-  const placeholders = [
-    "Search for baggy jeans",
-    "Search oversized shirt",
-    "Search cargos",
-    "Search summer fits",
-  ];
-  let index = 0;
-  setInterval(() => {
-    index = (index + 1) % placeholders.length;
-    const input = document.getElementById("search-input");
-    input.placeholder = placeholders[index];
-  }, 3500);
-</script>
-
-<style>
-  .animate-fade {
-    animation: fadein 0.6s ease-in-out;
-  }
-  @keyframes fadein {
-    from { opacity: 0; transform: translateY(2px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-</style>
 
 
 
-
-<div class="w-full bg-white py-8 px-4 overflow-hidden">
-  <h2 class="text-sm md:text-lg font-semibold font-montserrat uppercase mb-6 text-center tracking-widest text-gray-700">
-    Order By Category
+<div class="w-full bg-white py-12 md:py-16 px-4 overflow-hidden border-t border-gray-100">
+  
+  <h2 class="text-2xl md:text-3xl font-black tracking-tighter uppercase text-center mb-12 text-black">
+    Explore Categories
   </h2>
 
-  <div class="swiper category-swiper max-w-6xl mx-auto">
-    <div class="swiper-wrapper">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex overflow-x-auto gap-6 pb-10 hide-scrollbar snap-x snap-mandatory px-4 lg:px-0">
       {% for category in categories %}
-      <div class="swiper-slide flex flex-col items-center">
-        <a href="{% url 'category_detail' category.slug %}" class="group text-center">
-          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-transparent group-hover:border-black transition-all duration-300 mb-3 mx-auto">
+      <div class="flex-none w-[45%] sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-[15%] snap-start group cursor-pointer">
+        <a href="{% url 'category_detail' category.slug %}" class="block w-full">
+          <div class="w-full aspect-square rounded-full overflow-hidden bg-[#f4f4f4] mb-4 shadow-sm border border-gray-100">
             <img 
               src="{{ category.image.url }}" 
               alt="{{ category.name }}" 
               loading="lazy"
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+              class="w-full h-full object-cover mix-blend-multiply filter grayscale-[20%] contrast-125 transition-transform duration-1000 group-hover:scale-110" 
             />
           </div>
-          <span class="text-[11px] md:text-xs font-montserrat font-bold uppercase tracking-tighter text-gray-800">
-            {{ category.name }}
-          </span>
+          <div class="flex flex-col items-center justify-center pb-2">
+            <span class="text-[10px] md:text-xs font-black font-inter uppercase tracking-widest text-black text-center">
+              {{ category.name }}
+            </span>
+          </div>
         </a>
       </div>
       {% endfor %}
@@ -207,33 +159,13 @@
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const catSwiper = new Swiper('.category-swiper', {
-      slidesPerView: 3, // Default for mobile
-      spaceBetween: 15,
-      loop: true,
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-      },
-      breakpoints: {
-        // When window width is >= 768px (Laptop/Tablet)
-        768: {
-          slidesPerView: 5,
-          spaceBetween: 30,
-        }
-      }
-    });
-  });
-</script>
-
 <style>
-  /* Optional: Smooth transition for the circular borders */
-  .category-swiper .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 </style>
 
@@ -254,18 +186,20 @@
 
 
 <!-- Popular Products Section -->
-<div class="px-3 mt-6 bg-white" style="font-family: 'Montserrat', sans-serif;">
-
-  <!-- Section Heading -->
-  <h2 class="text-xl md:text-3xl font-bold text-gray-800 text-center py-4 mb-4">Popular Products</h2>
+<div class="w-full bg-white py-12 md:py-16 px-4 overflow-hidden border-t border-gray-100 font-inter">
+  
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-black tracking-tighter uppercase text-center mb-12 text-black">
+      Our Products
+    </h2>
 
   <!-- Filter Buttons -->
-  <div class="flex justify-center gap-2 mb-6" id="product-filter-buttons">
-  <button data-category="all" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">All</button>
-  <button data-category="shirt" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">Shirt</button>
-  <button data-category="tshirt" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">Tshirt</button>
-  <button data-category="jeans" class="filter-btn px-4 py-2 text-sm font-medium border border-black rounded">Jeans</button>
-</div>
+  <div class="flex overflow-x-auto whitespace-nowrap justify-start md:justify-center gap-2 md:gap-3 mb-10 pb-2 hide-scrollbar snap-x" id="product-filter-buttons">
+    <button data-category="all" class="filter-btn shrink-0 snap-start border bg-black text-white border-black text-[9px] md:text-[10px] font-medium tracking-widest px-5 md:px-6 py-2 text-center hover:bg-gray-800 transition uppercase">ALL</button>
+    <button data-category="shirt" class="filter-btn shrink-0 snap-start border bg-transparent text-black border-gray-400 text-[9px] md:text-[10px] font-medium tracking-widest px-5 md:px-6 py-2 text-center hover:border-black transition uppercase">SHIRT</button>
+    <button data-category="tshirt" class="filter-btn shrink-0 snap-start border bg-transparent text-black border-gray-400 text-[9px] md:text-[10px] font-medium tracking-widest px-5 md:px-6 py-2 text-center hover:border-black transition uppercase">TSHIRT</button>
+    <button data-category="jeans" class="filter-btn shrink-0 snap-start border bg-transparent text-black border-gray-400 text-[9px] md:text-[10px] font-medium tracking-widest px-5 md:px-6 py-2 text-center hover:border-black transition uppercase">JEANS</button>
+  </div>
 
 <!-- Product Grid Wrapper -->
 <div id="popular-products-container">
@@ -277,8 +211,12 @@ document.querySelectorAll('.filter-btn').forEach(button => {
     const category = this.getAttribute('data-category');
     
     // Highlight active button
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('bg-black', 'text-white'));
-    this.classList.add('bg-black', 'text-white');
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.remove('bg-black', 'text-white', 'border-black', 'hover:bg-gray-800');
+      btn.classList.add('bg-transparent', 'text-black', 'border-gray-400', 'hover:border-black');
+    });
+    this.classList.remove('bg-transparent', 'text-black', 'border-gray-400', 'hover:border-black');
+    this.classList.add('bg-black', 'text-white', 'border-black', 'hover:bg-gray-800');
 
     fetch(`/ajax/filter-popular-products/?category=${category}`)
       .then(response => response.json())
@@ -330,11 +268,171 @@ document.querySelectorAll('.filter-btn').forEach(button => {
 
 </div>
 
+<!-- ✅ Our Solutions Section -->
+<div class="w-full bg-[#f8f8f8] py-16 md:py-24 px-4 font-inter border-t border-gray-200">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-2xl md:text-3xl font-black tracking-tighter uppercase text-black mb-4">Our Solutions</h2>
+      <p class="text-xs sm:text-sm text-gray-500 max-w-2xl mx-auto uppercase tracking-widest font-medium">Comprehensive B2B manufacturing and logistics services tailored for your brand.</p>
+    </div>
+
+    <div class="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-hidden gap-px bg-gray-100 border border-gray-100 rounded-md">
+      
+      <!-- Card 1: Private Label -->
+      <div class="bg-white p-5 lg:p-6 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[65vw] md:w-auto snap-center">
+        <div class="w-full aspect-[4/3] bg-gray-100 mb-6 overflow-hidden rounded-sm">
+           <img src="{% static 'images/clauch_private_label.jpg' %}" alt="Private Label Manufacturing" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        </div>
+        <h3 class="text-base font-bold text-black uppercase tracking-widest mb-6 pb-4 border-b border-gray-100 group-hover:border-black transition-colors">Private Label Mfg</h3>
+        <ul class="space-y-4 text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Custom Labels & Tags
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Branded Packaging
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Low MOQ
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Full Production Support
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Printing & Decoration -->
+      <div class="bg-white p-5 lg:p-6 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[65vw] md:w-auto snap-center">
+        <div class="w-full aspect-[4/3] bg-gray-100 mb-6 overflow-hidden rounded-sm relative">
+           <img src="{% static 'images/clauch_printing.jpg' %}" alt="Printing & Decoration" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        </div>
+        <h3 class="text-base font-bold text-black uppercase tracking-widest mb-6 pb-4 border-b border-gray-100 group-hover:border-black transition-colors">Printing & Decoration</h3>
+        <ul class="space-y-4 text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> DTF Printing
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Screen Printing
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Puff & Rubber Printing
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Embroidery
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card 3: Bulk Production -->
+      <div class="bg-white p-5 lg:p-6 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[65vw] md:w-auto snap-center">
+        <div class="w-full aspect-[4/3] bg-gray-100 mb-6 overflow-hidden rounded-sm relative">
+           <img src="{% static 'images/clauch_bulk_production.jpg' %}" alt="Bulk Production" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        </div>
+        <h3 class="text-base font-bold text-black uppercase tracking-widest mb-6 pb-4 border-b border-gray-100 group-hover:border-black transition-colors">Bulk Production</h3>
+        <ul class="space-y-4 text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> High-Quality Stitching
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Size Grading
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> In-Line Quality Check
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> On-Time Delivery
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card 4: Packaging & Logistics -->
+      <div class="bg-white p-5 lg:p-6 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[85vw] md:w-auto snap-center">
+        <div class="w-full aspect-[4/3] bg-gray-100 mb-6 overflow-hidden rounded-sm relative">
+           <img src="{% static 'images/clauch_packaging.jpg' %}" alt="Packaging & Logistics" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        </div>
+        <h3 class="text-base font-bold text-black uppercase tracking-widest mb-6 pb-4 border-b border-gray-100 group-hover:border-black transition-colors">Packaging & Logistics</h3>
+        <ul class="space-y-4 text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Custom Packaging
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Barcode & Tagging
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Global Shipping
+          </li>
+          <li class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> End-to-End Support
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Call to Action Block -->
+    <div class="mt-8 md:mt-12 max-w-2xl mx-auto text-center">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <!-- WhatsApp CTA -->
+        <a href="https://wa.me/917888111768?text=Hi%20Clauch%20Factory!%20I%20would%20like%20to%20discuss%20bulk%20production%20for%20my%20brand." 
+           target="_blank" rel="noopener noreferrer"
+           class="w-full sm:w-auto flex items-center justify-center gap-2 bg-black text-white px-6 py-2.5 text-[11px] font-bold tracking-[0.2em] uppercase hover:bg-gray-800 transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          Chat on WhatsApp
+        </a>
+        
+        <!-- Email CTA -->
+        <a href="mailto:info@clauchfactory.com?subject=Bulk%20Production%20Inquiry&body=Hi%20Clauch%20Factory,%0D%0A%0D%0AI%20would%20like%20to%20discuss%20bulk%20production%20for%20my%20brand.%0D%0A%0D%0AThank%20you." 
+           class="w-full sm:w-auto flex items-center justify-center gap-2 bg-transparent border border-gray-200 text-black px-6 py-2.5 text-[11px] font-bold tracking-[0.2em] uppercase hover:border-black transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          Email Us
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Strip -->
+<div class="w-full bg-black text-white py-12 md:py-16 font-inter border-t border-gray-800">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-10 md:gap-y-0 gap-x-4 text-center divide-x-0 md:divide-x divide-white/20">
+      
+      <div class="flex flex-col items-center justify-center">
+        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">100+</span>
+        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Brands Manufactured</span>
+      </div>
+
+      <div class="flex flex-col items-center justify-center relative">
+        <div class="hidden sm:block absolute left-0 w-px h-full bg-white/10 md:hidden"></div>
+        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">100k+</span>
+        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Garments Produced</span>
+      </div>
+
+      <div class="flex flex-col items-center justify-center relative">
+        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">57.64%</span>
+        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Client Retention</span>
+      </div>
+
+      <div class="flex flex-col items-center justify-center relative">
+        <div class="hidden sm:block absolute left-0 w-px h-full bg-white/10 md:hidden"></div>
+        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">15+</span>
+        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Countries Served</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 <!-- 🔧 Perspective -->
 <style>
   .perspective {
     perspective: 1200px;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 </style>
 

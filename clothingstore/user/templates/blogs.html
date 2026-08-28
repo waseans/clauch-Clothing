@@ -4,66 +4,73 @@
 {% block title %}Journal & Insights - Clauch Factory{% endblock %}
 
 {% block content %}
-<div class="bg-white min-h-screen">
+<div class="font-inter bg-white text-black min-h-screen">
 
-    <header class="py-20 bg-[#F9F9F9] border-b border-gray-100">
+    <header class="relative w-full py-16 md:py-24 bg-white border-b border-gray-200">
         <div class="max-w-5xl mx-auto px-6 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6 font-montserrat tracking-tight text-[#1A1A1A]">Journal & Insights</h1>
-            <p class="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
-                Exploring the intersection of quality design, craftsmanship, and professional growth. 
-                Welcome to the Clauch Factory community archive.
+            <h1 class="text-4xl md:text-5xl font-semibold uppercase tracking-wide text-black mb-4">
+                Our Blogs
+            </h1>
+            <p class="text-sm text-gray-600 max-w-2xl mx-auto font-medium leading-relaxed">
+                Exploring the intersection of quality design, craftsmanship, and professional growth.
             </p>
         </div>
     </header>
 
-    <div class="max-w-6xl mx-auto py-20 px-6">
+    <div class="max-w-7xl mx-auto py-16 md:py-24 px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             
-            <article class="group">
-                <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-6">
-                    <img src="{% static 'images/blog/journey.jpg' %}" alt="Our Journey" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                </div>
-                <div class="space-y-3">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">The Clauch Factory Story</span>
-                    <h2 class="text-2xl font-bold font-montserrat group-hover:text-gray-600 transition-colors">Our Journey So Far</h2>
-                    <p class="text-gray-500 text-sm leading-relaxed line-clamp-3">
-                        From a small vision of quality to a multi-category lifestyle brand. Discover how we built our collections and launched our educational courses.
-                    </p>
-                    <a href="#" class="inline-block pt-2 text-xs font-bold border-b-2 border-black pb-1 hover:border-[#D4AF37] transition-all">Read Article</a>
-                </div>
-            </article>
-
-            <article class="group">
-                <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-6">
-                    <img src="{% static 'images/blog/quality.jpg' %}" alt="Why Clauch Factory" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                </div>
-                <div class="space-y-3">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">Craftsmanship</span>
-                    <h2 class="text-2xl font-bold font-montserrat group-hover:text-gray-600 transition-colors">Why Choose Clauch Factory?</h2>
-                    <p class="text-gray-500 text-sm leading-relaxed line-clamp-3">
-                        At Clauch Factory, we focus on the details. Learn about our commitment to sustainable design and how our expert team guides every choice.
-                    </p>
-                    <a href="#" class="inline-block pt-2 text-xs font-bold border-b-2 border-black pb-1 hover:border-[#D4AF37] transition-all">Read Article</a>
-                </div>
-            </article>
-
-            <article class="group">
-                <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-6 flex items-center justify-center p-8 bg-[#1A1A1A] text-white text-center">
-                    <div>
-                        <h3 class="text-xl font-montserrat font-bold mb-4">Stay Inspired</h3>
-                        <p class="text-sm opacity-70 mb-6 uppercase tracking-widest">Join our Newsletter</p>
-                        <input type="email" placeholder="Email Address" class="w-full bg-transparent border-b border-white/30 py-2 mb-4 focus:outline-none focus:border-white transition-colors text-sm">
-                        <button class="w-full py-3 bg-white text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors">Subscribe</button>
+            <article class="group flex flex-col justify-between">
+                <div>
+                    <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-8 rounded-sm">
+                        <img src="{% static 'images/blog/journey.jpg' %}" alt="Our Journey" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="space-y-4">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-black pb-2 border-b border-gray-100 block">The Clauch Factory Story</span>
+                        <h2 class="text-xl md:text-2xl font-bold tracking-tighter uppercase text-black leading-tight">Our Journey So Far</h2>
+                        <p class="text-gray-500 text-[12px] font-medium leading-relaxed tracking-wide line-clamp-3">
+                            From a small vision of quality to a multi-category lifestyle brand. Discover how we built our collections and launched our educational courses.
+                        </p>
                     </div>
                 </div>
-                <div class="space-y-3 mt-6">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37]">Updates</span>
-                    <h2 class="text-2xl font-bold font-montserrat">Upcoming Courses</h2>
-                    <p class="text-gray-500 text-sm leading-relaxed">
-                        Exciting new learning opportunities are launching soon. Be the first to know about our showroom workshops.
-                    </p>
-                </div>
+                <a href="#" class="inline-block mt-8 text-[11px] font-bold tracking-widest uppercase text-gray-400 hover:text-black transition-colors">Read Article &rarr;</a>
             </article>
+
+            <article class="group flex flex-col justify-between">
+                <div>
+                    <div class="aspect-[4/5] overflow-hidden bg-gray-100 mb-8 rounded-sm">
+                        <img src="{% static 'images/blog/quality.jpg' %}" alt="Why Clauch Factory" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="space-y-4">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-black pb-2 border-b border-gray-100 block">Craftsmanship</span>
+                        <h2 class="text-xl md:text-2xl font-bold tracking-tighter uppercase text-black leading-tight">Why Choose Clauch Factory?</h2>
+                        <p class="text-gray-500 text-[12px] font-medium leading-relaxed tracking-wide line-clamp-3">
+                            At Clauch Factory, we focus on the details. Learn about our commitment to sustainable design and how our expert team guides every choice.
+                        </p>
+                    </div>
+                </div>
+                <a href="#" class="inline-block mt-8 text-[11px] font-bold tracking-widest uppercase text-gray-400 hover:text-black transition-colors">Read Article &rarr;</a>
+            </article>
+
+            <div class="flex flex-col gap-12">
+                <!-- Newsletter block inside grid -->
+                <div class="bg-gray-50 p-6 md:p-8 flex flex-col items-center justify-center text-center border border-gray-200 rounded-sm">
+                    <h3 class="text-xl md:text-2xl font-black tracking-tighter uppercase text-black mb-4">Stay Inspired</h3>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-8">Join our Newsletter</p>
+                    <input type="email" placeholder="Email Address" class="w-full bg-white border border-gray-300 py-3 px-4 mb-4 focus:outline-none focus:border-black transition-colors text-sm rounded-sm">
+                    <button class="w-full py-3 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-sm">Subscribe</button>
+                </div>
+                
+                <article class="group flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-black pb-2 border-b border-gray-100 block">Updates</span>
+                        <h2 class="text-xl md:text-2xl font-bold tracking-tighter uppercase text-black leading-tight">Upcoming Courses</h2>
+                        <p class="text-gray-500 text-[12px] font-medium leading-relaxed tracking-wide">
+                            Exciting new learning opportunities are launching soon. Be the first to know about our showroom workshops.
+                        </p>
+                    </div>
+                </article>
+            </div>
 
         </div>
     </div>
