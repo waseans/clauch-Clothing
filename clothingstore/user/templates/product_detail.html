@@ -183,31 +183,23 @@
   }
 
   /* Numbering Bubble Pagination */
-  .swiper-pagination {
+  .swiper-pagination-fraction {
     bottom: 15px !important;
-  }
-  .custom-number-bubble {
-    width: 24px;
-    height: 24px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: white;
-    color: #111;
-    font-size: 10px;
-    font-weight: 700;
-    margin: 0 4px !important;
-    opacity: 0.6;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .custom-number-bubble.swiper-pagination-bullet-active {
-    background: #111;
-    color: white;
-    opacity: 1;
-    transform: scale(1.1);
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: rgba(17, 17, 17, 0.8) !important;
+    color: white !important;
+    padding: 4px 12px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.1em !important;
+    width: auto !important;
+    backdrop-filter: blur(4px) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 10 !important;
   }
   
   /* Remove old thumbnail css */
@@ -371,17 +363,24 @@
             <div class="relative w-full aspect-[4/5] bg-[#f4f4f4] overflow-hidden">
                 <div class="swiper gallery-swiper absolute inset-0">
                     <div class="swiper-wrapper">
-                        {% if color_images %}
-                            {% for image in color_images %}
-                                <div class="swiper-slide">
-                                    <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="swiper-slide">
-                                <img src="{{ product.primary_image.url }}" alt="{{ product.primary_image_alt|default:product.name }}" class="w-full h-full object-cover" />
-                            </div>
+                        <!-- Primary Image -->
+                        <div class="swiper-slide">
+                            <img src="{{ product.primary_image.url }}" alt="{{ product.primary_image_alt|default:product.name }}" class="w-full h-full object-contain p-4" />
+                        </div>
+                        
+                        <!-- Hover Image (if exists) -->
+                        {% if product.hover_image %}
+                        <div class="swiper-slide">
+                            <img src="{{ product.hover_image.url }}" alt="{{ product.hover_image_alt|default:product.name }}" class="w-full h-full object-contain p-4" />
+                        </div>
                         {% endif %}
+
+                        <!-- Color Specific Images -->
+                        {% for image in color_images %}
+                            <div class="swiper-slide">
+                                <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
+                            </div>
+                        {% endfor %}
                     </div>
                     <!-- Navigation -->
                     <div class="swiper-button-prev hidden md:flex"></div>
@@ -876,10 +875,8 @@
             },
             pagination: {
                 el: '.swiper-pagination',
-                clickable: true,
-                renderBullet: function (index, className) {
-                    return '<span class="' + className + ' custom-number-bubble">' + (index + 1) + '</span>';
-                },
+                type: 'fraction',
+            },
             }
         });
     }
