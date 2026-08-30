@@ -181,26 +181,42 @@
     justify-content: center;
     background-color: #f4f4f4;
   }
-  
-  .thumbnail-swiper {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px 0;
+
+  /* Numbering Bubble Pagination */
+  .swiper-pagination {
+    bottom: 15px !important;
   }
-  
-  .thumbnail-swiper .swiper-slide {
-    width: 80px;
-    height: 100px;
-    opacity: 0.5;
+  .custom-number-bubble {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: white;
+    color: #111;
+    font-size: 10px;
+    font-weight: 700;
+    margin: 0 4px !important;
+    opacity: 0.6;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     cursor: pointer;
-    background-color: #f4f4f4;
-    border: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+  .custom-number-bubble.swiper-pagination-bullet-active {
+    background: #111;
+    color: white;
+    opacity: 1;
+    transform: scale(1.1);
   }
   
-  .thumbnail-swiper .swiper-slide-thumb-active {
-    opacity: 1;
-    border-color: #111;
-  }
+  /* Remove old thumbnail css */
+  
+  
+  
+  
+  
+  
 
   .swiper-button-prev,
   .swiper-button-next {
@@ -370,21 +386,11 @@
                     <!-- Navigation -->
                     <div class="swiper-button-prev hidden md:flex"></div>
                     <div class="swiper-button-next hidden md:flex"></div>
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
             
-            {% if color_images and color_images|length > 1 %}
-            <!-- Thumbnails -->
-            <div class="swiper thumbnail-swiper">
-                <div class="swiper-wrapper">
-                    {% for image in color_images %}
-                        <div class="swiper-slide">
-                            <img src="{{ image.image.url }}" class="w-full h-full object-contain p-1" />
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
+            
         </div>
 
         <!-- Right: Product Info & Actions -->
@@ -420,7 +426,7 @@
                                 data-color-slug="{{ color.slug }}"
                                 data-color-name="{{ color.name }}"
                                 onclick="selectColor({{ color.id }})"
-                                class="cursor-pointer w-8 h-8 border border-gray-200 transition-all {% if color.id == primary_color.id %}border-black border-[2px] shadow-sm{% endif %}"
+                                class="cursor-pointer w-5 h-5 border border-gray-200 transition-all {% if color.id == primary_color.id %}border-black border-[2px] shadow-sm{% endif %}"
                                 style="background-color: {{ color.hex_code }};"
                                 title="{{ color.name }}">
                             </div>
@@ -862,29 +868,19 @@
     let thumbSwiper;
 
     function initSwipers() {
-        {% if color_images and color_images|length > 1 %}
-        thumbSwiper = new Swiper('.thumbnail-swiper', {
-            spaceBetween: 10,
-            slidesPerView: 4,
-            freeMode: true,
-            watchSlidesProgress: true,
-            breakpoints: {
-                768: { slidesPerView: 5 }
-            }
-        });
-        {% endif %}
-
         gallerySwiper = new Swiper('.gallery-swiper', {
             spaceBetween: 10,
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
             },
-            {% if color_images and color_images|length > 1 %}
-            thumbs: {
-                swiper: thumbSwiper
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+                renderBullet: function (index, className) {
+                    return '<span class="' + className + ' custom-number-bubble">' + (index + 1) + '</span>';
+                },
             }
-            {% endif %}
         });
     }
 
