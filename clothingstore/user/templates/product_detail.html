@@ -561,24 +561,39 @@
                 <!-- Offers -->
                 <div class="border-b border-gray-200">
                     <button type="button" class="accordion-button w-full py-5 flex justify-between items-center text-xs font-bold uppercase tracking-[0.15em] text-[#111]" onclick="toggleAccordion(this)">
-                        B2B Offers
+                        Offers
                         <svg class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                     </button>
                     <div class="accordion-content">
-                        <ul class="space-y-3 text-sm text-gray-600 list-none pl-0">
-                            <li class="flex items-start gap-2">
-                                <span class="text-black font-bold mt-0.5">•</span>
-                                <div><strong class="text-[#111]">Special B2B Pricing:</strong> Contact us for bulk order discounts beyond 100 sets.</div>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="text-black font-bold mt-0.5">•</span>
-                                <div><strong class="text-[#111]">Volume Discounts:</strong> Automatic discounts applied for orders of 50+ sets.</div>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <span class="text-black font-bold mt-0.5">•</span>
-                                <div><strong class="text-[#111]">New Customer Incentive:</strong> 5% off your first order (min. 20 sets).</div>
-                            </li>
-                        </ul>
+                        {% if applicable_coupons %}
+                            <ul class="space-y-3 pb-2">
+                                {% for coupon in applicable_coupons %}
+                                <li class="flex items-start gap-3 bg-gray-50 border border-dashed border-gray-300 rounded px-3 py-3">
+                                    <svg class="w-4 h-4 text-green-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+                                    <div class="text-sm">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="font-mono font-bold text-[#111] bg-white border border-gray-300 px-2 py-0.5 rounded text-xs tracking-widest">{{ coupon.code }}</span>
+                                            <span class="text-green-700 font-semibold">
+                                                {% if coupon.discount_type == 'PERCENT' %}
+                                                    {{ coupon.discount_value|floatformat:0 }}% OFF
+                                                {% else %}
+                                                    ₹{{ coupon.discount_value|floatformat:0 }} OFF
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        {% if coupon.min_order_amount > 0 %}
+                                        <p class="text-gray-500 mt-1 text-xs">Min. order ₹{{ coupon.min_order_amount|floatformat:0 }}</p>
+                                        {% endif %}
+                                        {% if coupon.expires_at %}
+                                        <p class="text-gray-400 text-xs mt-0.5">Valid till {{ coupon.expires_at|date:"d M Y" }}</p>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-sm text-gray-500 pb-4">No active offers available for this product right now.</p>
+                        {% endif %}
                     </div>
                 </div>
 

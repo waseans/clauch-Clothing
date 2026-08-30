@@ -25,6 +25,8 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
+from django.utils import timezone
+from order.models import Coupon
 
 def home_view(request):
     categories = Category.objects.all()
@@ -241,6 +243,16 @@ def product_detail(request, slug):
         categories__in=product.categories.all()
     ).exclude(id=product.id).distinct()[:4]
 
+    # Build applicable coupons: global (not product-specific) + product-specific for this product
+    now = timezone.now()
+    global_coupons = Coupon.objects.filter(active=True, is_product_specific=False).filter(
+        Q(expires_at__isnull=True) | Q(expires_at__gt=now)
+    )
+    product_coupons = Coupon.objects.filter(active=True, is_product_specific=True, applicable_products=product).filter(
+        Q(expires_at__isnull=True) | Q(expires_at__gt=now)
+    )
+    applicable_coupons = list(global_coupons) + list(product_coupons)
+
     context = {
         'product': product,
         'colors': colors,
@@ -249,7 +261,8 @@ def product_detail(request, slug):
         'primary_image': product.primary_image.url if product.primary_image else '',
         'color_images': primary_color.images.all() if primary_color else [],
         'related_products': related_products,
-        'all_categories': all_categories, # ✅ Pass to template
+        'all_categories': all_categories,
+        'applicable_coupons': applicable_coupons,
     }
     return render(request, 'product_detail.html', context)
 
@@ -263,6 +276,16 @@ def product_detail_by_color(request, product_slug, color_slug):
     # ✅ Get all categories here as well
     all_categories = Category.objects.all()
 
+    # Build applicable coupons: global + product-specific for this product
+    now = timezone.now()
+    global_coupons = Coupon.objects.filter(active=True, is_product_specific=False).filter(
+        Q(expires_at__isnull=True) | Q(expires_at__gt=now)
+    )
+    product_coupons = Coupon.objects.filter(active=True, is_product_specific=True, applicable_products=product).filter(
+        Q(expires_at__isnull=True) | Q(expires_at__gt=now)
+    )
+    applicable_coupons = list(global_coupons) + list(product_coupons)
+
     context = {
         'product': product,
         'colors': colors,
@@ -270,7 +293,8 @@ def product_detail_by_color(request, product_slug, color_slug):
         'sizes': sizes,
         'primary_image': product.primary_image.url if product.primary_image else '',
         'color_images': color.images.all(),
-        'all_categories': all_categories, # ✅ Pass to template
+        'all_categories': all_categories,
+        'applicable_coupons': applicable_coupons,
     }
     return render(request, 'product_detail.html', context)
 
