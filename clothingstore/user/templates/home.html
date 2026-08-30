@@ -58,72 +58,104 @@
 
 <h1 class="sr-only">Clauch Factory – B2B Clothing Manufacturer & Wholesale Apparel Supplier in India</h1>
 
-<!-- ✅ Minimalist Hero Section -->
-<div class="relative w-full h-[calc(100vh-60px)] md:h-[calc(100vh-88px)] overflow-hidden bg-white text-black font-inter">
-  
-  <!-- Hero Background Image -->
-  <div class="absolute inset-0">
-    <img src="{% static 'images/b2b_manufacturing_hero.jpg' %}" alt="B2B Manufacturing Facility" class="w-full h-full object-cover object-center">
-    <!-- Premium overlay to ensure the text remains legible while showing off the facility -->
-    <div class="absolute inset-0 bg-white/85 md:bg-gradient-to-r md:from-white/95 md:via-white/70 md:to-transparent backdrop-blur-[2px] md:backdrop-blur-[1px]"></div>
-  </div>
+<style>
+    .glass-nav {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
 
+    .btn-dark {
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+        overflow: hidden;
+    }
 
+    .btn-dark:active {
+        transform: scale(0.96);
+    }
 
-  <!-- Left Content (Mobile Top, Desktop Left) -->
-  <div class="absolute top-[12%] md:top-[28%] left-[6%] md:left-[8%] z-20 w-[88%] md:w-[45%] md:max-w-2xl">
-    <div class="text-[10px] md:text-[12px] tracking-[0.2em] mb-4 md:mb-6 font-medium text-gray-800 md:text-gray-700 leading-tight">B2B MANUFACTURING & WHOLESALE</div>
-    <h1 class="font-bold uppercase tracking-tighter text-[#111] leading-none flex flex-col items-start gap-1 md:gap-2">
-      <span class="text-[8vw] sm:text-[6vw] lg:text-[4.5vw]">BUILD</span>
-      <span class="text-[8vw] sm:text-[6vw] lg:text-[4.5vw]">YOUR BRAND WITH</span>
-      <span class="italic text-gray-500 text-[14vw] sm:text-[11vw] lg:text-[9vw] leading-[0.8] mt-1 md:mt-2">CLAUCH</span>
-    </h1>
-  </div>
+    .text-balance {
+        text-wrap: balance;
+    }
 
-  <!-- Right Content (Mobile Stacked Below, Desktop Right) -->
-  <div class="absolute top-[48%] md:top-[40%] left-[6%] md:left-auto right-[6%] md:right-[8%] z-20 w-[88%] md:w-[48%] md:max-w-[28rem] flex flex-col items-start">
-    <p class="text-[14px] md:text-[15px] leading-[1.6] md:leading-[1.8] text-[#222] md:text-[#444] mb-6 md:mb-8 font-medium md:font-light text-left bg-transparent p-0 rounded-none shadow-none">
-      From sampling to bulk production, we help fashion brands scale with premium quality, speed, and reliability. Your trusted end-to-end manufacturing and wholesale partner.
-    </p>
-    <div class="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto items-start">
-      <a href="{% url 'new' %}" class="bg-black text-white text-[11px] font-medium tracking-widest px-6 md:px-8 py-4 text-center hover:bg-gray-800 transition shadow-lg w-full md:w-auto">
-        WHOLESALE CATALOG
-      </a>
-      <a href="{% url 'about' %}" class="bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none border border-gray-400 text-black text-[11px] font-medium tracking-widest px-6 md:px-8 py-4 text-center hover:bg-white hover:border-black transition shadow-sm md:shadow-none w-full md:w-auto">
-        START MANUFACTURING
-      </a>
-    </div>
-  </div>
+    .portrait-aspect {
+        aspect-ratio: 4 / 5;
+    }
 
-  <!-- Bottom Badges -->
-  <div class="absolute bottom-0 md:bottom-[8%] left-0 md:left-[8%] w-full md:w-auto z-20 flex bg-white/95 backdrop-blur-md border-t md:border border-gray-200 shadow-sm">
-    <div class="flex-1 px-1 sm:px-3 md:px-6 py-3.5 md:py-5 border-r border-gray-200 flex items-center justify-center gap-1.5 md:gap-3">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 md:h-5 md:w-5 text-gray-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-      <span class="text-[7.5px] sm:text-[9px] md:text-[10px] tracking-widest font-medium text-gray-800 uppercase text-center leading-tight">LOW MOQ</span>
-    </div>
-    <div class="flex-1 px-1 sm:px-3 md:px-6 py-3.5 md:py-5 border-r border-gray-200 flex items-center justify-center gap-1.5 md:gap-3">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 md:h-5 md:w-5 text-gray-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-      <span class="text-[7.5px] sm:text-[9px] md:text-[10px] tracking-widest font-medium text-gray-800 uppercase text-center leading-tight">EXPERIENCED<br class="block sm:hidden"> TEAM</span>
-    </div>
-    <div class="flex-1 px-1 sm:px-3 md:px-6 py-3.5 md:py-5 flex items-center justify-center gap-1.5 md:gap-3">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 md:h-5 md:w-5 text-gray-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-      <span class="text-[7.5px] sm:text-[9px] md:text-[10px] tracking-widest font-medium text-gray-800 uppercase text-center leading-tight">QUALITY<br class="block sm:hidden"> ASSURANCE</span>
-    </div>
-  </div>
+    .shadow-soft {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+    }
 
-  <!-- Right Scroll Indicator -->
-  <div class="absolute bottom-[20%] right-[3%] z-20 hidden lg:flex flex-col items-center gap-6">
-    <div class="text-[9px] tracking-[0.2em] text-gray-500 uppercase rotate-180" style="writing-mode: vertical-rl;">
-      MODERN ESSENTIALS
+    .whatsapp-pulse {
+        animation: pulse-green 2s infinite;
+    }
+
+    @keyframes pulse-green {
+        0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    }
+</style>
+
+<!-- 1. Hero Section -->
+<header class="relative min-h-[80vh] flex flex-col pt-12 md:pt-20 pb-12 md:pb-24 border-b border-gray-100">
+    <div class="container mx-auto px-6 h-full flex flex-col md:flex-row items-center gap-10">
+        <div class="flex-1 space-y-6 z-10" data-aos="fade-up">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full mb-2">
+                <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600">Premium B2B Manufacturing</span>
+            </div>
+            <h1 class="text-4xl md:text-[5rem] font-black uppercase tracking-tighter leading-[0.9] text-balance">
+                Build Your <br>Brand With <br> <span class="italic text-black font-serif tracking-normal uppercase">CLAUCH</span>
+            </h1>
+            <p class="text-base md:text-lg text-gray-500 font-medium max-w-md leading-relaxed">
+                The end-to-end manufacturing partner for streetwear brands, private labels, and custom apparel collections.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{% url 'new' %}" class="btn-dark px-6 py-4 bg-black text-white rounded-none font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-3">
+                    View Catalogue
+                </a>
+                <a href="#popular-products-container" class="btn-dark px-6 py-4 bg-white text-black border border-gray-300 rounded-none font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-3 hover:bg-gray-50">
+                    View Categories
+                </a>
+            </div>
+            <div class="pt-6 flex flex-wrap items-center gap-4 md:gap-6 text-[9px] md:text-[10px] font-bold text-gray-700 tracking-[0.1em] uppercase">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                    <span>LOW MOQ</span>
+                </div>
+                <div class="hidden sm:block w-1 h-1 bg-gray-300 rounded-full"></div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    <span>EXPERIENCED TEAM</span>
+                </div>
+                <div class="hidden sm:block w-1 h-1 bg-gray-300 rounded-full"></div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    <span>QUALITY ASSURANCE</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex-1 w-full relative pb-12 md:pb-0" data-aos="fade-left" data-aos-delay="200">
+            <div class="relative z-10 rounded-sm overflow-hidden shadow-2xl portrait-aspect">
+                <img src="{% static 'images/landing_hero.png' %}" alt="Factory Quality" class="w-full h-full object-cover">
+                <!-- Overlay Info -->
+                <div class="absolute bottom-4 left-4 right-4 p-4 glass-nav rounded-sm border border-white/20 shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500">MOQ Starts At</p>
+                            <p class="text-xl md:text-2xl font-black tracking-tight">50 Pieces</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500">Lead Time</p>
+                            <p class="text-xl md:text-2xl font-black tracking-tight">14-21 Days</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="w-[1px] h-20 bg-gray-400 relative">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gray-800"></div>
-    </div>
-    <div class="text-[9px] tracking-[0.2em] text-black uppercase font-medium rotate-180" style="writing-mode: vertical-rl;">
-      FW26 COLLECTION
-    </div>
-  </div>
-</div>
+</header>
 
 
 
@@ -390,36 +422,153 @@ document.querySelectorAll('.filter-btn').forEach(button => {
   </div>
 </div>
 
-<!-- Stats Strip -->
-<div class="w-full bg-black text-white py-12 md:py-16 font-inter border-t border-gray-800">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-y-10 md:gap-y-0 gap-x-4 text-center divide-x-0 md:divide-x divide-white/20">
-      
-      <div class="flex flex-col items-center justify-center">
-        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">100+</span>
-        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Brands Manufactured</span>
-      </div>
+<!-- Infinite Customization Section (Copied from landing.html) -->
+<section class="py-8 px-6 md:py-12 md:px-12 bg-gray-50 border-t border-gray-200">
+    <div class="container mx-auto">
+        <div class="max-w-4xl mx-auto space-y-8 md:space-y-10">
+            <div class="text-center space-y-2" data-aos="fade-up">
+                <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Ultimate Flexibility</span>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tighter">Infinite Customization</h2>
+                <p class="text-gray-500 max-w-lg mx-auto font-medium text-xs md:text-sm">Every detail is under your control. If you can dream it, we can manufacture it.</p>
+            </div>
 
-      <div class="flex flex-col items-center justify-center relative">
-        <div class="hidden sm:block absolute left-0 w-px h-full bg-white/10 md:hidden"></div>
-        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">100k+</span>
-        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Garments Produced</span>
-      </div>
+            <div class="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-4 pb-4 px-2 -mx-2 md:mx-0 md:px-0">
+                <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Fabric</span>
+                </div>
+                <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="50">
+                    <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg>
+                    </div>
+                    <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Dyeing</span>
+                </div>
+                <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19V5m-7 7l7-7 7 7"></path></svg>
+                    </div>
+                    <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Detailing</span>
+                </div>
+                <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="150">
+                    <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    </div>
+                    <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Labels</span>
+                </div>
+                <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    </div>
+                    <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Packing</span>
+                </div>
+                <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="250">
+                    <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Fast Track</span>
+                </div>
+            </div>
 
-      <div class="flex flex-col items-center justify-center relative">
-        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">57.64%</span>
-        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Client Retention</span>
-      </div>
-
-      <div class="flex flex-col items-center justify-center relative">
-        <div class="hidden sm:block absolute left-0 w-px h-full bg-white/10 md:hidden"></div>
-        <span class="text-3xl md:text-4xl font-bold tracking-tighter mb-2">15+</span>
-        <span class="text-[10px] md:text-xs tracking-widest text-gray-400 uppercase">Countries Served</span>
-      </div>
-
+            <div class="text-center pt-2">
+                <a href="https://wa.me/917888111768" class="btn-dark inline-flex px-8 py-4 bg-black text-white rounded-none font-bold text-[10px] md:text-xs uppercase tracking-widest border border-black hover:bg-white hover:text-black transition-all">
+                    Design Your Collection
+                </a>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+</section>
+
+<!-- 4. Global Trust Section -->
+<section class="py-12 px-6 md:py-16 bg-white border-y border-gray-100">
+    <div class="container mx-auto">
+        <div class="max-w-4xl mx-auto text-center space-y-10">
+            <div class="space-y-3" data-aos="fade-up">
+                <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Global Reach</span>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tighter"><span class="text-gray-500">Clauch</span> is a Trusted Partner for <br> Emerging & Iconic Brands</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 divide-x divide-gray-200" id="stats-counter-section-home">
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-home" data-target="100" data-suffix="+">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Brands Manufactured</p>
+                </div>
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-home" data-target="100" data-suffix="k+">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Garments Produced</p>
+                </div>
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-home" data-target="57.64" data-suffix="%" data-decimals="2">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Client Retention</p>
+                </div>
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-home" data-target="15" data-suffix="+">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Countries Served</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const counters = document.querySelectorAll('.stat-counter-home');
+    const speed = 100; // Lower is slower relative to numbers
+    let animated = false;
+
+    const animateCounters = () => {
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const countText = counter.innerText.replace(/[^0-9.]/g, '');
+                const count = parseFloat(countText) || 0;
+                const suffix = counter.getAttribute('data-suffix') || '';
+                const decimals = counter.getAttribute('data-decimals') ? parseInt(counter.getAttribute('data-decimals')) : 0;
+                
+                const inc = target / speed;
+
+                if (count < target) {
+                    let nextValue = count + inc;
+                    if (nextValue > target) nextValue = target; // Clamp to target
+                    
+                    if(decimals > 0) {
+                        counter.innerText = nextValue.toFixed(decimals) + suffix;
+                    } else {
+                        counter.innerText = Math.ceil(nextValue) + suffix;
+                    }
+                    setTimeout(updateCount, 20);
+                } else {
+                    counter.innerText = target + suffix;
+                }
+            };
+            updateCount();
+        });
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !animated) {
+                animateCounters();
+                animated = true;
+            }
+        });
+    }, { threshold: 0.5 });
+
+    const section = document.getElementById('stats-counter-section-home');
+    if(section) {
+        observer.observe(section);
+    }
+});
+</script>
 
 
 <!-- 🔧 Perspective -->

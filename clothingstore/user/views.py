@@ -53,7 +53,14 @@ def landing_view(request):
     """
     Renders the premium manufacturing landing page.
     """
-    return render(request, "landing.html")
+    categories = Category.objects.all()[:4]
+    recent_products = Product.objects.all().order_by('-id')[:6]
+    
+    context = {
+        'categories': categories,
+        'recent_products': recent_products,
+    }
+    return render(request, "landing.html", context)
 
 
 from django.template.loader import render_to_string

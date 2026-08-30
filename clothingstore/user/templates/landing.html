@@ -1,113 +1,63 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clauch Factory | Premium Apparel Manufacturing</title>
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="High-end B2B clothing manufacturing for private labels. Low MOQ, premium quality, global shipping.">
-    
-    <!-- ✅ Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        serif: ['Playfair Display', 'serif'],
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        premium: '#0A0A0A',
-                        accent: '#C5A059',
-                        ivory: '#FAF9F6',
-                        whatsapp: '#25D366',
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- ✅ Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- ✅ Swiper.js CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-    
-    <!-- ✅ AOS (Animate on Scroll) -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <style>
-        :root {
-            --premium: #0A0A0A;
-            --ivory: #FAF9F6;
-        }
-        
-        body {
-            background-color: var(--ivory);
-            color: var(--premium);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+{% block content %}
+<!-- Swiper and AOS CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-        .glass-nav {
-            background: rgba(250, 249, 246, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
+<style>
+    .glass-nav {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
 
-        .btn-premium {
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
-            overflow: hidden;
-        }
+    .btn-dark {
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+        overflow: hidden;
+    }
 
-        .btn-premium:active {
-            transform: scale(0.96);
-        }
+    .btn-dark:active {
+        transform: scale(0.96);
+    }
 
-        .text-balance {
-            text-wrap: balance;
-        }
+    .text-balance {
+        text-wrap: balance;
+    }
 
-        .portrait-aspect {
-            aspect-ratio: 4 / 5;
-        }
+    .portrait-aspect {
+        aspect-ratio: 4 / 5;
+    }
 
-        .shadow-soft {
-            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
-        }
+    .shadow-soft {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+    }
 
-        .whatsapp-pulse {
-            animation: pulse-green 2s infinite;
-        }
+    .whatsapp-pulse {
+        animation: pulse-green 2s infinite;
+    }
 
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
+    @keyframes pulse-green {
+        0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--ivory); }
-        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+    .section-padding { @apply py-20 px-6 md:py-32 md:px-12; }
+</style>
 
-        .section-padding { @apply py-20 px-6 md:py-32 md:px-12; }
-    </style>
-</head>
-<body class="font-sans">
+<div class="font-[Inter] bg-white text-black overflow-x-hidden">
 
-    <!-- 🟢 Fixed Bottom CTA for Mobile -->
+    <!-- 🟢 Fixed Bottom CTA for Mobile (Retained for conversion optimization) -->
     <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md md:hidden">
-        <a href="https://wa.me/917888111768" class="flex items-center justify-between bg-premium text-white p-2 rounded-2xl shadow-2xl whatsapp-pulse">
+        <a href="https://wa.me/917888111768" class="flex items-center justify-between bg-black text-white p-2 rounded-2xl shadow-2xl whatsapp-pulse">
             <div class="flex items-center gap-3 pl-4">
-                <div class="w-2 h-2 rounded-full bg-whatsapp"></div>
+                <div class="w-2 h-2 rounded-full bg-[#25D366]"></div>
                 <span class="text-xs font-bold uppercase tracking-wider">Online Now</span>
             </div>
-            <div class="bg-whatsapp text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+            <div class="bg-[#25D366] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
                 <span>Chat on WhatsApp</span>
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg> 
             </div>
@@ -115,220 +65,265 @@
     </div>
 
     <!-- 1. Hero Section -->
-    <header class="relative min-h-[90vh] flex flex-col pt-12">
-        <nav class="flex justify-between items-center px-6 md:px-12 py-4 absolute top-0 left-0 w-full z-20">
-            <span class="text-xl font-bold tracking-tighter">CLAUCH FACTORY<span class="text-accent">.</span></span>
-            <div class="hidden md:flex gap-4">
-                <div class="bg-white/50 backdrop-blur-md px-4 py-2 rounded-full border border-black/5 flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-whatsapp animate-pulse"></span>
-                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Factory Live</span>
+    <header class="relative min-h-[80vh] flex flex-col pt-12 md:pt-20 pb-12 md:pb-24 border-b border-gray-100">
+        <div class="container mx-auto px-6 h-full flex flex-col md:flex-row items-center gap-10">
+            <div class="flex-1 space-y-6 z-10" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full mb-2">
+                    <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600">Premium B2B Manufacturing</span>
                 </div>
-            </div>
-        </nav>
-
-        <div class="container mx-auto px-6 h-full flex flex-col md:flex-row items-center gap-12 mt-12">
-            <div class="flex-1 space-y-8 z-10" data-aos="fade-up">
-                <div class="inline-flex items-center gap-2 px-3 py-1 bg-black/5 rounded-full mb-4">
-                    <span class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60">Premium B2B Manufacturing</span>
-                </div>
-                <h1 class="text-5xl md:text-8xl font-serif leading-[0.95] tracking-tight text-balance">
-                    Build Your <br>Brand With <br> <span class="text-accent italic">Precision.</span>
+                <h1 class="text-4xl md:text-[5rem] font-black uppercase tracking-tighter leading-[0.9] text-balance">
+                    Build Your <br>Brand With <br> <span class="italic text-gray-500 font-serif tracking-normal lowercase">precision.</span>
                 </h1>
-                <p class="text-lg md:text-xl text-black/50 font-light max-w-md leading-relaxed">
+                <p class="text-base md:text-lg text-gray-500 font-medium max-w-md leading-relaxed">
                     The end-to-end manufacturing partner for streetwear brands, private labels, and custom apparel collections.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="https://wa.me/917888111768" class="btn-premium px-8 py-5 bg-premium text-white rounded-2xl font-bold flex items-center justify-center gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="https://wa.me/917888111768" class="btn-dark px-6 py-4 bg-black text-white rounded-none font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-3">
                         Start Production
-                        <svg class="w-5 h-5 fill-whatsapp" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
+                        <svg class="w-5 h-5 fill-[#25D366]" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
                     </a>
-                    <a href="#manufacture" class="btn-premium px-8 py-5 bg-white text-premium border border-black/5 rounded-2xl font-bold flex items-center justify-center gap-3">
+                    <a href="#manufacture" class="btn-dark px-6 py-4 bg-white text-black border border-gray-300 rounded-none font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-3 hover:bg-gray-50">
                         View Categories
                     </a>
                 </div>
             </div>
-            <div class="flex-1 w-full relative" data-aos="fade-left" data-aos-delay="200">
-                <div class="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl portrait-aspect">
+            <div class="flex-1 w-full relative pb-12 md:pb-0" data-aos="fade-left" data-aos-delay="200">
+                <div class="relative z-10 rounded-sm overflow-hidden shadow-2xl portrait-aspect">
                     <img src="{% static 'images/landing_hero.png' %}" alt="Factory Quality" class="w-full h-full object-cover">
                     <!-- Overlay Info -->
-                    <div class="absolute bottom-6 left-6 right-6 p-6 glass-nav rounded-3xl border border-white/20">
+                    <div class="absolute bottom-4 left-4 right-4 p-4 glass-nav rounded-sm border border-white/20 shadow-lg">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-[10px] font-bold uppercase tracking-widest opacity-40">MOQ Starts At</p>
-                                <p class="text-2xl font-serif">50 Pieces</p>
+                                <p class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500">MOQ Starts At</p>
+                                <p class="text-xl md:text-2xl font-black tracking-tight">50 Pieces</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[10px] font-bold uppercase tracking-widest opacity-40">Lead Time</p>
-                                <p class="text-2xl font-serif">14-21 Days</p>
+                                <p class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500">Lead Time</p>
+                                <p class="text-xl md:text-2xl font-black tracking-tight">14-21 Days</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Abstract Decor -->
-                <div class="absolute -top-10 -right-10 w-64 h-64 bg-accent/10 rounded-full blur-3xl -z-0"></div>
-                <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-whatsapp/5 rounded-full blur-3xl -z-0"></div>
+                <!-- Abstract Decor Removed for Minimalist Theme -->
             </div>
         </div>
     </header>
 
-    <div class="section-divider"></div>
-
-    <!-- 2. Services Section -->
-    <section id="services" class="section-padding bg-white">
-        <div class="container mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-                <div class="space-y-4">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Expertise</span>
-                    <h2 class="text-4xl md:text-6xl font-serif tracking-tight">Manufacturing <br> Excellence</h2>
+    <!-- 2. Services Section: Manufacturing Excellence (Combined with Solutions) -->
+    <section id="services" class="py-12 px-6 md:py-16 md:px-12 bg-[#f8f8f8] border-t border-gray-200">
+        <div class="container mx-auto max-w-7xl">
+            <!-- Header from Landing Page style -->
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6" data-aos="fade-up">
+                <div class="space-y-3">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Expertise & Solutions</span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tighter uppercase">Manufacturing <br> Excellence</h2>
                 </div>
-                <p class="text-sm text-black/40 max-w-xs font-light">Dedicated to providing high-quality production standards for every piece we create.</p>
+                <p class="text-xs md:text-sm text-gray-500 max-w-xs font-medium">Comprehensive B2B manufacturing and logistics services tailored for your brand.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Service 1 -->
-                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up">
-                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
-                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
+            <!-- Cards from Home Page -->
+            <div class="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-hidden gap-px bg-gray-100 border border-gray-100 rounded-sm" data-aos="fade-up" data-aos-delay="100">
+                <!-- Card 1: Private Label -->
+                <div class="bg-white p-4 lg:p-5 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[75vw] sm:w-[50vw] md:w-auto snap-center">
+                    <div class="w-full aspect-[4/3] bg-gray-100 mb-5 overflow-hidden rounded-sm">
+                       <img src="{% static 'images/clauch_private_label.jpg' %}" alt="Private Label Manufacturing" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     </div>
-                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Private Label</h3>
-                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">Complete custom branding, labels, and tags to match your unique brand identity.</p>
-                </div>
-                <!-- Service 2 -->
-                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
-                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Digital Printing</h3>
-                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">High-definition DTF and screen printing with exceptional durability and vibrance.</p>
-                </div>
-                <!-- Service 3 -->
-                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
-                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Bulk Blanks</h3>
-                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">Premium ready-to-ship garments available for immediate custom decoration.</p>
-                </div>
-                <!-- Service 4 -->
-                <div class="group p-8 rounded-[2rem] bg-ivory border border-black/5 hover:bg-premium transition-all duration-500" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-12 group-hover:bg-accent transition-colors">
-                        <svg class="w-6 h-6 text-accent group-hover:text-premium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-serif mb-4 group-hover:text-white transition-colors">Full Package</h3>
-                    <p class="text-sm text-black/50 group-hover:text-white/60 transition-colors leading-relaxed">End-to-end support from sampling and tech packs to global logistics.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. Why Choose Us Section -->
-    <section class="section-padding bg-premium text-white overflow-hidden relative">
-        <!-- Background Accent -->
-        <div class="absolute top-0 right-0 w-1/2 h-full bg-accent/5 -skew-x-12 translate-x-1/2"></div>
-        
-        <div class="container mx-auto relative z-10">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
-                <div class="space-y-12" data-aos="fade-right">
-                    <div class="space-y-4">
-                        <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">The Clauch Factory Edge</span>
-                        <h2 class="text-4xl md:text-7xl font-serif leading-tight">Scale Without <br> Friction.</h2>
-                    </div>
-
-                    <div class="grid gap-10">
-                        <div class="flex gap-6">
-                            <span class="text-accent font-serif text-3xl">01</span>
-                            <div class="space-y-2">
-                                <h4 class="text-xl font-bold">Absolute Quality</h4>
-                                <p class="text-white/40 text-sm font-light leading-relaxed">3-step quality audit in every production cycle, ensuring zero compromises.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-6">
-                            <span class="text-accent font-serif text-3xl">02</span>
-                            <div class="space-y-2">
-                                <h4 class="text-xl font-bold">Ethical Sourcing</h4>
-                                <p class="text-white/40 text-sm font-light leading-relaxed">Supporting your brand with sustainable fabrics and eco-friendly dye houses.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-6">
-                            <span class="text-accent font-serif text-3xl">03</span>
-                            <div class="space-y-2">
-                                <h4 class="text-xl font-bold">Fast-Track Delivery</h4>
-                                <p class="text-white/40 text-sm font-light leading-relaxed">Standard 3-week lead times to keep your inventory moving at scale.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <a href="https://wa.me/917888111768" class="btn-premium inline-flex px-10 py-5 bg-accent text-premium rounded-2xl font-bold gap-3 shadow-2xl items-center">
-                            Start Your Journey
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </a>
-                    </div>
+                    <h3 class="text-sm md:text-base font-bold text-black uppercase tracking-widest mb-4 pb-3 border-b border-gray-100 group-hover:border-black transition-colors">Private Label Mfg</h3>
+                    <ul class="space-y-3 text-[12px] md:text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Custom Labels & Tags
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Branded Packaging
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Low MOQ
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Full Production Support
+                      </li>
+                    </ul>
                 </div>
 
-                <div class="relative" data-aos="zoom-out">
-                    <div class="rounded-[3rem] overflow-hidden border border-white/10 p-4 bg-white/5 backdrop-blur-3xl">
-                        <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=1000&auto=format&fit=crop" class="w-full portrait-aspect object-cover rounded-[2.5rem] opacity-90 transition duration-1000 hover:scale-105">
+                <!-- Card 2: Printing & Decoration -->
+                <div class="bg-white p-4 lg:p-5 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[75vw] sm:w-[50vw] md:w-auto snap-center">
+                    <div class="w-full aspect-[4/3] bg-gray-100 mb-5 overflow-hidden rounded-sm relative">
+                       <img src="{% static 'images/clauch_printing.jpg' %}" alt="Printing & Decoration" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     </div>
-                    <!-- Floating Stats -->
-                    <div class="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2rem] shadow-2xl hidden md:block">
-                        <p class="text-premium text-4xl font-serif">100%</p>
-                        <p class="text-black/40 text-[10px] uppercase font-bold tracking-widest">Client Satisfaction</p>
+                    <h3 class="text-sm md:text-base font-bold text-black uppercase tracking-widest mb-4 pb-3 border-b border-gray-100 group-hover:border-black transition-colors">Printing & Decoration</h3>
+                    <ul class="space-y-3 text-[12px] md:text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> DTF Printing
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Screen Printing
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Puff & Rubber Printing
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Embroidery
+                      </li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Bulk Production -->
+                <div class="bg-white p-4 lg:p-5 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[75vw] sm:w-[50vw] md:w-auto snap-center">
+                    <div class="w-full aspect-[4/3] bg-gray-100 mb-5 overflow-hidden rounded-sm relative">
+                       <img src="{% static 'images/clauch_bulk_production.jpg' %}" alt="Bulk Production" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     </div>
+                    <h3 class="text-sm md:text-base font-bold text-black uppercase tracking-widest mb-4 pb-3 border-b border-gray-100 group-hover:border-black transition-colors">Bulk Production</h3>
+                    <ul class="space-y-3 text-[12px] md:text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> High-Quality Stitching
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Size Grading
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> In-Line Quality Check
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> On-Time Delivery
+                      </li>
+                    </ul>
+                </div>
+
+                <!-- Card 4: Packaging & Logistics -->
+                <div class="bg-white p-4 lg:p-5 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group flex flex-col h-full relative z-10 hover:z-20 shrink-0 w-[75vw] sm:w-[50vw] md:w-auto snap-center">
+                    <div class="w-full aspect-[4/3] bg-gray-100 mb-5 overflow-hidden rounded-sm relative">
+                       <img src="{% static 'images/clauch_packaging.jpg' %}" alt="Packaging & Logistics" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <h3 class="text-sm md:text-base font-bold text-black uppercase tracking-widest mb-4 pb-3 border-b border-gray-100 group-hover:border-black transition-colors">Packaging & Logistics</h3>
+                    <ul class="space-y-3 text-[12px] md:text-[13px] text-gray-500 font-medium tracking-wide flex-grow">
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Custom Packaging
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Barcode & Tagging
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Global Shipping
+                      </li>
+                      <li class="flex items-start gap-2.5">
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-black transition-colors shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> End-to-End Support
+                      </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 4. Global Trust Section -->
-    <section class="section-padding bg-ivory">
-        <div class="container mx-auto">
-            <div class="max-w-4xl mx-auto text-center space-y-16">
-                <div class="space-y-4" data-aos="fade-up">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Global Reach</span>
-                    <h2 class="text-4xl md:text-6xl font-serif">A Trusted Partner for <br> Emerging & Iconic Brands</h2>
+
+
+<!-- 4. Global Trust Section -->
+<section class="py-12 px-6 md:py-16 bg-white border-y border-gray-100">
+    <div class="container mx-auto">
+        <div class="max-w-4xl mx-auto text-center space-y-10">
+            <div class="space-y-3" data-aos="fade-up">
+                <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Global Reach</span>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tighter"><span class="text-gray-500">Clauch</span> is a Trusted Partner for <br> Emerging & Iconic Brands</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 divide-x divide-gray-200" id="stats-counter-section-landing">
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-landing" data-target="100" data-suffix="+">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Brands Manufactured</p>
                 </div>
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-landing" data-target="100" data-suffix="k+">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Garments Produced</p>
+                </div>
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-landing" data-target="57.64" data-suffix="%" data-decimals="2">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Client Retention</p>
+                </div>
+                <div class="space-y-1 px-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-3xl md:text-4xl font-black tracking-tighter text-black flex items-center justify-center">
+                        <span class="stat-counter-landing" data-target="15" data-suffix="+">0</span>
+                    </div>
+                    <p class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] pt-1">Countries Served</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const counters = document.querySelectorAll('.stat-counter-landing');
+    const speed = 100; // Lower is slower relative to numbers
+    let animated = false;
+
+    const animateCounters = () => {
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const countText = counter.innerText.replace(/[^0-9.]/g, '');
+                const count = parseFloat(countText) || 0;
+                const suffix = counter.getAttribute('data-suffix') || '';
+                const decimals = counter.getAttribute('data-decimals') ? parseInt(counter.getAttribute('data-decimals')) : 0;
                 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
-                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="100">
-                        <span class="text-5xl font-serif text-accent">100+</span>
-                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Brands Scaled</p>
-                    </div>
-                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="200">
-                        <span class="text-5xl font-serif text-accent">5+</span>
-                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Countries Exported</p>
-                    </div>
-                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="300">
-                        <span class="text-5xl font-serif text-accent">1M+</span>
-                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Units Shipped</p>
-                    </div>
-                    <div class="space-y-2" data-aos="fade-up" data-aos-delay="400">
-                        <span class="text-5xl font-serif text-accent">98%</span>
-                        <p class="text-[10px] font-bold text-black/40 uppercase tracking-[0.2em]">Repeat Rate</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                const inc = target / speed;
+
+                if (count < target) {
+                    let nextValue = count + inc;
+                    if (nextValue > target) nextValue = target; // Clamp to target
+                    
+                    if(decimals > 0) {
+                        counter.innerText = nextValue.toFixed(decimals) + suffix;
+                    } else {
+                        counter.innerText = Math.ceil(nextValue) + suffix;
+                    }
+                    setTimeout(updateCount, 20);
+                } else {
+                    counter.innerText = target + suffix;
+                }
+            };
+            updateCount();
+        });
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !animated) {
+                animateCounters();
+                animated = true;
+            }
+        });
+    }, { threshold: 0.5 });
+
+    const section = document.getElementById('stats-counter-section-landing');
+    if(section) {
+        observer.observe(section);
+    }
+});
+</script>
 
     <!-- 5. Factory Video Section -->
-    <section class="relative h-[70vh] md:h-[90vh] bg-premium overflow-hidden group">
+    <section class="relative h-[50vh] md:h-[70vh] bg-black overflow-hidden border-y border-gray-900 group">
         <div class="absolute inset-0 opacity-40">
-            <img src="https://images.unsplash.com/photo-1556761175-5973cf0f32e7?q=80&w=1332&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+            <img src="https://images.unsplash.com/photo-1556761175-5973cf0f32e7?q=80&w=1332&auto=format&fit=crop" class="w-full h-full object-cover grayscale transition-transform duration-1000 group-hover:scale-110 group-hover:grayscale-0">
         </div>
-        <div class="absolute inset-0 bg-gradient-to-b from-premium/20 via-transparent to-premium"></div>
+        <div class="absolute inset-0 bg-black/50"></div>
         
         <div class="absolute inset-0 flex items-center justify-center p-6 text-center">
-            <div class="space-y-8" data-aos="zoom-in">
-                <a href="https://wa.me/917888111768" class="w-24 h-24 bg-accent text-premium rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-2xl mx-auto shadow-accent/20">
-                    <svg class="w-8 h-8 fill-current translate-x-1" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <div class="space-y-6 z-10" data-aos="zoom-in">
+                <a href="https://wa.me/917888111768" class="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-2xl mx-auto">
+                    <svg class="w-6 h-6 fill-current translate-x-1" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </a>
-                <div class="space-y-4">
-                    <h2 class="text-4xl md:text-7xl text-white font-serif leading-tight">Behind the Craft</h2>
-                    <p class="text-white/60 max-w-md mx-auto font-light leading-relaxed">See how we transform raw fabric into premium streetwear using state-of-the-art technology.</p>
+                <div class="space-y-3">
+                    <h2 class="text-3xl md:text-5xl text-white font-black uppercase tracking-tighter leading-tight">Behind the Craft</h2>
+                    <p class="text-gray-300 max-w-md mx-auto text-sm md:text-base font-medium leading-relaxed">See how we transform raw fabric into premium streetwear using state-of-the-art technology.</p>
                 </div>
-                <div class="pt-4">
-                    <a href="https://wa.me/917888111768" class="btn-premium px-8 py-4 border border-white/20 text-white rounded-full font-bold inline-flex items-center gap-2 hover:bg-white hover:text-premium transition-all">
+                <div class="pt-2">
+                    <a href="https://wa.me/917888111768" class="btn-dark px-6 py-4 border border-white text-white rounded-none font-bold text-xs uppercase tracking-widest inline-flex items-center gap-2 hover:bg-white hover:text-black transition-all">
                         Request Factory Tour
                     </a>
                 </div>
@@ -337,67 +332,43 @@
     </section>
 
     <!-- 6. What We Manufacture -->
-    <section id="manufacture" class="section-padding bg-white">
+    <section id="manufacture" class="py-12 px-6 md:py-16 md:px-12 bg-white">
         <div class="container mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-                <div class="space-y-4" data-aos="fade-up">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Collections</span>
-                    <h2 class="text-4xl md:text-6xl font-serif">Endless Possibilities</h2>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+                <div class="space-y-3" data-aos="fade-up">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Collections</span>
+                    <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter">Endless Possibilities</h2>
                 </div>
-                <p class="text-sm text-black/40 max-w-xs font-light">From classic essentials to avant-garde streetwear, we manufacture across all categories.</p>
+                <p class="text-xs md:text-sm text-gray-500 max-w-xs font-medium">From classic essentials to avant-garde streetwear, we manufacture across all categories.</p>
             </div>
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                <!-- T-Shirts -->
-                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up">
-                    <img src="{% static 'images/landing_tshirts.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 class="text-white text-2xl font-serif mb-2">T-Shirts</h3>
-                        <p class="text-white/60 text-xs font-light">Oversized, Boxy, Heavyweight</p>
+            <div class="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 pb-4">
+                {% for category in categories %}
+                <a href="{% url 'category_detail' category.slug %}" class="shrink-0 w-[70vw] sm:w-[45vw] md:w-auto snap-center group relative overflow-hidden rounded-sm bg-gray-100 aspect-[4/5] border border-gray-200 block" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:0 }}00">
+                    {% if category.image %}
+                    <img src="{{ category.image.url }}" class="absolute inset-0 w-full h-full object-cover mix-blend-multiply filter grayscale-[20%] transition-transform duration-700 group-hover:scale-110">
+                    {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 class="text-white text-xl md:text-2xl font-black uppercase tracking-tight mb-1">{{ category.name }}</h3>
+                        <p class="text-gray-300 text-[10px] md:text-xs font-medium uppercase tracking-widest">Explore Collection</p>
                     </div>
-                </div>
-                <!-- Hoodies -->
-                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up" data-aos-delay="100">
-                    <img src="{% static 'images/landing_hoodies.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 class="text-white text-2xl font-serif mb-2">Hoodies</h3>
-                        <p class="text-white/60 text-xs font-light">French Terry, Heavy Fleece</p>
-                    </div>
-                </div>
-                <!-- Denim -->
-                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up" data-aos-delay="200">
-                    <img src="{% static 'images/landing_jeans.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 class="text-white text-2xl font-serif mb-2">Denim</h3>
-                        <p class="text-white/60 text-xs font-light">Raw Selvedge, Custom Washes</p>
-                    </div>
-                </div>
-                <!-- Accessories -->
-                <div class="group relative overflow-hidden rounded-[2.5rem] bg-ivory aspect-[4/5] border border-black/5" data-aos="fade-up" data-aos-delay="300">
-                    <img src="{% static 'images/landing_packaging.png' %}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-premium/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 class="text-white text-2xl font-serif mb-2">Private Label</h3>
-                        <p class="text-white/60 text-xs font-light">Packaging, Tags, Custom Trim</p>
-                    </div>
-                </div>
+                </a>
+                {% endfor %}
             </div>
         </div>
     </section>
 
-    <!-- 7. Sample Products (NEW SECTION) -->
-    <section class="section-padding bg-ivory overflow-hidden">
+    <!-- 7. Sample Products -->
+    <section class="py-12 px-6 md:py-16 md:px-12 bg-gray-50 border-t border-gray-200 overflow-hidden">
         <div class="container mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-                <div class="space-y-4" data-aos="fade-right">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Showroom</span>
-                    <h2 class="text-4xl md:text-6xl font-serif">Recent Production <br> Samples</h2>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+                <div class="space-y-3" data-aos="fade-right">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Showroom</span>
+                    <h2 class="text-3xl md:text-5xl font-black tracking-tighter uppercase">Recent Production <br> Samples</h2>
                 </div>
                 <div class="flex gap-4">
-                    <a href="https://wa.me/917888111768" class="btn-premium px-8 py-4 bg-premium text-white rounded-2xl font-bold text-sm">
+                    <a href="https://wa.me/917888111768" class="btn-dark px-6 py-4 bg-black text-white rounded-none font-bold text-[10px] md:text-xs tracking-widest uppercase">
                         Order Sample Kit
                     </a>
                 </div>
@@ -405,106 +376,85 @@
 
             <div class="swiper swiper-samples overflow-visible">
                 <div class="swiper-wrapper">
+                    <!-- Slides -->
+                    {% for product in recent_products %}
                     <div class="swiper-slide">
-                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
-                           <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Streetwear Tee</div>
-                        </div>
-                        <div class="mt-6 space-y-1">
-                            <h4 class="font-bold text-lg">Heavyweight Essential</h4>
-                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">240 GSM | Puff Print</p>
-                        </div>
+                        <a href="{% url 'product_detail' product.slug %}" class="block group">
+                            <div class="rounded-sm overflow-hidden portrait-aspect bg-white border border-gray-200 shadow-sm relative">
+                               {% if product.primary_image %}
+                               <img src="{{ product.primary_image.url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                               {% endif %}
+                               {% if product.categories.first %}
+                               <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-sm border border-gray-200 text-[10px] font-bold uppercase tracking-widest text-black">{{ product.categories.first.name }}</div>
+                               {% endif %}
+                            </div>
+                            <div class="mt-6 space-y-1">
+                                <h4 class="font-bold text-lg uppercase tracking-tight text-black group-hover:text-gray-600 transition-colors">{{ product.name }}</h4>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest font-medium">{% if product.discount_price %}₹{{ product.discount_price }}{% else %}₹{{ product.price }}{% endif %}</p>
+                            </div>
+                        </a>
                     </div>
-                    <div class="swiper-slide">
-                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
-                           <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Hoodie</div>
-                        </div>
-                        <div class="mt-6 space-y-1">
-                            <h4 class="font-bold text-lg">Boxy Oversized Hoodie</h4>
-                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">400 GSM | French Terry</p>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
-                           <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Cargos</div>
-                        </div>
-                        <div class="mt-6 space-y-1">
-                            <h4 class="font-bold text-lg">Tech Utility Pants</h4>
-                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">Ripstop | 12 Pockets</p>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="rounded-[2rem] overflow-hidden portrait-aspect bg-white border border-black/5 shadow-soft group">
-                           <img src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                           <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Outerwear</div>
-                        </div>
-                        <div class="mt-6 space-y-1">
-                            <h4 class="font-bold text-lg">Wool Varsity Jacket</h4>
-                            <p class="text-xs text-black/40 uppercase tracking-widest font-bold">Custom Embroidery</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 8. Product Detail (T-shirt etc.) -->
-    <section class="section-padding bg-premium text-white">
+    <!-- 8. Product Detail -->
+    <section class="py-12 px-6 md:py-16 md:px-12 bg-black text-white border-y border-gray-900">
         <div class="container mx-auto">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
-                <div class="space-y-12" data-aos="fade-right">
+            <div class="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
+                <div class="space-y-8 md:space-y-10" data-aos="fade-right">
                     <div class="space-y-4">
-                        <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Deep Dive</span>
-                        <h2 class="text-4xl md:text-7xl font-serif tracking-tight leading-tight">Superior <br> T-Shirt Specs</h2>
-                        <p class="text-white/40 font-light text-lg">We don't just make T-shirts; we engineer the perfect garment for your brand's silhouette.</p>
+                        <span class="text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase">Deep Dive</span>
+                        <h2 class="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-tight">Superior <br> T-Shirt Specs</h2>
+                        <p class="text-gray-400 font-medium text-sm md:text-base">We don't just make T-shirts; we engineer the perfect garment for your brand's silhouette.</p>
                     </div>
 
                     <div class="grid sm:grid-cols-2 gap-4">
-                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
-                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> 
+                        <div class="p-6 bg-gray-900 rounded-sm border border-gray-800 space-y-4">
+                            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg> 
                             </div>
-                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Fabric Palette</h5>
+                            <h5 class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Fabric Palette</h5>
                             <p class="text-sm font-medium">160-300 GSM <br> Combed Cotton, Supima, French Terry</p>
                         </div>
-                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
-                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg> 
+                        <div class="p-6 bg-gray-900 rounded-sm border border-gray-800 space-y-4">
+                            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg> 
                             </div>
-                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Technical Fits</h5>
+                            <h5 class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Technical Fits</h5>
                             <p class="text-sm font-medium">Boxy, Oversized, Drop Shoulder, Standard Pro</p>
                         </div>
-                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
-                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.183.244l-.3.178c-.71.42-.962 1.341-.56 2.053L5 19l2.5-3z"></path></svg> 
+                        <div class="p-6 bg-gray-900 rounded-sm border border-gray-800 space-y-4">
+                            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.183.244l-.3.178c-.71.42-.962 1.341-.56 2.053L5 19l2.5-3z"></path></svg> 
                             </div>
-                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Premium Finish</h5>
+                            <h5 class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Premium Finish</h5>
                             <p class="text-sm font-medium">Bio-wash, Silicon finish, Vintage Pigment Dyes</p>
                         </div>
-                        <div class="p-8 bg-white/5 rounded-3xl border border-white/10 space-y-4">
-                            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg> 
+                        <div class="p-6 bg-gray-900 rounded-sm border border-gray-800 space-y-4">
+                            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg> 
                             </div>
-                            <h5 class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Decoration</h5>
+                            <h5 class="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Decoration</h5>
                             <p class="text-sm font-medium">DTF, Screen, Puff, Embroidery, Appliqué</p>
                         </div>
                     </div>
 
-                    <div class="pt-6">
-                        <a href="https://wa.me/917888111768" class="btn-premium px-10 py-5 bg-whatsapp text-white rounded-2xl font-bold flex items-center justify-center gap-3 w-full sm:w-auto">
+                    <div class="pt-4">
+                        <a href="https://wa.me/917888111768" class="btn-dark px-8 py-4 bg-[#25D366] text-white rounded-none font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-3 w-full sm:w-auto">
                             Get Quote for T-Shirts
                         </a>
                     </div>
                 </div>
                 <div class="relative" data-aos="fade-left">
-                    <div class="rounded-[4rem] overflow-hidden border border-white/10 p-4 bg-white/5 backdrop-blur-3xl">
-                        <img src="{% static 'images/landing_tshirts.png' %}" class="w-full h-full portrait-aspect object-cover rounded-[3.5rem] opacity-90">
+                    <div class="rounded-sm overflow-hidden border border-gray-800 p-2 bg-gray-900">
+                        <img src="{% static 'images/landing_tshirts.png' %}" class="w-full h-full portrait-aspect object-cover grayscale opacity-90 transition duration-1000 hover:scale-105 hover:grayscale-0">
                     </div>
-                    <div class="absolute -top-10 -right-10 bg-accent p-8 rounded-[2rem] shadow-2xl text-premium">
-                        <p class="text-4xl font-serif font-bold italic">Luxury</p>
-                        <p class="text-black/40 text-[10px] uppercase font-bold tracking-widest whitespace-nowrap">Standard Guaranteed</p>
+                    <div class="absolute -bottom-4 -right-4 bg-white p-6 rounded-sm shadow-xl text-black border border-gray-200">
+                        <p class="text-2xl font-black uppercase tracking-tighter">Essential</p>
+                        <p class="text-gray-500 text-[9px] uppercase font-bold tracking-widest whitespace-nowrap mt-1">Standard Guaranteed</p>
                     </div>
                 </div>
             </div>
@@ -512,100 +462,102 @@
     </section>
 
     <!-- 9. Process Section -->
-    <section class="section-padding bg-white overflow-hidden">
+    <section class="py-12 px-6 md:py-16 md:px-12 bg-white overflow-hidden">
         <div class="container mx-auto">
-            <div class="max-w-4xl mx-auto space-y-20">
-                <div class="text-center space-y-4" data-aos="fade-up">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Seamless Workflow</span>
-                    <h2 class="text-4xl md:text-6xl font-serif">Journey to Production</h2>
+            <div class="max-w-4xl mx-auto space-y-12 md:space-y-16">
+                <div class="text-center space-y-3" data-aos="fade-up">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Seamless Workflow</span>
+                    <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter">Journey to Production</h2>
                 </div>
 
                 <div class="relative grid md:grid-cols-4 gap-4">
                     <!-- Progress Line -->
-                    <div class="hidden md:block absolute top-10 left-0 w-full h-px bg-black/5 -z-0"></div>
+                    <div class="hidden md:block absolute top-8 left-0 w-full h-px bg-gray-200 -z-0"></div>
 
-                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up">
-                        <div class="w-12 h-12 bg-premium text-white rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">01</div>
-                        <div class="space-y-4">
-                            <h4 class="text-xl font-bold">Discovery</h4>
-                            <p class="text-sm text-black/40 font-light leading-relaxed">Deep-dive into your vision, tech packs, and fabric requirements.</p>
+                    <div class="relative space-y-6 bg-gray-50 p-6 rounded-sm border border-gray-200" data-aos="fade-up">
+                        <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-sm md:text-base font-black tracking-tight shadow-md">01</div>
+                        <div class="space-y-3">
+                            <h4 class="text-lg font-bold uppercase tracking-tight">Discovery</h4>
+                            <p class="text-[13px] text-gray-500 font-medium leading-relaxed">Deep-dive into your vision, tech packs, and fabric requirements.</p>
                         </div>
                     </div>
-                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up" data-aos-delay="100">
-                        <div class="w-12 h-12 bg-premium text-white rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">02</div>
-                        <div class="space-y-4">
-                            <h4 class="text-xl font-bold">Sampling</h4>
-                            <p class="text-sm text-black/40 font-light leading-relaxed">Physical prototyping to perfect the fit, color, and finish of every style.</p>
+                    <div class="relative space-y-6 bg-gray-50 p-6 rounded-sm border border-gray-200" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-sm md:text-base font-black tracking-tight shadow-md">02</div>
+                        <div class="space-y-3">
+                            <h4 class="text-lg font-bold uppercase tracking-tight">Sampling</h4>
+                            <p class="text-[13px] text-gray-500 font-medium leading-relaxed">Physical prototyping to perfect the fit, color, and finish of every style.</p>
                         </div>
                     </div>
-                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up" data-aos-delay="200">
-                        <div class="w-12 h-12 bg-premium text-white rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">03</div>
-                        <div class="space-y-4">
-                            <h4 class="text-xl font-bold">Bulk Run</h4>
-                            <p class="text-sm text-black/40 font-light leading-relaxed">Full-scale manufacturing with stringent multi-point quality checks.</p>
+                    <div class="relative space-y-6 bg-gray-50 p-6 rounded-sm border border-gray-200" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-sm md:text-base font-black tracking-tight shadow-md">03</div>
+                        <div class="space-y-3">
+                            <h4 class="text-lg font-bold uppercase tracking-tight">Bulk Run</h4>
+                            <p class="text-[13px] text-gray-500 font-medium leading-relaxed">Full-scale manufacturing with stringent multi-point quality checks.</p>
                         </div>
                     </div>
-                    <div class="relative space-y-8 bg-ivory p-8 rounded-3xl border border-black/5" data-aos="fade-up" data-aos-delay="300">
-                        <div class="w-12 h-12 bg-accent text-premium rounded-2xl flex items-center justify-center text-xl font-serif shadow-xl">04</div>
-                        <div class="space-y-4">
-                            <h4 class="text-xl font-bold">Logistics</h4>
-                            <p class="text-sm text-black/40 font-light leading-relaxed">Individual packing and door-to-door global shipping support.</p>
+                    <div class="relative space-y-6 bg-gray-50 p-6 rounded-sm border border-gray-200" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-10 h-10 bg-gray-200 text-black rounded-full flex items-center justify-center text-sm md:text-base font-black tracking-tight shadow-md border border-gray-300">04</div>
+                        <div class="space-y-3">
+                            <h4 class="text-lg font-bold uppercase tracking-tight">Logistics</h4>
+                            <p class="text-[13px] text-gray-500 font-medium leading-relaxed">Individual packing and door-to-door global shipping support.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- 10. Customization Section -->
-    <section class="section-padding bg-ivory">
+    </section>
+
+    <!-- 10. Customization Section -->
+    <section class="py-8 px-6 md:py-12 md:px-12 bg-gray-50 border-t border-gray-200">
         <div class="container mx-auto">
-            <div class="max-w-4xl mx-auto space-y-16">
-                <div class="text-center space-y-4" data-aos="fade-up">
-                    <span class="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Ultimate Flexibility</span>
-                    <h2 class="text-4xl md:text-6xl font-serif">Infinite Customization</h2>
-                    <p class="text-black/40 max-w-lg mx-auto font-light lg:text-lg">Every detail is under your control. If you can dream it, we can manufacture it.</p>
+            <div class="max-w-4xl mx-auto space-y-8 md:space-y-10">
+                <div class="text-center space-y-2" data-aos="fade-up">
+                    <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">Ultimate Flexibility</span>
+                    <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tighter">Infinite Customization</h2>
+                    <p class="text-gray-500 max-w-lg mx-auto font-medium text-xs md:text-sm">Every detail is under your control. If you can dream it, we can manufacture it.</p>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="0">
-                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
-                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <div class="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory md:grid md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-4 pb-4 px-2 -mx-2 md:mx-0 md:px-0">
+                    <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="0">
+                        <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
-                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Fabric</span>
+                        <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Fabric</span>
                     </div>
-                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="50">
-                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
-                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg>
+                    <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="50">
+                        <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 010-8 4 4 0 010 8zM17 21a4 4 0 010-8 4 4 0 010 8zM12 13V3"></path></svg>
                         </div>
-                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Dyeing</span>
+                        <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Dyeing</span>
                     </div>
-                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="100">
-                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
-                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19V5m-7 7l7-7 7 7"></path></svg>
+                    <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19V5m-7 7l7-7 7 7"></path></svg>
                         </div>
-                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Detailing</span>
+                        <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Detailing</span>
                     </div>
-                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="150">
-                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
-                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="150">
+                        <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                         </div>
-                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Labels</span>
+                        <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Labels</span>
                     </div>
-                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="200">
-                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
-                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
                         </div>
-                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Packing</span>
+                        <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Packing</span>
                     </div>
-                    <div class="group text-center space-y-4" data-aos="zoom-in" data-aos-delay="250">
-                        <div class="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center shadow-soft border border-black/5 group-hover:bg-premium group-hover:text-white transition-all group-hover:-translate-y-2">
-                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <div class="shrink-0 w-[28vw] sm:w-[20vw] md:w-auto snap-center group text-center space-y-3" data-aos="zoom-in" data-aos-delay="250">
+                        <div class="w-14 h-14 bg-white rounded-sm mx-auto flex items-center justify-center shadow-sm border border-gray-200 group-hover:bg-black group-hover:text-white transition-all group-hover:-translate-y-1 group-hover:shadow-md">
+                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         </div>
-                        <span class="text-[10px] block font-bold uppercase tracking-widest opacity-40">Fast Track</span>
+                        <span class="text-[9px] block font-bold uppercase tracking-widest text-gray-400">Fast Track</span>
                     </div>
                 </div>
 
-                <div class="text-center pt-8">
-                    <a href="https://wa.me/917888111768" class="btn-premium inline-flex px-12 py-6 bg-premium text-white rounded-2xl font-bold border border-white/10 hover:bg-accent hover:text-premium transition-all">
+                <div class="text-center pt-2">
+                    <a href="https://wa.me/917888111768" class="btn-dark inline-flex px-8 py-4 bg-black text-white rounded-none font-bold text-[10px] md:text-xs uppercase tracking-widest border border-black hover:bg-white hover:text-black transition-all">
                         Design Your Collection
                     </a>
                 </div>
@@ -614,23 +566,19 @@
     </section>
 
     <!-- 11. Final CTA Section -->
-    <section class="section-padding bg-white relative overflow-hidden">
+    <section class="py-12 px-6 md:py-16 bg-white relative overflow-hidden border-t border-gray-200">
         <div class="container mx-auto relative z-10">
-            <div data-aos="zoom-in" class="bg-premium text-white rounded-[4rem] p-12 md:p-32 text-center space-y-12 relative overflow-hidden">
-                <!-- Abstract Bg Glow -->
-                <div class="absolute -top-24 -right-24 w-64 h-64 bg-accent/20 rounded-full blur-[100px]"></div>
-                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-whatsapp/20 rounded-full blur-[100px]"></div>
-
-                <div class="space-y-6 relative z-10">
-                    <h2 class="text-5xl md:text-[7rem] font-serif leading-[0.9] tracking-tight">Ready to <br> Launch?</h2>
-                    <p class="text-white/40 max-w-xl mx-auto text-lg md:text-xl font-light leading-relaxed">
+            <div data-aos="zoom-in" class="bg-black text-white rounded-sm p-8 md:p-20 text-center space-y-8 md:space-y-10 relative overflow-hidden">
+                <div class="space-y-4 md:space-y-6 relative z-10">
+                    <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">Ready to <br> Launch?</h2>
+                    <p class="text-gray-400 max-w-xl mx-auto text-sm md:text-lg font-medium leading-relaxed">
                         Stop looking for manufacturers and start building with a partner who understands your brand's DNA.
                     </p>
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
-                    <a href="https://wa.me/917888111768" class="w-full sm:w-auto px-12 py-6 bg-whatsapp text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 hover:scale-105 transition-transform whatsapp-pulse">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
+                    <a href="https://wa.me/917888111768" class="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-none font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-gray-200 transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg>
                         Start Your Brand
                     </a>
                 </div>
@@ -638,34 +586,23 @@
         </div>
     </section>
 
-    <!-- Footer Light -->
-    <footer class="py-12 bg-white border-t border-black/5">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-            <span class="text-xl font-bold tracking-tighter">CLAUCH FACTORY<span class="text-accent">.</span></span>
-            <div class="text-black/30 text-[10px] font-bold uppercase tracking-[0.2em]">
-                © 2026 Clauch Factory. Premium Clothing Manufacturing.
-            </div>
-            <div class="flex gap-6">
-                <a href="https://wa.me/917888111768" class="text-black/40 hover:text-premium transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.32 0-4.516.903-6.155 2.541-1.64 1.64-2.541 3.835-2.541 6.155 0 2.32.901 4.516 2.541 6.155 1.639 1.639 3.835 2.541 6.155 2.541 2.32 0 4.516-.902 6.155-2.541 1.638-1.639 2.541-3.835 2.541-6.155 0-2.32-.903-4.516-2.541-6.155-1.64-1.638-3.835-2.541-6.155-2.541zm0-2.035c5.38 0 9.775 4.395 9.775 9.775s-4.395 9.775-9.775 9.775-9.775-4.395-9.775-9.775 4.395-9.775 9.775-9.775zm-3.375 14.514-1.238-1.237 3.375-3.375 3.375 3.375-1.237 1.237-2.138-2.137-2.137 2.137zm3.375-7.727 3.375 3.375 1.237-1.238-3.375-3.375-3.375 3.375 1.238 1.238 2.137-2.138z"/></svg></a>
-            </div>
-        </div>
-    </footer>
+</div>
 
-    <!-- ✅ Swiper.js JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    <!-- ✅ AOS JS -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize AOS
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof AOS !== 'undefined') {
             AOS.init({
                 duration: 1200,
                 once: true,
                 offset: 50,
                 easing: 'ease-out-expo'
             });
+        }
 
-            // Slider configurations
+        if (typeof Swiper !== 'undefined') {
             new Swiper('.swiper-samples', {
                 slidesPerView: 1.2,
                 spaceBetween: 16,
@@ -676,7 +613,7 @@
                     1024: { slidesPerView: 3.5, spaceBetween: 32 }
                 }
             });
-        });
-    </script>
-</body>
-</html>
+        }
+    });
+</script>
+{% endblock %}

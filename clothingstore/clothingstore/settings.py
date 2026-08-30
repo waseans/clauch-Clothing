@@ -29,7 +29,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1', 
     'localhost',
     '16.171.172.137',
-    '192.168.1.102',
+    '192.168.1.101',
     'clauch.in',
     'www.clauch.in',
     'clauchfactory.com',      # new domain
@@ -39,7 +39,7 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://f4cf94b18aea.ngrok-free.app',
-    'https://192.168.1.102:8000',
+    'https://192.168.1.101:8000',
     'https://clauch.in',
     'https://www.clauch.in',
     'https://16.171.172.137',
