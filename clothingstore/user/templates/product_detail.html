@@ -176,10 +176,20 @@
   }
 
   .gallery-swiper .swiper-slide {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f4f4f4;
+    flex-shrink: 0;
+  }
+
+  .gallery-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
   }
 
   /* Numbering Bubble Pagination */
@@ -862,12 +872,11 @@
     let thumbSwiper;
 
     function initSwipers() {
-        const slides = document.querySelectorAll('.gallery-swiper .swiper-slide');
-        const canLoop = slides.length > 1;
         gallerySwiper = new Swiper('.gallery-swiper', {
             slidesPerView: 1,
             spaceBetween: 0,
-            loop: canLoop,
+            loop: false,
+            speed: 400,
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
