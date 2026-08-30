@@ -263,6 +263,8 @@ def product_detail(request, slug):
         'related_products': related_products,
         'all_categories': all_categories,
         'applicable_coupons': applicable_coupons,
+        'global_coupons': list(global_coupons),
+        'product_coupons': list(product_coupons),
     }
     return render(request, 'product_detail.html', context)
 
@@ -295,6 +297,8 @@ def product_detail_by_color(request, product_slug, color_slug):
         'color_images': color.images.all(),
         'all_categories': all_categories,
         'applicable_coupons': applicable_coupons,
+        'global_coupons': list(global_coupons),
+        'product_coupons': list(product_coupons),
     }
     return render(request, 'product_detail.html', context)
 
