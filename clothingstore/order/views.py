@@ -523,6 +523,12 @@ def checkout_view(request):
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
     subtotal = Decimal(str(subtotal))
     
+    # On a fresh GET request, clear any stale coupon from a previous session so totals are accurate
+    if request.method == 'GET':
+        request.session.pop('coupon_code', None)
+        request.session.pop('coupon_discount', None)
+        request.session.pop('shipping_info', None)
+
     # Recalculate to ensure accurate discount if cart changed
     coupon_code, coupon_discount = get_valid_coupon_discount(request, cart_items)
     discounted_subtotal = subtotal - coupon_discount
@@ -1017,6 +1023,12 @@ def buy_now_checkout_view(request):
 
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
     subtotal = Decimal(str(subtotal))
+
+    # On a fresh GET request, clear any stale coupon from a previous session so totals are accurate
+    if request.method == 'GET':
+        request.session.pop('coupon_code', None)
+        request.session.pop('coupon_discount', None)
+        request.session.pop('shipping_info', None)
     
     # Recalculate to ensure accurate discount if cart changed
     coupon_code, coupon_discount = get_valid_coupon_discount(request, cart_items)

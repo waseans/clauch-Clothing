@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch("{% url 'ajax_calculate_shipping' %}", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-      body: JSON.stringify({ pincode: pincode, payment_method: paymentMethod })
+      body: JSON.stringify({ pincode: pincode, payment_method: paymentMethod, is_buy_now: true })
     })
     .then(response => response.ok ? response.json() : response.json().then(err => Promise.reject(err)))
     .then(data => {
