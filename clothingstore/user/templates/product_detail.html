@@ -361,21 +361,26 @@
             <div class="relative w-full aspect-[4/5] bg-[#f4f4f4] overflow-hidden">
                 <div class="swiper gallery-swiper absolute inset-0">
                     <div class="swiper-wrapper">
-                        {% if color_images %}
-                            {% for image in color_images %}
-                                <div class="swiper-slide">
-                                    <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="swiper-slide">
-                                <img src="{{ product.primary_image.url }}" alt="{{ product.primary_image_alt|default:product.name }}" class="w-full h-full object-contain p-4" />
-                            </div>
+                        <!-- Always show primary image first -->
+                        <div class="swiper-slide">
+                            <img src="{{ product.primary_image.url }}" alt="{{ product.primary_image_alt|default:product.name }}" class="w-full h-full object-contain p-4" />
+                        </div>
+                        <!-- Show hover image if it exists -->
+                        {% if product.hover_image %}
+                        <div class="swiper-slide">
+                            <img src="{{ product.hover_image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
+                        </div>
                         {% endif %}
+                        <!-- Show color-specific images if they exist -->
+                        {% for image in color_images %}
+                        <div class="swiper-slide">
+                            <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
+                        </div>
+                        {% endfor %}
                     </div>
                     <!-- Navigation -->
-                    <div class="swiper-button-prev hidden md:flex"></div>
-                    <div class="swiper-button-next hidden md:flex"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
@@ -857,10 +862,12 @@
     let thumbSwiper;
 
     function initSwipers() {
+        const slides = document.querySelectorAll('.gallery-swiper .swiper-slide');
+        const canLoop = slides.length > 1;
         gallerySwiper = new Swiper('.gallery-swiper', {
             slidesPerView: 1,
-            spaceBetween: 10,
-            loop: true,
+            spaceBetween: 0,
+            loop: canLoop,
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
@@ -868,6 +875,7 @@
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
+                dynamicBullets: true,
             }
         });
     }
