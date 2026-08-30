@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block meta %}
-{# Access the first category safely to handle the ManyToMany relationship #}
 {% with primary_cat=product.categories.first %}
-
 <title>{{ product.name }} Wholesale | B2B {{ primary_cat.name|default:"Clothing" }} Manufacturer India – Clauch Factory</title>
 
 <meta name="description" content="Buy {{ product.name }} from a B2B {{ primary_cat.name|default:'clothing' }} manufacturer in India. Bulk supply, factory pricing, private labeling, and low MOQ for wholesalers and retailers.">
@@ -151,188 +149,121 @@
       "value": "{{ product.weight }} kg"
     }
   ]
-  {% if product.rating > 0 %}
-  ,
-  "review": [
-    {
-      "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": "B2B Customer"
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "4"
-      },
-      "reviewBody": "Excellent quality for our hospitality needs. Durable and well-packaged.",
-      "datePublished": "2024-01-15"
-    },
-    {
-      "@type": "Review", 
-      "author": {
-        "@type": "Person",
-        "name": "Wholesale Buyer"
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5"
-      },
-      "reviewBody": "Seamless ordering process and prompt delivery. Highly recommended for bulk purchases!",
-      "datePublished": "2024-02-20"
-    },
-    {
-      "@type": "Review",
-      "author": {
-        "@type": "Person", 
-        "name": "Retail Manager"
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "3"
-      },
-      "reviewBody": "Good value, but one set had a minor stitching issue. Easily resolved with customer service.",
-      "datePublished": "2024-03-10"
-    }
-  ]
-  {% endif %}
 }
 </script>
-
 {% endwith %}
-
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 {% endblock %}
-
 
 {% block content %}
 <style>
-  /* Existing styles (keep them as they are fine) */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  .swiper-button-prev::after,
-  .swiper-button-next::after {
-    font-size: 12px !important;
-    color: #1f2937 !important;
-  }
-
-  .swiper-pagination-bullet {
-    background-color: #1f2937 !important;
-    width: 6px !important;
-    height: 6px !important;
-    opacity: 1 !important;
-  }
-
-  .swiper-pagination-bullet-active {
-    background-color: #111827 !important;
-  }
-
-  /* --- NEW: Global Montserrat Font Application --- */
-  #product-page-container {
-      font-family: 'Montserrat', sans-serif;
-  }
-
-  /* --- REFINED STYLES FOR THE CART NOTIFICATION --- */
-  .cart-notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-150%); /* Start off-screen for animation */
-    z-index: 1050;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb; /* Subtle border */
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Professional shadow */
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    min-width: 320px;
-    max-width: 90%;
+  /* Minimalist Redesign Styles */
+  body {
+    font-family: 'Inter', sans-serif;
     background-color: #ffffff;
-    color: #111827;
+    color: #111;
   }
 
-  .cart-notification.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0); /* Animate into view */
+  .font-montserrat {
+    font-family: 'Montserrat', sans-serif;
   }
 
-  /* Icon wrapper styling */
-  .cart-notification .icon {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-  }
-
-  /* Success State: Green icon */
-  .cart-notification.success .icon svg {
-    color: #16a34a; /* Modern green */
-  }
-
-  /* Error State: Red icon */
-  .cart-notification.error .icon svg {
-    color: #dc2626; /* Strong red */
-  }
-
-  .cart-notification .message {
-    flex-grow: 1;
-    font-size: 0.9rem;
-    font-weight: 500;
-    line-height: 1.4;
-  }
-
-  .cart-notification .cart-link {
-    white-space: nowrap;
-    padding: 0.5rem 1rem;
-    background-color: #111827; /* Match main "Add to Cart" button */
-    color: white;
-    border-radius: 0.375rem;
-    text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
-  }
-
-  .cart-notification .cart-link:hover {
-    background-color: #374151;
-  }
-
-  /* Responsive adjustments for mobile */
-  @media (max-width: 768px) {
-    .cart-notification {
-      bottom: 20px;
-      top: auto;
-      left: 1rem;
-      right: 1rem;
-      width: auto;
-      transform: translateX(0) translateY(150%); /* Animate from bottom */
-      max-width: calc(100% - 2rem);
-    }
-    .cart-notification.show {
-      transform: translateX(0) translateY(0);
-    }
-  }
-
-  /* NEW STYLES FOR GET QUOTE MODAL */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+  /* Swiper Gallery Overrides */
+  .gallery-swiper {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .gallery-swiper .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+  
+  .thumbnail-swiper {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 0;
+  }
+  
+  .thumbnail-swiper .swiper-slide {
+    width: 80px;
+    height: 100px;
+    opacity: 0.5;
+    cursor: pointer;
+    background-color: #f4f4f4;
+    border: 1px solid transparent;
+  }
+  
+  .thumbnail-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+    border-color: #111;
+  }
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: #111 !important;
+    background: white;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .swiper-button-prev:after,
+  .swiper-button-next:after {
+    font-size: 14px !important;
+    font-weight: bold;
+  }
+
+  /* Custom Quantity Input */
+  .quantity-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .quantity-btn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+  }
+
+  /* Accordions */
+  .accordion-button {
+    transition: all 0.3s ease;
+  }
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+  }
+  .accordion-content.active {
+    max-height: 800px; /* arbitrary large value */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  /* Modals */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1001;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    transition: opacity 0.3s ease;
   }
 
   .modal-overlay.show {
@@ -342,751 +273,880 @@
 
   .modal-content {
     background-color: white;
-    padding: 2rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    padding: 2.5rem;
+    border-radius: 0px;
     width: 90%;
-    max-width: 500px;
-    transform: translateY(-20px);
-    transition: transform 0.3s ease-in-out;
-    position: relative;
+    max-width: 480px;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
     max-height: 90vh;
     overflow-y: auto;
+    border: 1px solid #e5e7eb;
   }
 
   .modal-overlay.show .modal-content {
     transform: translateY(0);
   }
 
-  .modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #6b7280;
-  }
-
-  .modal-form label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.5rem;
-  }
-
-  .modal-form input[type="text"],
-  .modal-form input[type="email"],
-  .modal-form input[type="tel"],
-  .modal-form textarea,
-  .modal-form input[type="number"] {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    color: #374151;
-  }
-
-  .modal-form textarea {
-    min-height: 80px;
-    resize: vertical;
-  }
-
-  .modal-form input[type="submit"] {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #1f2937;
+  .cart-notification {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    z-index: 1050;
+    padding: 1rem 1.5rem;
+    background: #111;
     color: white;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+
+  .cart-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .cart-notification .cart-link {
+    background: white;
+    color: black;
+    padding: 0.4rem 1rem;
+    font-size: 12px;
     font-weight: 600;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  .modal-form input[type="submit"]:hover {
-    background-color: #111827;
+  /* Horizontal category scroll */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
-
-  .quote-product-details {
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-    color: #4b5563;
-  }
-  .quote-product-details strong {
-    color: #1f2937;
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 </style>
 
-<div class="fixed top-20 left-4 z-50">
-  <a href="{% url 'new' %}" class="bg-white border border-gray-300 rounded-full w-9 h-9 flex items-center justify-center shadow">
-    ←
-  </a>
-</div>
-
-<div id="product-page-container" class="max-w-6xl mx-auto px-4 pt-4 pb-10 md:flex md:gap-8">
-  <div class="md:w-1/2">
-    <div class="relative w-full h-[65vh] md:h-[75vh] overflow-hidden">
-      <div class="swiper swiper-container h-full">
-        <div class="swiper-wrapper" id="carousel-images">
-          {% if color_images %}
-            {% for image in color_images %}
-              <div class="swiper-slide">
-                <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain" />
-              </div>
-            {% endfor %}
-          {% else %}
-<div class="swiper-slide">
-    <img 
-        src="{{ product.primary_image.url }}" 
-        alt="{{ product.primary_image_alt|default:product.name }}" 
-        class="w-full h-full object-cover" 
-    />
-</div>
-          {% endif %}
-        </div>
-
-        <div class="swiper-pagination absolute bottom-2 left-0 right-0 flex justify-center !text-gray-800 !bg-transparent !text-[10px]"></div>
-        <div class="swiper-button-prev absolute top-1/2 left-2 transform -translate-y-1/2 cursor-pointer text-gray-800 text-[10px] w-5 h-5 opacity-80 hover:opacity-100 transition"></div>
-        <div class="swiper-button-next absolute top-1/2 right-2 transform -translate-y-1/2 cursor-pointer text-gray-800 text-[10px] w-5 h-5 opacity-80 hover:opacity-100 transition"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="md:w-1/2">
-    <div class="flex justify-between items-start mb-4">
-<div class="flex flex-wrap items-baseline gap-2">
-    <h1 class="text-xl md:text-2xl font-semibold text-gray-900">
-        {{ product.name }}
-    </h1>
-
-    {% if primary_color.name %}
-    <span class="text-lg md:text-xl text-gray-500 font-medium">
-        ({{ primary_color.name }})
-    </span>
-    {% endif %}
-</div>
-
-      
-      <div class="text-right flex-shrink-0">
-        <span class="text-sm text-gray-600">Price per Piece:</span>
-        {% if product.discount_price %}
-          <div class="flex items-baseline justify-end gap-2">
-            <span class="text-2xl md:text-3xl font-bold text-gray-900">
-              <span class="text-lg md:text-xl align-baseline">₹</span>{{ product.get_current_price_per_piece|floatformat:0 }}
-            </span>
-            <span class="text-base text-gray-400 line-through">
-              ₹{{ product.get_original_price_per_piece|floatformat:0 }}
-            </span>
-          </div>
-        {% else %}
-          <div class="flex items-baseline justify-end">
-            <span class="text-2xl md:text-3xl font-bold text-gray-900">
-              <span class="text-lg md:text-xl align-baseline">₹</span>{{ product.get_current_price_per_piece|floatformat:0 }}
-            </span>
-          </div>
-        {% endif %}
-      </div>
-      </div>
-
-    <div class="mb-4">
-      <h3 class="text-sm font-medium mb-1">Color</h3>
-      <div class="flex gap-2">
-        {% for color in colors %}
-          {% if color.slug %}
-            <div id="color-btn-{{ color.id }}"
-              data-color-slug="{{ color.slug }}"
-              data-color-name="{{ color.name }}"
-              onclick="selectColor({{ color.id }})"
-              class="cursor-pointer w-5 h-5 border border-gray-300 ring-offset-2 {% if color.id == primary_color.id %}ring-2 ring-black{% endif %}"
-              style="background-color: {{ color.hex_code }};">
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-    <div class="mb-4">
-      {% if primary_color.is_in_stock %}
-        {% if primary_color.stock <= 10 %}
-          <p class="text-sm font-medium text-red-600 animate-pulse">
-            Only {{ primary_color.stock }} sets left! Order soon.
-          </p>
-        {% else %}
-          <p class="text-sm font-medium text-green-700">
-            {{ primary_color.stock }} sets in stock
-          </p>
-        {% endif %}
-      {% else %}
-        <p class="text-sm font-semibold text-red-700">
-          This color is Out of Stock
-        </p>
-      {% endif %}
-    </div>
-
-
-    <div class="mb-4">
-      <div class="flex justify-between items-center">
-        <h3 class="text-sm font-medium mb-1">Set Composition</h3>
-      </div>
-      <p class="text-gray-700 text-sm">
-        This set includes: <strong>{{ product.sizes }}</strong>
-        {% if product.get_total_pieces_in_set > 0 %}
-          (<span class="font-semibold">{{ product.get_total_pieces_in_set }} pieces</span> total per set)
-        {% endif %}
-      </p>
-
-      {% if product.get_total_pieces_in_set > 0 %}
-        <div class="text-gray-800 text-sm mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
-            Total Price for 1 Set ({{ product.get_total_pieces_in_set }} pieces):
-            <span class="text-lg font-bold text-black block mt-1">
-                {% if product.discount_price %}
-                    ₹{{ product.discount_price|floatformat:0 }}
-                    <span class="text-sm font-normal line-through text-gray-400 ml-2">₹{{ product.price|floatformat:0 }}</span>
-                {% else %}
-                    ₹{{ product.price|floatformat:0 }}
-                {% endif %}
-            </span>
-        </div>
-        {% endif %}
-
-       <div class="mt-4">
-          <label for="set_quantity" class="text-sm font-medium mb-1 block">Quantity of Sets <span class="text-red-500">*</span> (Minimum: 1 Set)</label>
-          <input type="number" id="set_quantity" name="set_quantity" min="1" value="1"
-                 class="w-24 px-3 py-1 border rounded-md text-sm text-center">
-       </div>
-    </div>
-
-    <div class="mt-6 hidden md:flex gap-3 sticky bottom-4 bg-white py-2">
-      <button type="button" id="add-to-quote-btn-desktop" 
-              class="flex-1 py-3 border border-gray-400 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
-        Get Quote
-      </button>
-
-      <form id="add-to-cart-form-desktop" action="{% url 'add_to_cart' %}" method="POST" class="flex-1">
-        {% csrf_token %}
-        <input type="hidden" name="product_id" value="{{ product.id }}">
-        <input type="hidden" name="color_id" id="selected_color_id_desktop" value="{{ primary_color.id }}">
-        <button type="submit" 
-            class="w-full py-3 text-white font-semibold text-sm rounded-lg transition-colors
-                   {% if primary_color.is_in_stock %}
-                       bg-black hover:bg-gray-900
-                   {% else %}
-                       bg-gray-400 cursor-not-allowed
-                   {% endif %}"
-            {% if not primary_color.is_in_stock %}disabled{% endif %}>
-          
-          {% if primary_color.is_in_stock %}
-            Add to Cart
-          {% else %}
-            Out of Stock
-          {% endif %}
-        </button>
-      </form>
-    </div>
-    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 md:hidden">
-      <div class="flex gap-2 p-4">
-        <button type="button" id="add-to-quote-btn-mobile" class="flex-1 py-3 border border-gray-300 text-gray-800 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
-          Get Quote
-        </button>
-        <form id="add-to-cart-form-mobile" action="{% url 'add_to_cart' %}" method="POST" class="flex-1">
-          {% csrf_token %}
-          <input type="hidden" name="product_id" value="{{ product.id }}">
-          <input type="hidden" name="color_id" id="selected_color_id_mobile" value="{{ primary_color.id }}">
-          <button type="submit"
-            class="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-900 transition
-                   {% if primary_color.is_in_stock %}
-                       bg-black hover:bg-gray-900
-                   {% else %}
-                       bg-gray-400 cursor-not-allowed
-                   {% endif %}"
-            {% if not primary_color.is_in_stock %}disabled{% endif %}>
-            
-            {% if primary_color.is_in_stock %}
-              Add to Cart
-            {% else %}
-              Out of Stock
-            {% endif %}
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <div class="mb-4 text-sm text-gray-700 mt-6 md:mt-4 prose max-w-none">
-    {{ product.html_description|safe }}
-</div>
-
-
-    <div class="space-y-4 text-sm text-gray-800">
-
-      <div class="border-b pb-2">
-        <button onclick="toggleSection('offers')" class="w-full flex justify-between items-center font-semibold">
-          Offers <span id="icon-offers">+</span>
-        </button>
-        <div id="content-offers" class="mt-2 hidden">
-          <ul class="list-disc list-inside text-gray-700 space-y-1">
-            <li><strong>Special B2B Pricing:</strong> Contact us for bulk order discounts beyond 100 sets.</li>
-            <li><strong>Volume Discounts:</strong> Automatic discounts applied for orders of 50+ sets.</li>
-            <li><strong>New Customer Incentive:</strong> 5% off your first order (min. 20 sets).</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="border-b pb-2">
-        <button onclick="toggleSection('reviews')" class="w-full flex justify-between items-center font-semibold">
-          Reviews <span id="icon-reviews">+</span>
-        </button>
-        <div id="content-reviews" class="mt-2 hidden">
-          <ul class="space-y-2 text-gray-700">
-            <li><span class="text-yellow-500">⭐️⭐️⭐️⭐️☆</span> — <em>"Excellent quality for our hospitality needs. Durable and well-packaged."</em></li>
-            <li><span class="text-yellow-500">⭐️⭐️⭐️⭐️⭐️</span> — <em>"Seamless ordering process and prompt delivery. Highly recommended for bulk purchases!"</em></li>
-            <li><span class="text-yellow-500">⭐️⭐️⭐️☆☆</span> — <em>"Good value, but one set had a minor stitching issue. Easily resolved with customer service."</em></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="border-b pb-2">
-        <button onclick="toggleSection('delivery')" class="w-full flex justify-between items-center font-semibold">
-          Delivery <span id="icon-delivery">+</span>
-        </button>
-        <div id="content-delivery" class="mt-2 hidden">
-          <div class="bg-gray-100 p-3 rounded text-gray-700 leading-relaxed">
-            Estimated delivery for bulk orders: <strong>5–10 working days</strong> (subject to quantity).<br />
-            <strong>Free shipping</strong> on all orders above ₹10,000.<br />
-            All deliveries are handled by trusted logistics partners for secure and timely arrival.
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <button onclick="toggleSection('returns')" class="w-full flex justify-between items-center font-semibold">
-          Returns <span id="icon-returns">+</span>
-        </button>
-        <div id="content-returns" class="mt-2 hidden">
-          <p class="text-gray-700 leading-relaxed">
-            <strong>15-day return or replacement</strong> for manufacturing defects or incorrect items.<br />
-            Items must be <strong>unused</strong>, in original packaging, and include all tags.<br />
-            Refunds processed within 7–10 business days after quality inspection. For bulk orders, please contact our B2B sales team for specific return policies.
-          </p>
-        </div>
-
-        
-
-      </div>
-      {% if product.size_chart %}
-      <div>
-        <button onclick="toggleSection('size-chart')" class="w-full flex justify-between items-center font-semibold">
-          Size Chart <span id="icon-size-chart">+</span>
-        </button>
-        <div id="content-size-chart" class="mt-2 hidden">
-          <img src="{{ product.size_chart.url }}" alt="Size Chart" class="w-full h-auto object-contain">
-        </div>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-</div>
-
-
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-
-<style>
-    body {
-        font-family: 'Montserrat', sans-serif;
-    }
-</style>
-<div class="max-w-7xl mx-auto px-4 py-12">
-
-    <h3 class="text-2xl font-semibold text-center mb-6 tracking-wide">
-        Explore Collections
-    </h3>
-
-    <!-- Horizontal Scroll -->
-    <div class="flex gap-8 overflow-x-auto scrollbar-hide px-2 snap-x snap-mandatory">
-
-        {% for cat in all_categories %}
-        <a href="{% url 'category_detail' cat.slug %}"
-           class="group flex-shrink-0 flex flex-col items-center text-center snap-start">
-
-            <!-- Circle Image -->
-            <div class="w-28 h-28 rounded-full overflow-hidden border border-gray-200
-                        transition-all duration-300 group-hover:shadow-md group-hover:scale-105">
-
-                <img src="{{ cat.image.url }}"
-                     alt="{{ cat.image_alt|default:cat.name }}"
-                     class="w-full h-full object-cover">
-            </div>
-
-            <!-- Name -->
-            <span class="mt-4 text-sm font-medium text-gray-700 group-hover:text-black transition">
-                {{ cat.name }}
-            </span>
-
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500 mb-8 md:mb-12 border-b border-gray-100 pb-4">
+        <a href="{% url 'new' %}" class="hover:text-black transition flex items-center gap-1.5">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Wholesale Catalog
         </a>
-        {% endfor %}
+        <span>/</span>
+        {% with primary_cat=product.categories.first %}
+        {% if primary_cat %}
+            <a href="{% url 'category_detail' primary_cat.slug %}" class="hover:text-black transition">{{ primary_cat.name }}</a>
+            <span>/</span>
+        {% endif %}
+        {% endwith %}
+        <span class="text-black">{{ product.name }}</span>
+    </nav>
 
+    <!-- Main Product Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+        
+        <!-- Left: Image Gallery -->
+        <div class="w-full flex flex-col gap-4">
+            <div class="relative w-full aspect-[4/5] bg-[#f4f4f4] overflow-hidden">
+                <div class="swiper gallery-swiper absolute inset-0">
+                    <div class="swiper-wrapper">
+                        {% if color_images %}
+                            {% for image in color_images %}
+                                <div class="swiper-slide">
+                                    <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain p-4" />
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="swiper-slide">
+                                <img src="{{ product.primary_image.url }}" alt="{{ product.primary_image_alt|default:product.name }}" class="w-full h-full object-cover" />
+                            </div>
+                        {% endif %}
+                    </div>
+                    <!-- Navigation -->
+                    <div class="swiper-button-prev hidden md:flex"></div>
+                    <div class="swiper-button-next hidden md:flex"></div>
+                </div>
+            </div>
+            
+            {% if color_images and color_images|length > 1 %}
+            <!-- Thumbnails -->
+            <div class="swiper thumbnail-swiper">
+                <div class="swiper-wrapper">
+                    {% for image in color_images %}
+                        <div class="swiper-slide">
+                            <img src="{{ image.image.url }}" class="w-full h-full object-contain p-1" />
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right: Product Info & Actions -->
+        <div class="flex flex-col pt-2 lg:pt-0">
+            <div class="mb-6 flex justify-between items-start gap-4">
+                <!-- Title & Color -->
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none text-[#111]" id="product-name-full">
+                    {{ product.name }}
+                    {% if primary_color.name %}
+                        <span id="product-color-text" class="text-gray-400 font-light block mt-2 text-2xl md:text-3xl tracking-tight">({{ primary_color.name }})</span>
+                    {% endif %}
+                </h1>
+                
+                <!-- Price Per Piece -->
+                <div class="text-right shrink-0 mt-1">
+                    <div class="text-3xl md:text-4xl font-bold tracking-tight text-[#111]">
+                        <span class="text-xl align-top text-gray-500">₹</span>{{ product.get_current_price_per_piece|floatformat:0 }}
+                    </div>
+                    <div class="text-xs font-bold tracking-[0.2em] text-gray-400 uppercase mt-2">/ Piece</div>
+                    {% if product.discount_price %}
+                        <div class="text-sm text-gray-400 line-through mt-1">₹{{ product.get_original_price_per_piece|floatformat:0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Color Swatches -->
+            <div class="mb-6">
+                <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Select Color</h3>
+                <div class="flex flex-wrap gap-2 mb-3">
+                    {% for color in colors %}
+                        {% if color.slug %}
+                            <div id="color-btn-{{ color.id }}"
+                                data-color-slug="{{ color.slug }}"
+                                data-color-name="{{ color.name }}"
+                                onclick="selectColor({{ color.id }})"
+                                class="cursor-pointer w-8 h-8 border border-gray-200 transition-all {% if color.id == primary_color.id %}border-black border-[2px] shadow-sm{% endif %}"
+                                style="background-color: {{ color.hex_code }};"
+                                title="{{ color.name }}">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div>
+                    {% if primary_color.is_in_stock %}
+                        {% if primary_color.stock <= 10 %}
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-red-600 bg-red-50 px-2 py-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                Only {{ primary_color.stock }} sets left
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[#25D366]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#25D366]"></span>
+                                In Stock
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 bg-gray-100 px-2 py-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                            Out of Stock
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Set Composition Box -->
+            <div class="mb-6 flex flex-col gap-3">
+                <div>
+                    <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Set Composition</h3>
+                    <p class="text-sm font-medium text-[#111]">
+                        {{ product.sizes }} 
+                        {% if product.get_total_pieces_in_set > 0 %}
+                            <span class="text-gray-500 font-normal">({{ product.get_total_pieces_in_set }} Pieces Total)</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                {% if product.get_total_pieces_in_set > 0 %}
+                <div class="flex justify-between items-end">
+                    <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Total Set Price</h3>
+                    <div class="text-right flex items-baseline gap-2">
+                        {% if product.discount_price %}
+                            <span class="text-sm line-through text-gray-400">₹{{ product.price|floatformat:0 }}</span>
+                            <span class="text-xl font-bold text-[#111]">₹{{ product.discount_price|floatformat:0 }}</span>
+                        {% else %}
+                            <span class="text-xl font-bold text-[#111]">₹{{ product.price|floatformat:0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quantity & Actions -->
+            <form id="add-to-cart-form" action="{% url 'add_to_cart' %}" method="POST" class="mb-8">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input type="hidden" name="color_id" id="selected_color_id" value="{{ primary_color.id }}">
+                
+                <div class="mb-6">
+                    <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2 block">Quantity (Sets)</label>
+                    <div class="flex items-center gap-0 w-32 border border-gray-300">
+                        <button type="button" onclick="decrementQty()" class="quantity-btn">-</button>
+                        <input type="number" id="set_quantity" name="set_quantity" min="1" value="1" 
+                               class="w-full h-10 text-center font-bold text-sm bg-transparent border-none focus:ring-0 outline-none p-0" readonly>
+                        <button type="button" onclick="incrementQty()" class="quantity-btn">+</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <!-- Buy Now Button -->
+                    <button type="submit" name="action" value="buy_now"
+                            class="w-full bg-[#111] text-white py-4 font-bold text-xs uppercase tracking-widest transition-all
+                                   {% if primary_color.is_in_stock %}hover:bg-gray-800{% else %}bg-gray-300 text-gray-500 cursor-not-allowed{% endif %}"
+                            {% if not primary_color.is_in_stock %}disabled{% endif %}>
+                        {% if primary_color.is_in_stock %}Buy Now{% else %}Out of Stock{% endif %}
+                    </button>
+
+                    <!-- Add to Cart Button -->
+                    <button type="submit" name="action" value="add_to_cart"
+                            class="w-full bg-white text-[#111] border border-[#111] py-4 font-bold text-xs uppercase tracking-widest transition-all
+                                   {% if primary_color.is_in_stock %}hover:bg-gray-50{% else %}bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed{% endif %}"
+                            {% if not primary_color.is_in_stock %}disabled{% endif %}>
+                        Add to Cart
+                    </button>
+                    
+                    <button type="button" onclick="openQuoteModal()"
+                            class="w-full bg-white text-[#111] border border-gray-300 py-4 font-bold text-xs uppercase tracking-widest hover:border-[#111] hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                        Request Quote via WhatsApp
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Details Accordion -->
+            <div class="border-t border-gray-200">
+                
+                <!-- Description -->
+                <div class="border-b border-gray-200">
+                    <button type="button" class="accordion-button w-full py-5 flex justify-between items-center text-xs font-bold uppercase tracking-[0.15em] text-[#111]" onclick="toggleAccordion(this)">
+                        Description
+                        <svg class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content prose prose-sm max-w-none text-gray-600">
+                        {{ product.html_description|safe }}
+                    </div>
+                </div>
+
+                <!-- Offers -->
+                <div class="border-b border-gray-200">
+                    <button type="button" class="accordion-button w-full py-5 flex justify-between items-center text-xs font-bold uppercase tracking-[0.15em] text-[#111]" onclick="toggleAccordion(this)">
+                        B2B Offers
+                        <svg class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <ul class="space-y-3 text-sm text-gray-600 list-none pl-0">
+                            <li class="flex items-start gap-2">
+                                <span class="text-black font-bold mt-0.5">•</span>
+                                <div><strong class="text-[#111]">Special B2B Pricing:</strong> Contact us for bulk order discounts beyond 100 sets.</div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-black font-bold mt-0.5">•</span>
+                                <div><strong class="text-[#111]">Volume Discounts:</strong> Automatic discounts applied for orders of 50+ sets.</div>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-black font-bold mt-0.5">•</span>
+                                <div><strong class="text-[#111]">New Customer Incentive:</strong> 5% off your first order (min. 20 sets).</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Delivery -->
+                <div class="border-b border-gray-200">
+                    <button type="button" class="accordion-button w-full py-5 flex justify-between items-center text-xs font-bold uppercase tracking-[0.15em] text-[#111]" onclick="toggleAccordion(this)">
+                        Delivery
+                        <svg class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="text-sm text-gray-600 leading-relaxed bg-gray-50 p-4 border border-gray-100">
+                            Estimated delivery for bulk orders: <strong class="text-[#111]">5–10 working days</strong> (subject to quantity).<br /><br />
+                            <strong class="text-[#111]">Free shipping</strong> on all orders above ₹10,000.<br /><br />
+                            All deliveries are handled by trusted logistics partners for secure and timely arrival.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Returns -->
+                <div class="border-b border-gray-200">
+                    <button type="button" class="accordion-button w-full py-5 flex justify-between items-center text-xs font-bold uppercase tracking-[0.15em] text-[#111]" onclick="toggleAccordion(this)">
+                        Returns
+                        <svg class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            <strong class="text-[#111]">15-day return or replacement</strong> for manufacturing defects or incorrect items.<br /><br />
+                            Items must be <strong class="text-[#111]">unused</strong>, in original packaging, and include all tags.<br /><br />
+                            Refunds processed within 7–10 business days after quality inspection. For bulk orders, please contact our B2B sales team for specific return policies.
+                        </p>
+                    </div>
+                </div>
+
+                {% if product.size_chart %}
+                <!-- Size Chart -->
+                <div class="border-b border-gray-200">
+                    <button type="button" class="accordion-button w-full py-5 flex justify-between items-center text-xs font-bold uppercase tracking-[0.15em] text-[#111]" onclick="toggleAccordion(this)">
+                        Size Chart
+                        <svg class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <img src="{{ product.size_chart.url }}" alt="Size Chart" class="w-full h-auto object-contain border border-gray-100">
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
     </div>
-
 </div>
 
+<!-- Customer Reviews Section -->
+<div class="w-full bg-white py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-xl md:text-2xl font-black tracking-tighter uppercase mb-10 text-[#111] font-montserrat">Customer Reviews</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+            <!-- Left Column: Summary & Form -->
+            <div class="md:col-span-1">
+                <!-- Overall Rating -->
+                <div class="flex items-center gap-4 mb-8 pb-8 border-b border-gray-200">
+                    <span class="text-5xl font-black text-black">{{ product.rating|floatformat:1 }}</span>
+                    <div class="flex flex-col">
+                        <div class="flex text-yellow-400 text-lg mb-1">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= product.rating|add:"0" %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Based on {{ product.reviews_count }} reviews</span>
+                    </div>
+                </div>
 
+                <!-- Add Review Form -->
+                {% if request.user.is_authenticated %}
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-[#111] mb-6">Write a Review</h4>
+                        <form id="submit-review-form" action="{% url 'submit_review' product.id %}" method="POST" class="space-y-4">
+                            {% csrf_token %}
+                            <div>
+                                <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-2">Rating</label>
+                                <select name="rating" class="w-full bg-gray-50 border border-gray-200 h-12 px-4 text-sm focus:border-black outline-none transition-colors">
+                                    <option value="">Select Rating (Optional)</option>
+                                    <option value="5">5 ★ - Excellent</option>
+                                    <option value="4">4 ★ - Good</option>
+                                    <option value="3">3 ★ - Average</option>
+                                    <option value="2">2 ★ - Poor</option>
+                                    <option value="1">1 ★ - Terrible</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-2">Review (Optional)</label>
+                                <textarea name="comment" class="w-full bg-gray-50 border border-gray-200 p-4 text-sm focus:border-black outline-none min-h-[120px] transition-colors" placeholder="Share your experience..."></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-[#111] text-white py-4 font-bold text-[10px] uppercase tracking-widest hover:bg-gray-800 transition-colors">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="text-center bg-gray-50 p-8 border border-gray-100">
+                        <p class="text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-4">Log in to leave a review</p>
+                        <a href="{% url 'login' %}" class="inline-block bg-white text-[#111] border border-gray-300 px-8 py-3 font-bold text-[10px] uppercase tracking-widest hover:border-black transition-colors">Log In</a>
+                    </div>
+                {% endif %}
+            </div>
 
+            <!-- Right Column: Review List -->
+            <div class="md:col-span-2">
+                {% if product.reviews.all %}
+                    <div class="space-y-8 max-h-[600px] overflow-y-auto pr-4 custom-scrollbar">
+                        {% for review in product.reviews.all %}
+                        <div class="border-b border-gray-200 last:border-0 pb-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <strong class="text-[#111] uppercase tracking-wider text-sm">{{ review.obfuscated_name }}</strong>
+                                <span class="text-[10px] text-gray-400 tracking-wider">{{ review.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            {% if review.rating %}
+                            <div class="text-yellow-400 text-base mb-3 tracking-widest">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if review.comment %}
+                            <p class="text-sm text-gray-600 leading-relaxed">{{ review.comment }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="flex items-center justify-center h-full min-h-[200px] bg-gray-50 border border-gray-100">
+                        <p class="text-xs font-bold uppercase tracking-widest text-gray-400">No reviews yet. Be the first!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Explore Categories -->
+<div class="w-full bg-[#f8f8f8] py-12 md:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden border-t border-gray-200">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-xl md:text-2xl font-black tracking-tighter uppercase mb-10 text-[#111] font-montserrat">
+            Explore Categories
+        </h2>
+        <div class="flex overflow-x-auto gap-6 pb-6 hide-scrollbar snap-x snap-mandatory">
+            {% for cat in all_categories %}
+            <div class="flex-none w-[35%] sm:w-[25%] md:w-[20%] lg:w-[15%] snap-start group cursor-pointer">
+                <a href="{% url 'category_detail' cat.slug %}" class="block w-full text-center">
+                    <div class="w-full aspect-square rounded-full overflow-hidden bg-white mb-4 shadow-sm border border-gray-200 p-1">
+                        <div class="w-full h-full rounded-full overflow-hidden bg-[#f4f4f4]">
+                            <img src="{{ cat.image.url }}" alt="{{ cat.name }}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-bold tracking-widest uppercase text-gray-500 group-hover:text-black transition-colors">{{ cat.name }}</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
+<!-- Shop Similar -->
 {% if related_products %}
-  <div class="max-w-6xl mx-auto px-4 md:px-0 mb-5 font-montserrat">
-      <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-6">Shop Similar</h2>
-      
-      <div>
+<div class="w-full bg-white py-12 md:py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-200 font-montserrat">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-xl md:text-2xl font-black tracking-tighter uppercase mb-10 text-[#111]">
+            Shop Similar
+        </h2>
+    </div>
+    <div>
         {% include 'partials/popular_products_grid.html' with products=related_products %}
-      </div>
-  </div>
+    </div>
+</div>
 {% endif %}
 
+<!-- Sticky Mobile CTA -->
+<div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 md:hidden pb-safe">
+    <div class="flex p-3 gap-2">
+        <button type="button" onclick="submitMobileAction('add_to_cart')" class="flex-1 py-3 bg-white text-[#111] border border-[#111] font-bold text-[10px] uppercase tracking-widest {% if not primary_color.is_in_stock %}opacity-50 cursor-not-allowed{% endif %}" {% if not primary_color.is_in_stock %}disabled{% endif %}>
+            Add to Cart
+        </button>
+        <button type="button" onclick="submitMobileAction('buy_now')" class="flex-1 py-3 text-white font-bold text-[10px] uppercase tracking-widest {% if primary_color.is_in_stock %}bg-[#111]{% else %}bg-gray-400{% endif %}" {% if not primary_color.is_in_stock %}disabled{% endif %}>
+            {% if primary_color.is_in_stock %}Buy Now{% else %}Out of Stock{% endif %}
+        </button>
+    </div>
+</div>
 
+<!-- Modals & Notifications -->
 <div id="cart-notification" class="cart-notification">
-  <span class="icon" id="notification-icon"></span>
-  <div class="message" id="notification-message"></div>
-  <a id="notification-cart-link" href="#" class="cart-link">View Cart</a>
+    <span class="icon" id="notification-icon"></span>
+    <div class="message text-sm" id="notification-message"></div>
+    <a id="notification-cart-link" href="#" class="cart-link hidden">View Cart</a>
 </div>
 
 <div id="quote-modal-overlay" class="modal-overlay">
-  <div class="modal-content">
-    <span class="modal-close" onclick="closeQuoteModal()">&times;</span>
-    <h2 class="text-xl font-semibold mb-6 text-gray-900">Request a Quote for this Product</h2>
+    <div class="modal-content relative">
+        <button class="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors" onclick="closeQuoteModal()">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        
+        <h2 class="text-2xl font-black tracking-tighter uppercase mb-6 text-[#111] pr-6 border-b border-gray-100 pb-4">Request a Quote</h2>
 
-    <div class="quote-product-details mb-4">
-      <p>Product: <strong><span id="quote-product-name">{{ product.name }}</span></strong></p>
-      <p>Color: <strong id="quote-color-display"></strong></p>
-      <p>Set Composition: <strong>{{ product.sizes }}</strong>
-        {% if product.get_total_pieces_in_set > 0 %}
-          ({{ product.get_total_pieces_in_set }} pieces total)
-        {% endif %}
-      </p>
-      <p>Price per Piece: <strong>₹{{ product.get_current_price_per_piece|floatformat:0 }}</strong></p>
-      <p>Price per Set: <strong>₹{{ product.discount_price|default:product.price|floatformat:0 }}</strong></p>
-      <p id="quote-warning" class="text-sm text-red-600 mt-2 hidden">
-        Please select a color before requesting a quote.
-      </p>
+        <div class="bg-gray-50 p-4 border border-gray-200 mb-6 text-sm">
+            <p class="mb-1 text-gray-500">Product: <strong class="text-[#111] uppercase" id="quote-product-name">{{ product.name }}</strong></p>
+            <p class="mb-1 text-gray-500">Color: <strong class="text-[#111] uppercase" id="quote-color-display"></strong></p>
+            <p class="mb-1 text-gray-500">Set Comp: <strong class="text-[#111] uppercase">{{ product.sizes }}</strong></p>
+            <p class="text-gray-500">Price/Set: <strong class="text-[#111]">₹{{ product.discount_price|default:product.price|floatformat:0 }}</strong></p>
+            <p id="quote-warning" class="text-xs text-red-600 mt-2 hidden font-medium">Please select a color before requesting a quote.</p>
+        </div>
+
+        <form id="quote-form" class="space-y-4">
+            <div>
+                <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-1">Your Name <span class="text-red-500">*</span></label>
+                <input type="text" id="quote-name" required class="w-full bg-white border border-gray-300 h-10 px-3 text-sm focus:border-black outline-none transition-colors">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-1">Company</label>
+                    <input type="text" id="quote-company" class="w-full bg-white border border-gray-300 h-10 px-3 text-sm focus:border-black outline-none transition-colors">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-1">Sets Qty <span class="text-red-500">*</span></label>
+                    <input type="number" id="quote-set-quantity" value="1" min="1" required class="w-full bg-white border border-gray-300 h-10 px-3 text-sm focus:border-black outline-none transition-colors">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-1">Work Email <span class="text-red-500">*</span></label>
+                <input type="email" id="quote-email" required class="w-full bg-white border border-gray-300 h-10 px-3 text-sm focus:border-black outline-none transition-colors">
+            </div>
+
+            <div>
+                <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-1">Phone Number <span class="text-red-500">*</span></label>
+                <input type="tel" id="quote-phone" required pattern="[0-9]{10}" title="10-digit phone number" class="w-full bg-white border border-gray-300 h-10 px-3 text-sm focus:border-black outline-none transition-colors">
+            </div>
+
+            <div>
+                <label class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-500 block mb-1">Additional Notes</label>
+                <textarea id="quote-notes" class="w-full bg-white border border-gray-300 p-3 text-sm focus:border-black outline-none transition-colors resize-y min-h-[80px]" placeholder="Specific requirements..."></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-[#111] text-white py-4 font-bold text-[10px] uppercase tracking-widest mt-2 hover:bg-gray-800 transition-colors">
+                Send Request via WhatsApp
+            </button>
+        </form>
     </div>
-
-    <form id="quote-form" class="modal-form">
-      <label for="quote-name">Your Name <span class="text-red-500">*</span></label>
-      <input type="text" id="quote-name" required>
-
-      <label for="quote-company">Company Name</label>
-      <input type="text" id="quote-company">
-
-      <label for="quote-email">Work Email <span class="text-red-500">*</span></label>
-      <input type="email" id="quote-email" required>
-
-      <label for="quote-phone">Phone Number <span class="text-red-500">*</span></label>
-      <input type="tel" id="quote-phone" required pattern="[0-9]{10}" title="Please enter a 10-digit phone number">
-
-      <label for="quote-set-quantity">Quantity of Sets <span class="text-red-500">*</span> (Minimum: 1)</label>
-      <input type="number" id="quote-set-quantity" value="1" min="1" required>
-
-      <label for="quote-notes">Additional Details / Specific Requirements</label>
-      <textarea id="quote-notes" placeholder="e.g., specific delivery dates, branding requirements, larger quantities..."></textarea>
-
-      <input type="submit" value="Send Quote Request via WhatsApp">
-    </form>
-  </div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
 <script>
-  let swiperInstance;
+    // Quantity Selector Logic
+    const qtyInput = document.getElementById('set_quantity');
+    function incrementQty() {
+        qtyInput.value = parseInt(qtyInput.value) + 1;
+    }
+    function decrementQty() {
+        if (parseInt(qtyInput.value) > 1) {
+            qtyInput.value = parseInt(qtyInput.value) - 1;
+        }
+    }
+    function submitMobileAction(action) {
+        const form = document.getElementById('add-to-cart-form');
+        
+        // Temporarily add a hidden submitter input to simulate button click
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'mobile_action';
+        hiddenInput.value = action;
+        hiddenInput.id = 'temp-mobile-action';
+        form.appendChild(hiddenInput);
+        
+        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        
+        // Remove it after submit
+        form.removeChild(hiddenInput);
+    }
 
-  function initSwiper() {
-    swiperInstance = new Swiper('.swiper-container', {
-      slidesPerView: 1,
-      spaceBetween: 10,
-      loop: true,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
+    // Accordion Logic
+    function toggleAccordion(button) {
+        const content = button.nextElementSibling;
+        const icon = button.querySelector('svg');
+        const isActive = content.classList.contains('active');
+        
+        // Close all other accordions (optional, comment out if you want multiple open)
+        /*
+        document.querySelectorAll('.accordion-content').forEach(el => {
+            el.classList.remove('active');
+            el.previousElementSibling.querySelector('svg').style.transform = 'rotate(0deg)';
+        });
+        */
+
+        if (!isActive) {
+            content.classList.add('active');
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            content.classList.remove('active');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Swiper Logic
+    let gallerySwiper;
+    let thumbSwiper;
+
+    function initSwipers() {
+        {% if color_images and color_images|length > 1 %}
+        thumbSwiper = new Swiper('.thumbnail-swiper', {
+            spaceBetween: 10,
+            slidesPerView: 4,
+            freeMode: true,
+            watchSlidesProgress: true,
+            breakpoints: {
+                768: { slidesPerView: 5 }
+            }
+        });
+        {% endif %}
+
+        gallerySwiper = new Swiper('.gallery-swiper', {
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            {% if color_images and color_images|length > 1 %}
+            thumbs: {
+                swiper: thumbSwiper
+            }
+            {% endif %}
+        });
+    }
+
+    // Color Selection Logic
+    let selectedColorName = "{{ primary_color.name|escapejs }}"; 
+    function selectColor(colorId) {
+        document.querySelectorAll('[id^="color-btn-"]').forEach(btn => {
+            btn.classList.remove('border-black', 'border-[2px]', 'shadow-sm');
+        });
+
+        const selected = document.getElementById(`color-btn-${colorId}`);
+        if(selected) {
+            selected.classList.add('border-black', 'border-[2px]', 'shadow-sm');
+            
+            document.getElementById('selected_color_id').value = colorId;
+            selectedColorName = selected.getAttribute('data-color-name') || ''; 
+            
+            const colorTextEl = document.getElementById('product-color-text');
+            if (colorTextEl) {
+                colorTextEl.textContent = selectedColorName ? `(${selectedColorName})` : '';
+            }
+
+            const colorSlug = selected.getAttribute('data-color-slug');
+            const productSlug = "{{ product.slug|escapejs }}";
+            if (colorSlug && productSlug) {
+                window.location.href = `/product/${productSlug}/${colorSlug}/`;
+            }
+        }
+    }
+
+    // Cart Notification Logic
+    const cartNotification = document.getElementById('cart-notification');
+    const notificationIcon = document.getElementById('notification-icon');
+    const notificationMessage = document.getElementById('notification-message');
+    const notificationCartLink = document.getElementById('notification-cart-link');
+    let notificationTimeout;
+
+    const successIconSVG = `<svg class="w-5 h-5 text-[#25D366]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
+    const errorIconSVG = `<svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>`;
+
+    function showNotification(message, type, cartUrl = '') {
+        clearTimeout(notificationTimeout);
+        notificationMessage.textContent = message;
+
+        if (type === 'success') {
+            notificationIcon.innerHTML = successIconSVG;
+            if (cartUrl) {
+                notificationCartLink.href = cartUrl;
+                notificationCartLink.classList.remove('hidden');
+            } else {
+                notificationCartLink.classList.add('hidden');
+            }
+        } else {
+            notificationIcon.innerHTML = errorIconSVG;
+            notificationCartLink.classList.add('hidden');
+        }
+
+        setTimeout(() => cartNotification.classList.add('show'), 50);
+        notificationTimeout = setTimeout(hideNotification, 5000);
+    }
+
+    function hideNotification() {
+        cartNotification.classList.remove('show');
+    }
+
+    // Add to Cart AJAX
+    document.getElementById("add-to-cart-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const colorId = document.getElementById('selected_color_id').value;
+        const setQuantityInput = document.getElementById('set_quantity');
+        const setQuantity = parseInt(setQuantityInput.value);
+
+        if (!colorId) {
+            showNotification("Please select a color for the product.", "error");
+            return;
+        }
+
+        if (isNaN(setQuantity) || setQuantity < 1) {
+            showNotification("Quantity of sets must be at least 1.", "error");
+            return;
+        }
+
+        const formData = new FormData(form);
+        formData.append('set_quantity', setQuantity);
+
+        const mobileActionInput = document.getElementById('temp-mobile-action');
+        const isMobileBuyNow = mobileActionInput && mobileActionInput.value === 'buy_now';
+
+        if ((event.submitter && event.submitter.value === 'buy_now') || isMobileBuyNow) {
+            formData.append('buy_now', 'true');
+        }
+
+        try {
+            const actionUrl = form.getAttribute('action');
+            const response = await fetch(actionUrl, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+                redirect: 'follow'
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+                return;
+            }
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.status === 'success') {
+                    if (data.checkout_url) {
+                        window.location.href = data.checkout_url;
+                    } else {
+                        showNotification(data.message, 'success', data.cart_url);
+                    }
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            } else {
+                const errorData = await response.json();
+                showNotification(errorData.message || 'An error occurred.', 'error');
+            }
+        } catch (error) {
+            showNotification('Network error. Please try again.', 'error');
+        }
     });
-  }
 
-  // Handle color selection
-  let selectedColorName = "{{ primary_color.name }}"; // Store selected color name
-  function selectColor(colorId) {
-    document.querySelectorAll('[id^="color-btn-"]').forEach(btn => {
-      btn.classList.remove('ring-2', 'ring-black');
+    // Submit Review AJAX
+    const submitReviewForm = document.getElementById("submit-review-form");
+    if (submitReviewForm) {
+        submitReviewForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        showNotification(data.message, 'success');
+                        setTimeout(() => window.location.reload(), 1500); // Reload to show new review
+                    } else {
+                        showNotification(data.message, 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Submit Review';
+                    }
+                } else {
+                    const errorData = await response.json();
+                    showNotification(errorData.message || 'An error occurred.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Review';
+                }
+            } catch (error) {
+                showNotification('Network error. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Review';
+            }
+        });
+    }
+
+    // Quote Modal Logic
+    const quoteModalOverlay = document.getElementById('quote-modal-overlay');
+    const quoteForm = document.getElementById('quote-form');
+    const whatsappNumber = '917888111768';
+
+    function openQuoteModal() {
+        const colorId = document.getElementById('selected_color_id').value;
+        const quoteWarning = document.getElementById('quote-warning');
+        
+        if (!colorId) {
+            quoteWarning.classList.remove('hidden');
+        } else {
+            quoteWarning.classList.add('hidden');
+        }
+
+        document.getElementById('quote-color-display').textContent = selectedColorName || 'Not Selected';
+        document.getElementById('quote-set-quantity').value = document.getElementById('set_quantity').value || 1;
+
+        quoteModalOverlay.classList.remove('hidden');
+        setTimeout(() => quoteModalOverlay.classList.add('show'), 50);
+    }
+
+    function closeQuoteModal() {
+        quoteModalOverlay.classList.remove('show');
+        setTimeout(() => {
+            quoteModalOverlay.classList.add('hidden');
+            quoteForm.reset();
+        }, 300);
+    }
+
+    quoteForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('quote-name').value;
+        const company = document.getElementById('quote-company').value;
+        const email = document.getElementById('quote-email').value;
+        const phone = document.getElementById('quote-phone').value;
+        const setQuantity = parseInt(document.getElementById('quote-set-quantity').value);
+        const notes = document.getElementById('quote-notes').value;
+
+        if (!name || !email || !phone || isNaN(setQuantity) || setQuantity < 1) {
+            alert("Please fill in required fields.");
+            return;
+        }
+
+        const productName = "{{ product.name|escapejs }}";
+        const productUrl = window.location.href;
+        const pricePerSet = "{{ product.discount_price|default:product.price|floatformat:0 }}";
+        const pricePerPiece = "{{ product.get_current_price_per_piece|floatformat:0 }}";
+        const totalPiecesInSet = "{{ product.get_total_pieces_in_set }}";
+        const setComposition = "{{ product.sizes|escapejs }}";
+
+        let msg = `*New B2B Quote Request*
+
+`;
+        msg += `*Product:* ${productName} (${selectedColorName})
+`;
+        msg += `*URL:* ${productUrl}
+`;
+        msg += `*Price/Set:* ₹${pricePerSet}
+`;
+        msg += `*Price/Piece:* ₹${pricePerPiece} (for ${totalPiecesInSet} pieces)
+`;
+        msg += `*Set Comp:* ${setComposition}
+`;
+        msg += `*Sets Qty:* ${setQuantity}
+
+`;
+        msg += `*Customer Details:*
+Name: ${name}
+`;
+        if (company) msg += `Company: ${company}
+`;
+        msg += `Email: ${email}
+Phone: ${phone}
+`;
+        if (notes) msg += `
+*Notes:*
+${notes}
+`;
+
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+        closeQuoteModal();
+        showNotification("Quote request prepared for WhatsApp.", "success");
     });
 
-    const selected = document.getElementById(`color-btn-${colorId}`);
-    selected.classList.add('ring-2', 'ring-black');
+    // Initialize
+    document.addEventListener("DOMContentLoaded", () => {
+        initSwipers();
+        
 
-    // Update hidden input values for both desktop & mobile forms
-    document.getElementById('selected_color_id_desktop').value = colorId;
-    document.getElementById('selected_color_id_mobile').value = colorId;
-    selectedColorName = selected.getAttribute('data-color-name') || ''; // Update selected color name
-
-    // Immediately update the product name display to include selected color
-    const colorTextEl = document.getElementById('product-color-text');
-    if (colorTextEl) {
-      colorTextEl.textContent = selectedColorName ? ` (${selectedColorName})` : '';
-    }
-
-    const colorSlug = selected.getAttribute('data-color-slug');
-    const productSlug = "{{ product.slug }}";
-    if (colorSlug && productSlug) {
-      const newUrl = `/product/${productSlug}/${colorSlug}/`;
-      // For color change, it's often better to reload to load specific images from server
-      window.location.href = newUrl;
-    }
-  }
-
-
-  // --- Cart Notification Functions ---
-  const cartNotification = document.getElementById('cart-notification');
-  const notificationIcon = document.getElementById('notification-icon');
-  const notificationMessage = document.getElementById('notification-message');
-  const notificationCartLink = document.getElementById('notification-cart-link');
-  let notificationTimeout;
-
-  // Define professional SVG icons
-  const successIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
-  const errorIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
-
-  function showNotification(message, type, cartUrl = '') {
-    clearTimeout(notificationTimeout);
-
-    // Reset classes first
-    cartNotification.classList.remove('success', 'error', 'show');
-    cartNotification.classList.add(type);
-    notificationMessage.textContent = message;
-
-    if (type === 'success') {
-      notificationIcon.innerHTML = successIconSVG;
-      if (cartUrl) {
-        notificationCartLink.href = cartUrl;
-        notificationCartLink.classList.remove('hidden');
-      } else {
-         notificationCartLink.classList.add('hidden');
-      }
-    } else {
-      notificationIcon.innerHTML = errorIconSVG;
-      notificationCartLink.classList.add('hidden');
-    }
-
-    // Use a tiny timeout to allow the browser to apply styles before animating
-    setTimeout(() => {
-      cartNotification.classList.add('show');
-    }, 50);
-
-    // Set a timer to automatically hide the notification
-    notificationTimeout = setTimeout(() => {
-      hideNotification();
-    }, 5000);
-  }
-
-  function hideNotification() {
-    cartNotification.classList.remove('show');
-  }
-
-  // --- AJAX Form Submission Handlers ---
-  document.getElementById("add-to-cart-form-desktop").addEventListener("submit", handleAddToCart);
-  document.getElementById("add-to-cart-form-mobile").addEventListener("submit", handleAddToCart);
-
-  async function handleAddToCart(event) {
-      event.preventDefault(); // Prevent default form submission
-
-      const form = event.target;
-      const colorId = document.getElementById('selected_color_id_desktop').value; // or mobile, they sync
-      const setQuantityInput = document.getElementById('set_quantity');
-      const setQuantity = parseInt(setQuantityInput.value);
-
-      // --- Client-side validation ---
-      if (!colorId) {
-        showNotification("Please select a color for the product.", "error");
-        return;
-      }
-
-      if (isNaN(setQuantity) || setQuantity < 1) {
-          showNotification("Quantity of sets must be at least 1 to add to cart.", "error");
-          setQuantityInput.style.border = '1px solid red';
-          return;
-      } else {
-          setQuantityInput.style.border = '';
-      }
-
-      const formData = new FormData(form);
-      formData.append('set_quantity', setQuantity); // Ensure set_quantity is in the form data
-
-      try {
-          const response = await fetch(form.action, {
-              method: 'POST',
-              body: formData,
-              headers: {
-                  'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-              },
-              redirect: 'follow'
-          });
-
-          if (response.redirected) {
-              window.location.href = response.url; // Redirect to login page if required
-              return;
-          }
-
-          if (response.ok) {
-              const data = await response.json();
-              if (data.status === 'success') {
-                  showNotification(data.message, 'success', data.cart_url);
-                  // Optionally update cart count in header
-                  // if (data.cart_count) {
-                  //    document.getElementById('cart-count-display').textContent = data.cart_count;
-                  // }
-              } else {
-                  showNotification(data.message, 'error');
-              }
-          } else {
-              try {
-                  const errorData = await response.json();
-                  showNotification(errorData.message || 'An error occurred while adding to cart.', 'error');
-              } catch (jsonError) {
-                  showNotification('An unexpected server error occurred.', 'error');
-                  console.error('Server responded with non-JSON error:', response.status, response.statusText);
-              }
-          }
-      } catch (error) {
-          console.error('Fetch error:', error);
-          showNotification('Network error. Please try again.', 'error');
-      }
-  }
-
-
-  // --- Get Quote Modal Logic ---
-  const quoteModalOverlay = document.getElementById('quote-modal-overlay');
-  const quoteForm = document.getElementById('quote-form');
-  const quoteWarning = document.getElementById('quote-warning');
-  const quoteColorDisplay = document.getElementById('quote-color-display');
-  const quoteProductNameDisplay = document.getElementById('quote-product-name');
-  const quoteSetQuantityInput = document.getElementById('quote-set-quantity');
-  
-  // === UPDATED WHATSAPP NUMBER ===
-  const whatsappNumber = '917888111768'; // Country code + number
-
-  function openQuoteModal() {
-    const colorId = document.getElementById('selected_color_id_desktop').value;
-
-    if (!colorId) {
-        quoteWarning.classList.remove('hidden');
-    } else {
-        quoteWarning.classList.add('hidden');
-    }
-
-    quoteColorDisplay.textContent = selectedColorName || 'Not Selected';
-    // Use the current product name (including selected color) from the DOM
-    quoteProductNameDisplay.textContent = document.getElementById('product-name-full').textContent;
-
-    quoteSetQuantityInput.value = document.getElementById('set_quantity').value || 1;
-    quoteSetQuantityInput.min = "1";
-
-    quoteModalOverlay.classList.remove('hidden');
-    setTimeout(() => {
-      quoteModalOverlay.classList.add('show');
-    }, 50);
-  }
-
-  function closeQuoteModal() {
-    quoteModalOverlay.classList.remove('show');
-    setTimeout(() => {
-      quoteModalOverlay.classList.add('hidden');
-      quoteForm.reset();
-    }, 300);
-  }
-
-  // === UPDATED: Event listener for BOTH Desktop and Mobile Quote buttons ===
-  document.getElementById('add-to-quote-btn-desktop').addEventListener('click', openQuoteModal);
-  document.getElementById('add-to-quote-btn-mobile').addEventListener('click', openQuoteModal);
-
-  // Handle quote form submission
-  quoteForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const name = document.getElementById('quote-name').value;
-    const company = document.getElementById('quote-company').value;
-    const email = document.getElementById('quote-email').value;
-    const phone = document.getElementById('quote-phone').value;
-    const setQuantity = parseInt(quoteSetQuantityInput.value);
-    const notes = document.getElementById('quote-notes').value;
-
-    if (!name || !email || !phone || isNaN(setQuantity) || setQuantity < 1) {
-        alert("Please fill in all required fields (Name, Work Email, Phone Number) and ensure Quantity of Sets is at least 1.");
-        return;
-    }
-    if (!/^\d{10}$/.test(phone)) {
-        alert("Please enter a valid 10-digit phone number.");
-        return;
-    }
-
-    const productName = "{{ product.name }}";
-    const productUrl = window.location.href;
-    const selectedProductColor = selectedColorName;
-    const setComposition = "{{ product.sizes|escapejs }}";
-
-    // Get prices from the Django context directly (using floatformat:0 for consistency)
-    const pricePerSet = "{{ product.discount_price|default:product.price|floatformat:0 }}";
-    const pricePerPiece = "{{ product.get_current_price_per_piece|floatformat:0 }}";
-    const totalPiecesInSet = "{{ product.get_total_pieces_in_set }}";
-
-
-    let whatsappMessage = `*New B2B Quote Request - Website Inquiry*\n\n`;
-    whatsappMessage += `*Product Name:* ${productName}\n`;
-    whatsappMessage += `*Product URL:* ${productUrl}\n`;
-    whatsappMessage += `*Price per Set:* ₹${pricePerSet}\n`; // Using ₹
-    whatsappMessage += `*Price per Piece:* ₹${pricePerPiece} (for ${totalPiecesInSet} pieces)\n`; // Using ₹
-    whatsappMessage += `*Selected Color:* ${selectedProductColor}\n`;
-    whatsappMessage += `*Set Composition:* ${setComposition}\n`;
-    whatsappMessage += `*Quantity of Sets Requested:* ${setQuantity}\n\n`;
-    whatsappMessage += `*Customer Contact Details:*\n`;
-    whatsappMessage += `  Name: ${name}\n`;
-    whatsappMessage += company ? `  Company: ${company}\n` : '';
-    whatsappMessage += `  Email: ${email}\n`;
-    whatsappMessage += `  Phone: ${phone}\n`;
-    whatsappMessage += notes ? `\n*Additional Requirements:*\n${notes}\n` : '';
-
-    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-
-    window.open(whatsappLink, '_blank');
-
-    closeQuoteModal();
-    // Show a success notification without the cart link
-    showNotification("Your quote request has been prepared! Please confirm in WhatsApp.", "success");
-  });
-
-
-  // --- General Functions for Collapsible Sections ---
-  function toggleSection(id) {
-    const content = document.getElementById(`content-${id}`);
-    const icon = document.getElementById(`icon-${id}`);
-    const isOpen = !content.classList.contains("hidden");
-    content.classList.toggle("hidden");
-    icon.innerText = isOpen ? "+" : "−";
-  }
-
-  // --- Initial Page Load Setup ---
-  document.addEventListener("DOMContentLoaded", () => {
-    initSwiper();
-
-    const activeColorBtn = document.getElementById(`color-btn-{{ primary_color.id }}`);
-    if(activeColorBtn) activeColorBtn.classList.add('ring-2', 'ring-black');
-  });
+    });
 </script>
-
 {% endblock %}

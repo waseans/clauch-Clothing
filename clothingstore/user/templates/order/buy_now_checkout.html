@@ -48,7 +48,7 @@
                 <div class="sticky top-24 space-y-6">
                     <div class="space-y-2 border-b border-[#111] pb-4">
                         <h1 class="text-3xl font-black tracking-tighter text-[#111] uppercase leading-none">
-                            Review Items
+                            Instant Checkout
                         </h1>
                     </div>
 
@@ -62,9 +62,7 @@
                                 <div>
                                     <div class="flex justify-between items-start">
                                         <h2 class="text-sm font-bold uppercase tracking-wide text-[#111] leading-tight pr-8">{{ item.product.name }}</h2>
-                                        <button type="button" onclick="removeCartItem('{{ item.id }}', '')" class="text-gray-400 hover:text-red-600 transition-colors uppercase text-[10px] font-bold tracking-widest">
-                                            Remove
-                                        </button>
+                                        
                                     </div>
                                     <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1">Size: <span class="text-[#111]">{{ item.product.sizes }}</span> | Color: <span class="text-[#111]">{{ item.color.name }}</span></p>
                                     <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-1">
@@ -73,13 +71,10 @@
                                 </div>
                                 
                                 <div class="flex items-end justify-between mt-2">
-                                    <!-- QUANTITY CONTROLS -->
-                                    <div class="flex items-center border border-gray-300 w-24 h-8">
-                                        <button type="button" onclick="updateQuantity('{{ item.id }}', 'decrease')" class="w-8 h-full flex items-center justify-center text-[#111] hover:bg-gray-50 transition">−</button>
-                                        <div class="flex-1 h-full flex items-center justify-center text-sm font-bold bg-white" id="qty-val-{{ item.id }}">{{ item.quantity }}</div>
-                                        <button type="button" onclick="updateQuantity('{{ item.id }}', 'increase')" class="w-8 h-full flex items-center justify-center text-[#111] hover:bg-gray-50 transition">+</button>
-                                    </div>
                                     
+                                    <div class="flex items-center">
+                                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Qty: <span class="text-[#111] text-sm">{{ item.quantity }}</span></p>
+                                    </div>
                                     <div class="text-right">
                                         <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1">Item Total</p>
                                         <p class="text-lg font-black text-[#111] leading-none" id="item-total-{{ item.id }}">₹{{ item.total_price|floatformat:0 }}</p>
@@ -105,7 +100,7 @@
 
             <!-- RIGHT: CUSTOMER INFO FORM -->
             <div class="lg:w-1/2">
-                <form method="POST" action="{% url 'view_cart' %}" id="checkout-form" class="space-y-8">
+                <form method="POST" action="{% url 'buy_now_checkout' %}" id="checkout-form" class="space-y-8">
                     {% csrf_token %}
                     <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
 
@@ -429,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
       fetch("{% url 'ajax_apply_coupon' %}", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-          body: JSON.stringify({ coupon_code: code })
+          body: JSON.stringify({ coupon_code: code, is_buy_now: true })
       })
       .then(r => r.json())
       .then(data => {

@@ -9,6 +9,7 @@ urlpatterns = [
     path('search/results/', views.search_results_view, name='search_results'),
     path("search/suggestions/", views.search_suggestions, name="search_suggestions"),
     path('new/', views.new_view, name='new'),
+    path('product/<int:product_id>/submit-review/', views.submit_review, name='submit_review'),
     path('product/<slug:product_slug>/<slug:color_slug>/', views.product_detail_by_color, name='product_color_detail'),
     path('product/<slug:slug>/', views.product_detail, name='product_detail'),
     path('ajax/get-color-images/<int:color_id>/', views.get_color_images, name='get_color_images'),

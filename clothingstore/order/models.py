@@ -22,6 +22,11 @@ class CartItem(models.Model):
         color_info = f" ({self.color.name})" if self.color else ""
         return f"{self.product.name}{color_info} x{self.quantity} packs"
 
+    @property
+    def total_price(self):
+        return (self.discount_price or self.actual_price) * self.quantity
+
+
 
 class Order(models.Model):
     # --- New, More Specific Status Choices ---

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, ProductColor, ProductImage, CustomUser, Course, CourseVideo, CoursePDF, CourseEnrollment
+from .models import Category, Product, ProductColor, ProductImage, CustomUser, Course, CourseVideo, CoursePDF, CourseEnrollment, Review
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 # -------------------------------------------
@@ -186,5 +186,13 @@ class CourseEnrollmentAdmin(admin.ModelAdmin):
     list_display = ("user", "course", "status", "price_paid", "created_at")
     list_filter = ("status", "created_at")
     search_fields = ("user__username", "course__title")
+    readonly_fields = ("created_at",)
+    ordering = ("-created_at",)
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ("product", "user", "reviewer_name", "rating", "created_at")
+    list_filter = ("rating", "created_at", "is_verified_purchase")
+    search_fields = ("product__name", "user__phone_number", "reviewer_name", "comment")
     readonly_fields = ("created_at",)
     ordering = ("-created_at",)

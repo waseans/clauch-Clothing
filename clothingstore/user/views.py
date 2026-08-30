@@ -661,3 +661,38 @@ def protected_video(request, video_id):
         raise Http404("Video not found or you are not enrolled.")
     
     return FileResponse(video.video_file.open(), content_type="video/mp4")
+
+from .models import Review
+from django.contrib.auth.decorators import login_required
+
+@login_required
+@require_POST
+def submit_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    rating = request.POST.get('rating')
+    comment = request.POST.get('comment', '').strip()
+    
+    if not rating and not comment:
+        return JsonResponse({'status': 'error', 'message': 'Please provide either a rating or a review comment.'}, status=400)
+    
+    try:
+        # User can only leave one review per product; update it if it exists
+        user_name = getattr(request.user, 'full_name', None) or getattr(request.user, 'phone_number', 'Anonymous')
+        
+        review, created = Review.objects.update_or_create(
+            product=product,
+            user=request.user,
+            defaults={
+                'rating': int(rating) if rating else None,
+                'comment': comment,
+                'reviewer_name': user_name
+            }
+        )
+        return JsonResponse({
+            'status': 'success', 
+            'message': 'Your review has been successfully submitted.',
+            'rating': review.rating,
+            'comment': review.comment
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Server error: {str(e)}'}, status=500)

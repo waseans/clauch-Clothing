@@ -8,7 +8,7 @@
 
     <div class="max-w-6xl mx-auto mb-16 border-b-2 border-black pb-10">
         <h1 class="text-4xl md:text-5xl font-logo font-bold tracking-tighter text-gray-900 uppercase leading-none">
-            Business Account
+            My Account
         </h1>
         <p class="text-[11px] font-mono font-bold text-gray-400 mt-6 uppercase tracking-[0.3em]">
             Welcome back, <span class="text-black underline">{{ user.full_name|default:user.phone_number }}</span>
@@ -20,7 +20,7 @@
         <div class="lg:col-span-5 mb-16 lg:mb-0">
             <div class="sticky top-10">
                 <h2 class="text-xs font-logo font-bold uppercase tracking-[0.4em] text-black border-b border-gray-100 pb-4 mb-8">
-                    {% if edit_mode %}Update Profile{% else %}Identity Registry{% endif %}
+                    {% if edit_mode %}Update Profile{% else %}Profile Details{% endif %}
                 </h2>
 
                 {% if edit_mode %}
@@ -28,28 +28,28 @@
                     {% csrf_token %}
 
                     <div class="space-y-6">
-                        <p class="text-[10px] font-mono font-black text-gray-300 uppercase tracking-widest italic border-l-2 border-gray-100 pl-4">Personal Identifiers</p>
+                        <p class="text-[10px] font-mono font-black text-gray-300 uppercase tracking-widest italic border-l-2 border-gray-100 pl-4">Personal Details</p>
                         <div>
                             <label for="full_name" class="block text-[10px] font-bold uppercase tracking-widest text-black mb-2">Full Name</label>
                             <input type="text" id="full_name" name="full_name" value="{{ user.full_name|default:'' }}"
                                    class="w-full border-2 border-gray-100 focus:border-black p-4 text-sm outline-none transition-all font-medium uppercase">
                         </div>
                         <div>
-                            <label for="email" class="block text-[10px] font-bold uppercase tracking-widest text-black mb-2">Email Registry</label>
+                            <label for="email" class="block text-[10px] font-bold uppercase tracking-widest text-black mb-2">Email Address</label>
                             <input type="email" id="email" name="email" value="{{ user.email|default:'' }}"
                                    class="w-full border-2 border-gray-100 focus:border-black p-4 text-sm outline-none transition-all font-medium uppercase">
                         </div>
                     </div>
 
                     <div class="space-y-6 pt-6">
-                        <p class="text-[10px] font-mono font-black text-gray-300 uppercase tracking-widest italic border-l-2 border-gray-100 pl-4">Corporate Data</p>
+                        <p class="text-[10px] font-mono font-black text-gray-300 uppercase tracking-widest italic border-l-2 border-gray-100 pl-4">Business Details</p>
                         <div>
-                            <label for="company_name" class="block text-[10px] font-bold uppercase tracking-widest text-black mb-2">Legal Company Name</label>
+                            <label for="company_name" class="block text-[10px] font-bold uppercase tracking-widest text-black mb-2">Company Name</label>
                             <input type="text" id="company_name" name="company_name" value="{{ user.company_name|default:'' }}"
                                    class="w-full border-2 border-gray-100 focus:border-black p-4 text-sm outline-none transition-all font-medium uppercase">
                         </div>
                         <div>
-                            <label for="gst_number" class="block text-[10px] font-bold uppercase tracking-widest text-black mb-2">GSTIN Identifier</label>
+                            <label for="gst_number" class="block text-[10px] font-bold uppercase tracking-widest text-black mb-2">GST Number</label>
                             <input type="text" id="gst_number" name="gst_number" value="{{ user.gst_number|default:'' }}"
                                    class="w-full border-2 border-gray-100 focus:border-black p-4 text-sm outline-none transition-all font-medium uppercase">
                         </div>
@@ -60,7 +60,7 @@
                             Save Changes
                         </button>
                         <a href="{% url 'account' %}" class="w-full text-center py-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-all">
-                            Discard
+                            Cancel
                         </a>
                     </div>
                 </form>
@@ -68,32 +68,19 @@
                 <div class="space-y-12">
                     <section class="grid grid-cols-1 gap-10">
                         <div>
-                            <span class="block text-[9px] font-mono font-bold text-gray-300 uppercase tracking-widest mb-2">Company Entity</span>
+                            <span class="block text-[9px] font-mono font-bold text-gray-300 uppercase tracking-widest mb-2">Company</span>
                             <p class="text-xl font-bold uppercase text-black leading-tight">{{ user.company_name|default:'Individual Account' }}</p>
                             <p class="text-[10px] font-mono font-bold text-gray-500 mt-1">GSTIN: {{ user.gst_number|default:'NOT PROVIDED' }}</p>
                         </div>
                         <div>
-                            <span class="block text-[9px] font-mono font-bold text-gray-300 uppercase tracking-widest mb-2">Lead Contact</span>
+                            <span class="block text-[9px] font-mono font-bold text-gray-300 uppercase tracking-widest mb-2">Contact Details</span>
                             <p class="text-base font-bold text-black uppercase">{{ user.full_name|default:'—' }}</p>
                             <p class="text-[11px] font-mono text-gray-500 font-medium">{{ user.email }}</p>
                             <p class="text-[11px] font-mono text-gray-500 font-medium">+91 {{ user.phone_number }}</p>
-                        </div>
-                        <div>
-                            <span class="block text-[9px] font-mono font-bold text-gray-300 uppercase tracking-widest mb-2">Billing Address</span>
-                            <address class="not-italic text-sm text-gray-600 font-medium leading-relaxed uppercase tracking-tight">
-                                {% if user.address or user.city %}
-                                    {{ user.address }}<br>
-                                    {{ user.city }}{% if user.zip_code %}, {{ user.zip_code }}{% endif %}<br>
-                                    {{ user.state }}, {{ user.country }}
-                                {% else %}
-                                    <span class="italic text-gray-300 underline">Address pending configuration.</span>
-                                {% endif %}
-                            </address>
-                        </div>
                     </section>
 
                     <a href="{% url 'account' %}?edit=true" class="inline-block border-b-2 border-black pb-1 text-[11px] font-bold uppercase tracking-widest hover:text-gray-400 hover:border-gray-400 transition-all">
-                        Edit Registry
+                        Edit Profile
                     </a>
                 </div>
                 {% endif %}
@@ -102,13 +89,13 @@
 
         <div class="lg:col-span-7">
             <h2 class="text-xs font-logo font-bold uppercase tracking-[0.4em] text-black border-b border-gray-100 pb-4 mb-8">
-                Console Operations
+                Quick Links
             </h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <a href="{% url 'my_orders' %}" class="group relative bg-[#F9FAFB] border border-gray-100 p-10 hover:bg-black transition-all duration-500 overflow-hidden">
                     <div class="relative z-10">
-                        <span class="block text-[10px] font-mono font-bold text-gray-400 group-hover:text-gray-500 uppercase mb-4">Access Code: 01</span>
+                        <span class="block text-[10px] font-mono font-bold text-gray-400 group-hover:text-gray-500 uppercase mb-4">View past purchases</span>
                         <h3 class="text-base font-bold uppercase tracking-widest text-black group-hover:text-white transition-colors duration-500">Order History</h3>
                     </div>
                     <span class="absolute right-8 bottom-8 text-2xl text-gray-200 group-hover:text-white/20 transition-all">→</span>
@@ -116,7 +103,7 @@
 
                 <a href="{% url 'view_cart' %}" class="group relative bg-[#F9FAFB] border border-gray-100 p-10 hover:bg-black transition-all duration-500 overflow-hidden">
                     <div class="relative z-10">
-                        <span class="block text-[10px] font-mono font-bold text-gray-400 group-hover:text-gray-500 uppercase mb-4">Access Code: 02</span>
+                        <span class="block text-[10px] font-mono font-bold text-gray-400 group-hover:text-gray-500 uppercase mb-4">View your bag</span>
                         <h3 class="text-base font-bold uppercase tracking-widest text-black group-hover:text-white transition-colors duration-500">My Cart</h3>
                     </div>
                     <span class="absolute right-8 bottom-8 text-2xl text-gray-200 group-hover:text-white/20 transition-all">→</span>
@@ -130,7 +117,7 @@
                         Logout
                     </button>
                 </form>
-                <p class="text-[9px] font-mono text-gray-300 uppercase tracking-widest">Business ID: #{{ user.id|add:1000 }}</p>
+                <p class="text-[9px] font-mono text-gray-300 uppercase tracking-widest">Account ID: #{{ user.id|add:1000 }}</p>
             </div>
         </div>
     </div>

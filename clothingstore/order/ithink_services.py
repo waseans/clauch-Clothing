@@ -239,7 +239,7 @@ def get_rate_for_checkout(pincode, subtotal, cart_items, payment_method="Prepaid
     """
     url = f"{API_BASE_URL}/rate/check.json"
 
-    if not cart_items.exists():
+    if not cart_items:
         return {"status": "error", "message": "Cart is empty."}
     
     # Aggregate cart items to compute total weight and dimensions

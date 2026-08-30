@@ -150,14 +150,28 @@ def add_to_cart_view(request):
             return JsonResponse({'status': 'error', 'message': message}, status=400)
         # --- END STOCK CHECK ---
 
-        # Use the helper function
-        add_product_pack_to_cart(request, product_id, color_id, set_quantity)
+        is_buy_now = request.POST.get('buy_now') == 'true'
         
-        return JsonResponse({
-            'status': 'success',
-            'message': f'{set_quantity} sets added to bag!',
-            'cart_url': redirect('view_cart').url
-        })
+        if is_buy_now:
+            request.session['buy_now_item'] = {
+                'product_id': product_id,
+                'color_id': color_id,
+                'quantity': set_quantity
+            }
+            response_data = {
+                'status': 'success',
+                'checkout_url': redirect('buy_now_checkout').url
+            }
+        else:
+            # Use the helper function
+            add_product_pack_to_cart(request, product_id, color_id, set_quantity)
+            response_data = {
+                'status': 'success',
+                'message': f'{set_quantity} sets added to bag!',
+                'cart_url': redirect('view_cart').url
+            }
+            
+        return JsonResponse(response_data)
     except Product.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Product not found.'}, status=404)
     except ProductColor.DoesNotExist:
@@ -168,43 +182,17 @@ def add_to_cart_view(request):
 
 
 @login_required(login_url='login')
-def view_cart(request):
-    cart_items_for_display = []
-    total_cart_amount = Decimal('0.00')
-
-    if request.user.is_authenticated:
-        user_cart_items = CartItem.objects.filter(user=request.user).select_related('product', 'color')
+def remove_from_cart(request, item_id=None, key=None):
+    if item_id:
+        CartItem.objects.filter(id=item_id, user=request.user).delete()
+    
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json'
+    
+    if is_ajax:
+        cart_items = list(CartItem.objects.filter(user=request.user).select_related('product', 'color'))
+        subtotal = sum([(i.discount_price or i.actual_price) * i.quantity for i in cart_items])
+        return JsonResponse({'status': 'success', 'cart_subtotal': f"{subtotal:.2f}", 'item_count': len(cart_items)})
         
-        for item in user_cart_items:
-            price_per_pack = item.discount_price or item.actual_price
-            subtotal = price_per_pack * item.quantity
-            total_cart_amount += subtotal
-            
-            # --- ✅ STOCK CHECK FOR CART VIEW ---
-            is_out_of_stock = False
-            if item.color and item.color.stock < item.quantity:
-                is_out_of_stock = True
-                messages.warning(request, f"Not enough stock for {item.product_name} ({item.color.name}). "
-                                          f"Please reduce quantity. Only {item.color.stock} left.")
-            
-            cart_items_for_display.append({
-                'item': item,
-                'subtotal': subtotal,
-                'is_out_of_stock': is_out_of_stock, # Pass this to template
-            })
-    else:
-        messages.info(request, "Please log in to view and manage your cart.")
-        return redirect('login')
-        
-    return render(request, 'order/cart.html', {
-        'cart_items': cart_items_for_display,
-        'total': total_cart_amount
-    })
-
-
-@login_required(login_url='login')
-def remove_from_cart(request, item_id):
-    CartItem.objects.filter(id=item_id, user=request.user).delete()
     messages.success(request, "Set removed from cart.")
     return redirect('view_cart')
 
@@ -212,32 +200,86 @@ def remove_from_cart(request, item_id):
 @login_required(login_url='login')
 @require_POST
 def update_cart_quantity(request):
-    item_id = request.POST.get('item_id')
-    action = request.POST.get('action')
-    
+    import json
+    # Handle both normal POST and JSON
+    if request.content_type == 'application/json':
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        action = data.get('action')
+        is_ajax = True
+    else:
+        item_id = request.POST.get('item_id')
+        action = request.POST.get('action')
+        is_ajax = False
+        
     item = get_object_or_404(CartItem, id=item_id, user=request.user, color__isnull=False)
-
     min_qty_sets = 1
     
     if action == 'increase':
-        # --- ✅ STOCK CHECK ---
         new_qty = item.quantity + 1
         if item.color.stock < new_qty:
+            if is_ajax:
+                return JsonResponse({'status': 'error', 'message': f'Not enough stock. Only {item.color.stock} sets available.'}, status=400)
             messages.warning(request, f"Not enough stock. Only {item.color.stock} sets are available.")
             return redirect('view_cart')
-        # --- END STOCK CHECK ---
         item.quantity = new_qty
         
     elif action == 'decrease':
         if item.quantity > min_qty_sets:
             item.quantity -= 1
         else:
+            if is_ajax:
+                return JsonResponse({'status': 'error', 'message': f'Minimum quantity is {min_qty_sets}.'}, status=400)
             messages.warning(request, f"Minimum quantity for this set is {min_qty_sets}.")
             return redirect('view_cart')
 
     item.save()
+    
+    if is_ajax:
+        # Calculate new totals
+        cart_items = list(CartItem.objects.filter(user=request.user).select_related('product', 'color'))
+        subtotal = sum([(i.discount_price or i.actual_price) * i.quantity for i in cart_items])
+        item_subtotal = (item.discount_price or item.actual_price) * item.quantity
+        return JsonResponse({
+            'status': 'success',
+            'new_quantity': item.quantity,
+            'item_subtotal': f"{item_subtotal:.2f}",
+            'cart_subtotal': f"{subtotal:.2f}"
+        })
+        
     messages.success(request, "Cart quantity updated.")
     return redirect('view_cart')
+
+
+def get_checkout_items(request, is_buy_now=False):
+    """
+    Returns a list of cart_items based on whether it is a buy_now flow or not.
+    """
+    if is_buy_now:
+        buy_now_data = request.session.get('buy_now_item')
+        if buy_now_data:
+            try:
+                product = Product.objects.get(id=buy_now_data['product_id'])
+                color = ProductColor.objects.get(id=buy_now_data['color_id']) if buy_now_data.get('color_id') else None
+                
+                # Create an in-memory CartItem instance (not saved to DB)
+                cart_item = CartItem(
+                    user=request.user if request.user.is_authenticated else None,
+                    product=product,
+                    color=color,
+                    quantity=buy_now_data['quantity'],
+                    product_name=product.name,
+                    product_image=product.primary_image.url if product.primary_image else '',
+                    actual_price=product.price,
+                    discount_price=product.discount_price
+                )
+                return [cart_item]
+            except (Product.DoesNotExist, ProductColor.DoesNotExist):
+                del request.session['buy_now_item']
+        return []
+            
+    # Fallback to normal cart
+    return list(CartItem.objects.filter(user=request.user).select_related('product', 'color'))
 
 
 def get_valid_coupon_discount(request, cart_items):
@@ -292,6 +334,7 @@ def get_valid_coupon_discount(request, cart_items):
 def ajax_apply_coupon(request):
     data = json.loads(request.body)
     code = data.get('coupon_code', '').strip()
+    is_buy_now = data.get('is_buy_now', False)
     
     if not code:
         return JsonResponse({'status': 'error', 'message': 'Please enter a coupon code.'}, status=400)
@@ -304,8 +347,8 @@ def ajax_apply_coupon(request):
     if coupon.expires_at and coupon.expires_at < timezone.now():
         return JsonResponse({'status': 'error', 'message': 'This coupon has expired.'}, status=400)
         
-    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
-    if not cart_items.exists():
+    cart_items = get_checkout_items(request, is_buy_now=is_buy_now)
+    if not cart_items:
         return JsonResponse({'status': 'error', 'message': 'Your cart is empty.'}, status=400)
         
     eligible_subtotal = Decimal('0.00')
@@ -349,6 +392,9 @@ def ajax_apply_coupon(request):
 @login_required(login_url='login')
 @require_POST
 def ajax_remove_coupon(request):
+    data = json.loads(request.body) if request.body else {}
+    is_buy_now = data.get('is_buy_now', False)
+    
     if 'coupon_code' in request.session:
         del request.session['coupon_code']
     if 'coupon_discount' in request.session:
@@ -356,7 +402,7 @@ def ajax_remove_coupon(request):
     # Clear shipping info since total changed
     if 'shipping_info' in request.session: del request.session['shipping_info']
         
-    cart_items = CartItem.objects.filter(user=request.user)
+    cart_items = get_checkout_items(request, is_buy_now=is_buy_now)
     subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
         
     return JsonResponse({
@@ -370,6 +416,7 @@ def ajax_remove_coupon(request):
 def ajax_calculate_shipping(request):
     data = json.loads(request.body)
     pincode = data.get('pincode')
+    is_buy_now = data.get('is_buy_now', False)
     # Map 'RZP' (Razorpay) to 'Prepaid' for iThink compatibility
     raw_method = data.get('payment_method', 'RZP') 
     payment_method = "Prepaid" if raw_method == "RZP" else "COD"
@@ -378,8 +425,8 @@ def ajax_calculate_shipping(request):
     if not pincode or not pincode.isdigit() or len(pincode) != 6:
         return JsonResponse({'error': 'Please enter a valid 6-digit pincode.'}, status=400)
 
-    cart_items = CartItem.objects.filter(user=request.user)
-    if not cart_items.exists():
+    cart_items = get_checkout_items(request, is_buy_now=is_buy_now)
+    if not cart_items:
         return JsonResponse({'error': 'Your cart is empty.'}, status=400)
 
     # 2. Calculate Subtotal
@@ -459,9 +506,9 @@ def ajax_calculate_shipping(request):
 @login_required(login_url='login')
 def checkout_view(request):
     user = request.user
-    cart_items = CartItem.objects.filter(user=user).select_related('product', 'color')
+    cart_items = get_checkout_items(request, is_buy_now=False)
 
-    if not cart_items.exists():
+    if not cart_items:
         messages.warning(request, "Your cart is empty.")
         return redirect('view_cart')
 
@@ -488,7 +535,7 @@ def checkout_view(request):
             order_id = request.session.get('order_id')
             if not order_id:
                 messages.error(request, "Your session expired. Please try again.")
-                return redirect('checkout')
+                return redirect('view_cart')
 
             order = get_object_or_404(Order, id=order_id, user=user)
             
@@ -511,7 +558,7 @@ def checkout_view(request):
                     order.save()
                 
                 # 3. Clean up cart & session
-                cart_items.delete()
+                CartItem.objects.filter(user=user).delete()
                 if 'order_id' in request.session: del request.session['order_id']
                 if 'shipping_info' in request.session: del request.session['shipping_info']
                 if 'coupon_code' in request.session: del request.session['coupon_code']
@@ -537,7 +584,7 @@ def checkout_view(request):
         shipping_info = request.session.get('shipping_info')
         if not shipping_info:
             messages.error(request, "Please calculate shipping before proceeding to pay.")
-            return redirect('checkout')
+            return redirect('view_cart')
 
         shipping_charge = Decimal(shipping_info['charge'])
         shipping_service = shipping_info['service']
@@ -584,6 +631,7 @@ def checkout_view(request):
             for item in cart_items:
                 price = item.discount_price or item.actual_price
                 processed_cart_items.append({
+                    'id': item.id,
                     'product': item.product,
                     'color': item.color,
                     'quantity': item.quantity,
@@ -596,19 +644,20 @@ def checkout_view(request):
                 "razorpay_key": settings.RAZORPAY_KEY_ID, "amount_to_pay_now": razorpay_amount,
                 "order": order, "form_data": data,
             }
-            return render(request, 'order/checkout.html', context)
+            return render(request, 'order/cart.html', context)
         except Exception as e:
             messages.error(request, f"Could not create payment order: {e}")
             order.payment_status = 'FAILED'
             order.shipping_status = 'CANCELLED'
             order.save()
-            return redirect('checkout')
+            return redirect('view_cart')
 
     # --- GET Request logic ---
     processed_cart_items = []
     for item in cart_items:
         price = item.discount_price or item.actual_price
         processed_cart_items.append({
+            'id': item.id,
             'product': item.product,
             'color': item.color,
             'quantity': item.quantity,
@@ -626,7 +675,7 @@ def checkout_view(request):
         "razorpay_key": settings.RAZORPAY_KEY_ID, 
         "user_profile": user 
     }
-    return render(request, 'order/checkout.html', context)
+    return render(request, 'order/cart.html', context)
 
 
 @login_required(login_url='login')
@@ -945,3 +994,181 @@ def admin_mark_as_delivered(request, order_id):
     
     # Redirect back to the shipped tab, where the user just was
     return redirect('admin_ithink_dashboard', status_filter='shipped')
+
+
+
+
+@login_required(login_url='login')
+def buy_now_checkout_view(request):
+    user = request.user
+    cart_items = get_checkout_items(request, is_buy_now=True)
+
+    if not cart_items:
+        messages.warning(request, "Your cart is empty.")
+        return redirect('home') # Redirect home if no buy now item
+
+    # --- ✅ STOCK CHECK ON PAGE LOAD ---
+    for item in cart_items:
+        if item.color and item.color.stock < item.quantity:
+            messages.error(request, f"Item {item.product_name} ({item.color.name}) is out of stock "
+                                     f"or you have too many in your cart (Only {item.color.stock} left).")
+            return redirect('home') # Redirect home if no buy now item
+    # --- END STOCK CHECK ---
+
+    subtotal = sum([(item.discount_price or item.actual_price) * item.quantity for item in cart_items])
+    subtotal = Decimal(str(subtotal))
+    
+    # Recalculate to ensure accurate discount if cart changed
+    coupon_code, coupon_discount = get_valid_coupon_discount(request, cart_items)
+    discounted_subtotal = subtotal - coupon_discount
+
+    if request.method == 'POST':
+        data = request.POST
+        
+        # --- THIS BLOCK IS FOR AFTER PAYMENT IS COMPLETED (CLIENT-SIDE) ---
+        if data.get("razorpay_payment_id"):
+            order_id = request.session.get('order_id')
+            if not order_id:
+                messages.error(request, "Your session expired. Please try again.")
+                return redirect('buy_now_checkout')
+
+            order = get_object_or_404(Order, id=order_id, user=user)
+            
+            # --- ✅ ATOMIC STOCK REDUCTION & ORDER UPDATE ---
+            try:
+                # We only process if the order is still pending.
+                # This prevents double-processing if the webhook runs first.
+                if order.shipping_status == 'PENDING':
+                    # 1. Attempt to reduce stock first
+                    reduce_product_stock(order)
+                
+                    # 2. If stock reduction succeeds, update order
+                    order.payment_id = data.get("razorpay_payment_id")
+                    if order.payment_method == 'RZP':
+                        order.payment_status = 'PAID'
+                    elif order.payment_method == 'COD':
+                        order.payment_status = 'SHIPPING_FEE_PAID'
+                    
+                    order.shipping_status = 'READY_TO_SHIP'
+                    order.save()
+                
+                # 3. Clean up cart & session
+                if 'buy_now_item' in request.session: del request.session['buy_now_item']
+                if 'order_id' in request.session: del request.session['order_id']
+                if 'shipping_info' in request.session: del request.session['shipping_info']
+                if 'coupon_code' in request.session: del request.session['coupon_code']
+                if 'coupon_discount' in request.session: del request.session['coupon_discount']
+                
+                # 4. Redirect to success
+                return redirect('order_success', order_id=order.id)
+            
+            except IntegrityError as e:
+                # STOCK REDUCTION FAILED!
+                messages.error(request, f"Error processing order: {e}. Please contact support. "
+                                        "Your order has been cancelled, and payment will be refunded if captured.")
+                # Mark order as failed
+                order.payment_status = 'FAILED'
+                order.shipping_status = 'CANCELLED'
+                order.save()
+                # Don't delete cart, let user fix it
+                return redirect('order_failure_view')
+            # --- END ATOMIC BLOCK ---
+
+
+        # --- THIS BLOCK IS FOR CREATING THE ORDER BEFORE PAYMENT ---
+        shipping_info = request.session.get('shipping_info')
+        if not shipping_info:
+            messages.error(request, "Please calculate shipping before proceeding to pay.")
+            return redirect('buy_now_checkout')
+
+        shipping_charge = Decimal(shipping_info['charge'])
+        shipping_service = shipping_info['service']
+        
+        grand_total = discounted_subtotal + shipping_charge
+        payment_method = data.get('payment_method', 'RZP')
+        amount_to_pay_now = grand_total if payment_method == "RZP" else shipping_charge
+        razorpay_amount = int(amount_to_pay_now * 100)
+
+        # Create Order (but don't reduce stock yet)
+        order = Order.objects.create(
+            user=user, full_name=data['full_name'], phone=data['phone'], email=data.get('email', ''),
+            address=data['address'], city=data['city'], state=data['state'], pincode=data['pincode'],
+            payment_method=payment_method, 
+            subtotal=subtotal,
+            coupon_code=coupon_code,
+            discount_amount=coupon_discount,
+            shipping_charge=shipping_charge, 
+            grand_total=grand_total,
+            shipping_service_name=shipping_service['service_name'],
+            payment_status='UNPAID',
+            shipping_status='PENDING',
+        )
+        for item in cart_items:
+            order.items.create(
+                 product=item.product, color=item.color, quantity=item.quantity,
+                 product_name=item.product.name, product_image=item.product.primary_image,
+                 actual_price=item.actual_price, discount_price=item.discount_price,
+                 price_per_piece_at_purchase=item.product.get_current_price_per_piece(),
+                 total_pieces_in_set_at_purchase=item.product.get_total_pieces_in_set()
+            )
+        
+        request.session['order_id'] = order.id
+
+        try:
+            razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            razorpay_order = razorpay_client.order.create({
+                "amount": razorpay_amount, "currency": "INR", "payment_capture": 1, "notes": {"order_id": str(order.id)}
+            })
+            order.razorpay_order_id = razorpay_order['id'] # Save Razorpay Order ID
+            order.save()
+            
+            processed_cart_items = []
+            for item in cart_items:
+                price = item.discount_price or item.actual_price
+                processed_cart_items.append({
+                    'id': item.id,
+                    'product': item.product,
+                    'color': item.color,
+                    'quantity': item.quantity,
+                    'total_price': price * item.quantity
+                })
+
+            context = {
+                "cart_items": processed_cart_items, "subtotal": subtotal, "shipping_charge": shipping_charge,
+                "grand_total": grand_total, "razorpay_order": razorpay_order,
+                "razorpay_key": settings.RAZORPAY_KEY_ID, "amount_to_pay_now": razorpay_amount,
+                "order": order, "form_data": data,
+            }
+            return render(request, 'order/buy_now_checkout.html', context)
+        except Exception as e:
+            messages.error(request, f"Could not create payment order: {e}")
+            order.payment_status = 'FAILED'
+            order.shipping_status = 'CANCELLED'
+            order.save()
+            return redirect('buy_now_checkout')
+
+    # --- GET Request logic ---
+    processed_cart_items = []
+    for item in cart_items:
+        price = item.discount_price or item.actual_price
+        processed_cart_items.append({
+            'id': item.id,
+            'product': item.product,
+            'color': item.color,
+            'quantity': item.quantity,
+            'total_price': price * item.quantity
+        })
+
+    context = { 
+        "cart_items": processed_cart_items,
+        "subtotal": subtotal,
+        "coupon_code": coupon_code,
+        "coupon_discount": coupon_discount,
+        "discounted_subtotal": discounted_subtotal,
+        "shipping_charge": Decimal("0.00"), 
+        "grand_total": discounted_subtotal,
+        "razorpay_key": settings.RAZORPAY_KEY_ID, 
+        "user_profile": user 
+    }
+    return render(request, 'order/buy_now_checkout.html', context)
+

@@ -116,6 +116,26 @@ class Product(models.Model):
         price = self.discount_price if self.discount_price else self.price
         return price / total
 
+    def get_original_price_per_piece(self):
+        total = self.get_total_pieces_in_set()
+        if total == 0: return 0.00
+        return self.price / total
+
+    def update_rating(self):
+        """Recalculates average rating and total reviews."""
+        all_reviews = self.reviews.all()
+        reviews_with_rating = all_reviews.exclude(rating__isnull=True)
+        
+        self.reviews_count = all_reviews.count()
+        
+        if reviews_with_rating.exists():
+            rating_count = reviews_with_rating.count()
+            self.rating = sum(r.rating for r in reviews_with_rating) / rating_count
+        else:
+            self.rating = 0.0
+            
+        self.save(update_fields=['rating', 'reviews_count'])
+
 # -----------------------------------------------------------
 # 4. PRODUCT COLOR VARIANT
 # -----------------------------------------------------------
@@ -276,3 +296,46 @@ class CourseEnrollment(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.course} ({self.status})"
+
+# -----------------------------------------------------------
+# 6. REVIEW MODEL
+# -----------------------------------------------------------
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    reviewer_name = models.CharField(max_length=100, blank=True, null=True)
+    rating = models.PositiveIntegerField(null=True, blank=True)
+    comment = models.TextField(blank=True, default="")
+    is_verified_purchase = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ('product', 'user')
+
+    def __str__(self):
+        name = self.reviewer_name or getattr(self.user, 'phone', "Anonymous")
+        return f"{name} - {self.product.name} ({self.rating}★)"
+
+    @property
+    def obfuscated_name(self):
+        name = self.reviewer_name
+        if not name:
+            name = "Anonymous"
+        
+        name = str(name).strip()
+        if len(name) <= 3:
+            return name
+        
+        first_two = name[:2]
+        last_one = name[-1]
+        stars = '*' * (len(name) - 3)
+        return f"{first_two}{stars}{last_one}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.product.update_rating()
+        
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.product.update_rating()

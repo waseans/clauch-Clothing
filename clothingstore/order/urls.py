@@ -7,13 +7,14 @@ from . import views
 urlpatterns = [
     # Cart operations
     path('add/', views.add_to_cart_view, name='add_to_cart'),
-    path('cart/', views.view_cart, name='view_cart'),
+    path('cart/', views.checkout_view, name='view_cart'),
     path('cart/remove/<str:key>/', views.remove_from_cart, name='remove_from_cart'),
     path('cart/remove/db/<int:item_id>/', views.remove_from_cart, name='remove_from_cart_db'),
     path('cart/update/', views.update_cart_quantity, name='update_cart_quantity'),
 
     # Checkout process
-    path('checkout/', views.checkout_view, name='checkout'),
+    # Removed separate 'checkout/' path since it's merged into 'view_cart'
+    path('buy-now/checkout/', views.buy_now_checkout_view, name='buy_now_checkout'),
     path('ajax/calculate-shipping/', views.ajax_calculate_shipping, name='ajax_calculate_shipping'),
     path('ajax/apply-coupon/', views.ajax_apply_coupon, name='ajax_apply_coupon'),
     path('ajax/remove-coupon/', views.ajax_remove_coupon, name='ajax_remove_coupon'),
